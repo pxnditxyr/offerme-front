@@ -1,6 +1,15 @@
 :root {
   --color-primary: #030712;
-  --bg-primary: #ffffff;
+  --color-white: #f1f1f1;
+  --color-orange: #d34500;
+}
+
+@font-face {
+  font-family: 'Newake';
+  font-style:  normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url( '/fonts/newake-font-demo.otf' );
 }
 
 html {
@@ -20,12 +29,8 @@ html {
 }
 
 body {
-  background-color: var( --bg-primary );
-  color: var( --color-primary );
-  font-size: 1rem;
+  color: var( --color-white );
 }
-
-
 
 @media ( prefers-color-scheme: light ) {
   :root {
@@ -33,5 +38,3 @@ body {
     --bg-primary: #030712;
   }
 }
-
-

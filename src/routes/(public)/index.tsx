@@ -4,10 +4,12 @@ import type { DocumentHead } from '@builder.io/qwik-city'
 export default component$( () => {
   return (
     <>
-      <h1> Offer Me </h1>
-      <p>
-        Welcome to official page of Offer Me. We are a company that provides
-      </p>
+      <div class="container index">
+        <h1> Offer Me </h1>
+        <p>
+          Welcome to official page of Offer Me. We are a company that provides
+        </p>
+      </div>
     </>
   )
 } )

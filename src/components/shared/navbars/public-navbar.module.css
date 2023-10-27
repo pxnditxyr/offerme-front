@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 1rem;
+  height: 5rem;
+  backdrop-filter: blur( 100px );
+  -webkit-backdrop-filter: blur( 100px );
+  box-shadow: 0 0 10px rgba( 0, 0, 0, 0.1 );
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 5%;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+}
+
+.link__brand {
+  color: #f1f1f1;
+  font-size: clamp( 1.4rem, 3.3vw, 2.2rem );
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  font-family: 'Newake';
+}
+
+.link {
+  display: grid;
+  place-items: center;
+  color: #f1f1f1;
+  font-family: sans-serif;
+  font-size: clamp( 1rem, 2vw, 1.3rem );
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+.logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.link:hover {
+  transform: scale( 1.1 );
+}

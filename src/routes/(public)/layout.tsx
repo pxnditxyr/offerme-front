@@ -1,5 +1,8 @@
 import { Slot, component$ } from '@builder.io/qwik'
 import { RequestHandler } from '@builder.io/qwik-city'
+import { PublicNavbar } from '~/components/shared/navbars/public-navbar'
+
+import styles from './public-layout.module.css'
 
 export const onGet : RequestHandler = async ({ cacheControl }) => {
   cacheControl({
@@ -10,7 +13,8 @@ export const onGet : RequestHandler = async ({ cacheControl }) => {
 
 export default component$( () => {
   return (
-    <main>
+    <main class={ styles.container }>
+      <PublicNavbar />
       <Slot />
     </main>
   )

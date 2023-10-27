@@ -1,0 +1,12 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-image: url( 'https://wallpapercave.com/wp/wp2596944.jpg' );
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
