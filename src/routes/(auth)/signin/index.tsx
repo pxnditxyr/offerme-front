@@ -1,6 +1,7 @@
-import { $, component$, useSignal, useTask$ } from '@builder.io/qwik'
+import { component$, useTask$ } from '@builder.io/qwik'
 import { Form, type DocumentHead, routeAction$, zod$, Link } from '@builder.io/qwik-city'
 import { FormField, Modal } from '~/components/shared'
+import { useModalStatus } from '~/hooks'
 
 import { signinValidationSchema } from '~/utils'
 
@@ -39,18 +40,11 @@ export const useSignInUserAction = routeAction$( async ( data, event ) => {
 export default component$( () => {
 
   const action = useSignInUserAction()
-
-  const modalStatus = useSignal( false )
-
-  const handleClose = $( () => {
-    modalStatus.value = false
-  } )
+  const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
   useTask$( ({ track }) => {
-    track( () => action.value?.success )
-
-    if ( !action.value?.success )
-      modalStatus.value = true
+    track( () => action.isRunning )
+    if ( !action.value?.success ) onOpenModal()
   } )
 
   return (
@@ -76,7 +70,7 @@ export default component$( () => {
       </Link>
       {
         ( !action.value?.success && action.value?.error ) && (
-          <Modal isOpen={ modalStatus.value } handleClose={ handleClose }>
+          <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             <span> { action.value?.error } </span>
           </Modal>
         )

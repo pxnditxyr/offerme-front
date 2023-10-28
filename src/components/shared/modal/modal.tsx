@@ -6,10 +6,10 @@ interface IModalProps {
   title?: string
   confirmButton?: string
   isOpen: boolean
-  handleClose: () => void
+  onClose: () => void
 }
 
-export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOpen, handleClose } : IModalProps ) => {
+export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOpen, onClose } : IModalProps ) => {
 
   return (
     <div class="modal" style={ { display: isOpen ? 'flex' : 'none' } }>
@@ -17,7 +17,7 @@ export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOp
       <article class="modal-content">
         <button
           class="modal-close"
-          onClick$={ handleClose }
+          onClick$={ onClose }
         >
           <img class="modal-close-icon" src="/icons/x.icon.svg" alt="Close" />
         </button>
@@ -30,7 +30,7 @@ export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOp
         <section class="modal-footer">
           <button
             class="modal-confirm"
-            onClick$={ handleClose }
+            onClick$={ onClose }
           > { confirmButton } </button>
         </section>
       </article>
