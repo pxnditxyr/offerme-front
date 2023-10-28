@@ -1,5 +1,6 @@
 import { component$, useTask$ } from '@builder.io/qwik'
 import { Form, type DocumentHead, routeAction$, zod$, Link } from '@builder.io/qwik-city'
+import { signinApi } from '~/api'
 import { FormField, Modal } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 
@@ -8,20 +9,11 @@ import { signinValidationSchema } from '~/utils'
 export const useSignInUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
   try {
-    const response = await fetch( 'http://localhost:3001/auth/signin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify( data ),
-    } )
-    const json = await response.json()
+    const json = await signinApi( data )
     if ( json.token ) {
       cookie.set( 'jwt', json.token, { secure: true, path: '/' } )
       redirect( 302, '/' )
-      return {
-        success: true,
-      }
+      return { success: true }
     }
     return {
       success: false,

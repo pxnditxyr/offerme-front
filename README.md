@@ -40,7 +40,14 @@ npm i
 
 ## Configuration ⚙️
 
-It will be updated soon, at the moment it is not necessary
+1. Copy the example environment file to create you `.env` file: 🔑
+
+```bash
+cp .env.example .env
+```
+
+2. Update the `.env` file with your configuration values.
+
 
 ## Usage 🚀
 
