@@ -44,7 +44,12 @@ export default component$( () => {
 
   useTask$( ({ track }) => {
     track( () => action.isRunning )
-    if ( !action.value?.success ) onOpenModal()
+    if ( action.value && action.value.success === false && action.value.error ) onOpenModal()
+  } )
+
+  useTask$( ({ track }) => {
+    track( () => modalStatus.value )
+    if ( !modalStatus.value && action.value ) action.value.error = null
   } )
 
   return (
@@ -63,13 +68,15 @@ export default component$( () => {
           placeholder="Password"
           error={ action.value?.fieldErrors?.password?.join( ', ' ) }
         />
-        <button> Sign In </button>
+        <button
+          disabled={ modalStatus.value }
+        > Sign In </button>
       </Form>
       <Link href="/signup">
         Don't have an account? Sign Up
       </Link>
       {
-        ( !action.value?.success && action.value?.error ) && (
+        ( modalStatus ) && (
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             <span> { action.value?.error } </span>
           </Modal>

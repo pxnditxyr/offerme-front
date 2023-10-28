@@ -1,4 +1,4 @@
-import { $, useComputed$, useSignal } from '@builder.io/qwik'
+import { $, useSignal } from '@builder.io/qwik'
 
 export const  useModalStatus = ( initialValue : boolean = false ) => {
   const modalStatus = useSignal<boolean>( initialValue )
@@ -12,7 +12,7 @@ export const  useModalStatus = ( initialValue : boolean = false ) => {
   } )
 
   return {
-    modalStatus: useComputed$( () => modalStatus.value ),
+    modalStatus,
     onOpenModal,
     onCloseModal,
   }
