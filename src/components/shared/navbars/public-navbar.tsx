@@ -3,10 +3,6 @@ import { Link } from '@builder.io/qwik-city'
 
 import styles from './public-navbar.module.css'
 
-// import ImgMenuicon from '~/media/icons/menu.icon.svg?jsx'
-// import ImgXicon from '~/media/icons/x.icon.svg?jsx'
-
-
 export const PublicNavbar = component$( () => {
   return (
     <>
