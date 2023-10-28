@@ -70,7 +70,7 @@ export default component$( () => {
       {
         ( modalStatus ) && (
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
-            <span> { action.value?.error } </span>
+            <span> { action.value?.error || 'Something went wrong' } </span>
           </Modal>
         )
       }

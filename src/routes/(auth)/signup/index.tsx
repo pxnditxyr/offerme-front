@@ -1,35 +1,54 @@
-import { component$ } from '@builder.io/qwik'
+import { component$, useTask$ } from '@builder.io/qwik'
 import { DocumentHead, Form, Link, routeAction$, zod$ } from '@builder.io/qwik-city'
-import { FormField } from '~/components/shared'
+import { signupApi } from '~/api'
+import { FormField, Modal } from '~/components/shared'
+import { useModalStatus } from '~/hooks'
 
 import { signupValidationSchema } from '~/utils'
 
 
-export const useSignupUserAction = routeAction$( ( data, event ) => {
-  const {
-    name, paternalSurname, maternalSurname,
-    birthdate, email, password, confirmPassword, gender
-  } = data
-
+export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
-
-  if ( email === 'pxnditxyr@gmail.com' && password === '12345' ) {
-    cookie.set( 'jwt', '12345', { secure: true, path: '/' } )
-    redirect( 302, '/' )
-  }
-  return {
-    success: false,
+  try {
+    // const json = await signupApi( data )
+    // if ( json.token ) {
+    //   cookie.set( 'jwt', json.token, { secure: true, path: '/' } )
+    //   redirect( 302, '/' )
+    //   return { success: true }
+    // }
+    return {
+      success: false,
+      error: 'Unimplemented',
+    }
+    
+  } catch ( error : any ) {
+    console.log({ error })
+    return {
+      success: false,
+      error: ( error.message as string ).includes( 'fetch' ) ? 'Could not connect to server' : error.message,
+    }
   }
 }, zod$({ ...signupValidationSchema }) )
 
 export default component$( () => {
 
   const action = useSignupUserAction()
+  const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
+
+  useTask$( ({ track }) => {
+    track( () => action.isRunning )
+    console.log({ action: action.value?.error })
+    if ( action.value && action.value.success === false && action.value.error ) onOpenModal()
+  } )
+
+  useTask$( ({ track }) => {
+    track( () => modalStatus.value )
+    if ( !modalStatus.value && action.value ) action.value.error = null
+  } )
 
   return (
     <div>
       <h1> Sign Up </h1>
-
       <div>
         <Form action={ action } >
           <FormField
@@ -58,7 +77,7 @@ export default component$( () => {
           />
           <FormField
             name="email"
-            type="email"
+            type="text"
             placeholder="Email"
             error={ action.value?.fieldErrors?.email?.join( ', ' ) }
           />
@@ -86,6 +105,13 @@ export default component$( () => {
       <Link href="/signin">
         Already have an account? Sign In
       </Link>
+      {
+        ( modalStatus.value ) && (
+          <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
+            <span> { action.value?.error || 'Something went wrong' } </span>
+          </Modal>
+        )
+      }
     </div>
   )
 } )
