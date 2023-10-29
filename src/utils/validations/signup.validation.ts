@@ -8,5 +8,5 @@ export const signupValidationSchema = {
   email: z.string().email( 'Invalid Email' ),
   password: z.string().min( 1, 'Password is required' ),
   confirmPassword: z.string().min( 1, 'Confirm Password is required' ),
-  gender: z.string().min( 1, 'Gender is required' )
+  genderId: z.string().min( 1, 'Gender is required' )
 }

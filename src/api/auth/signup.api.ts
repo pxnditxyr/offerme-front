@@ -5,7 +5,7 @@ interface SignupData {
   birthdate: string
   email: string
   password: string
-  gender: string
+  genderId: string
 }
 
 export const signupApi = async ( data : SignupData ) => {

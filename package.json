@@ -1,19 +1,7 @@
 {
   "name": "offer-me",
   "version": "0.0.1",
-  "description": "Offer Me, is a web application that generates offers for you company",
-  "engines": {
-    "node": ">=15.0.0"
-  },
-  "trustedDependencies": [
-    "sharp"
-  ],
-  "scripts": {
-    "build": "qwik build",
-    "dev": "vite --mode ssr",
-    "start": "vite --open --mode ssr",
-    "qwik": "qwik"
-  },
+  "author": "Pxndxs",
   "devDependencies": {
     "@builder.io/qwik": "^1.2.14",
     "@builder.io/qwik-city": "^1.2.14",
@@ -23,11 +11,23 @@
     "vite": "^4.4.11",
     "vite-tsconfig-paths": "^4.2.1"
   },
+  "description": "Offer Me, is a web application that generates offers for you company",
+  "engines": {
+    "node": ">=15.0.0"
+  },
   "keywords": [
     "Qwik",
     "Qwik City",
     "Typescript"
   ],
-  "author": "Pxndxs",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "qwik build",
+    "dev": "vite --mode ssr",
+    "start": "vite --open --mode ssr",
+    "qwik": "qwik"
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
