@@ -4,8 +4,10 @@ import { signupApi } from '~/api'
 import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 
-import { signupValidationSchema } from '~/utils'
-import type { IAuthGender } from '~/interfaces'
+import { graphqlExceptionsHandler, signupValidationSchema } from '~/utils'
+import { getGenders } from '~/graphql'
+
+import type { IAuthGender, IRouteLoaderError } from '~/interfaces'
 
 export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
@@ -29,53 +31,21 @@ export const useSignupUserAction = routeAction$( async ( data, event ) => {
   }
 }, zod$({ ...signupValidationSchema }) )
 
-interface IError {
-  failed: boolean
-  errors: string
-}
-export const useGetGenders = routeLoader$<IAuthGender[] | IError>( async ({ fail }) => {
+export const useGetGenders = routeLoader$<IAuthGender[] | IRouteLoaderError>( async ({ fail }) => {
   try {
-    const response = await fetch( 'http://localhost:3001/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        // 'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify( {
-        query: `
-          query {
-            genders {
-              id
-              name
-            }
-          }
-        `
-      } )
-    } )
-    const json = await response.json()
-    if ( json.errors ) {
-      // console.log({ errors: json.errors })
-      return fail( 400, {
-        errors: ( json.errors as any[] ).map( error => error.message ).join( ', ' )
-      } )
-    }
-    console.log({ xd: json.data.genders })
-    if ( json.data ) return json.data.genders
+    const { genders } = await getGenders()
+    return genders
   } catch ( error : any ) {
-    return fail( 400, {
-      errors: error.message as string
-    } )
+    const errors = graphqlExceptionsHandler( error )
+    return fail( 400, { errors } )
   }
 } )
-
 
 export default component$( () => {
 
   const genders = useGetGenders()
-  console.log( genders.value )
-  
   const action = useSignupUserAction()
+
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
   useTask$( ({ track }) => {
@@ -88,11 +58,7 @@ export default component$( () => {
     if ( !modalStatus.value && action.value ) action.value.error = null
   } )
 
-  if ( ( genders.value as IError ).failed ) {
-    return ( 
-      <UnexpectedErrorPage />
-    )
-  }
+  if ( ( genders.value as IRouteLoaderError ).failed ) return ( <UnexpectedErrorPage /> )
 
   return (
     <div>
