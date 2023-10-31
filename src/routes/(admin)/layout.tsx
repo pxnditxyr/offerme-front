@@ -20,7 +20,7 @@ const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
   } catch ( error : any ) {
     const errors : string = graphqlExceptionsHandler( error )
     if ( errors.includes( 'Unauthorized' ) ) {
-      cookie.delete( 'jwt' )
+      cookie.delete( 'jwt', { path: '/' } )
       throw redirect( 302, '/signin' )
     }
     return { errors }

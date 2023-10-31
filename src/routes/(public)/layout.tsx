@@ -14,25 +14,26 @@ export const onGet : RequestHandler = async ({ cacheControl }) => {
   })
 }
 
-export const useCheckAuth = routeLoader$( async ( { cookie, redirect } ) => {
+export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
   const jwt = cookie.get( 'jwt' )
-  let authResponse : any
   if ( jwt ) {
+    let authResponse : any
     try {
       authResponse = await revalidateToken( jwt.value )
     } catch ( error : any ) {
       const errors = graphqlExceptionsHandler( error )
-      if ( errors.includes( 'Unauthorized' ) ) cookie.delete( 'jwt' )
+      if ( errors.includes( 'Unauthorized' ) ) cookie.delete( 'jwt', { path: '/' } )
     }
     if ( authResponse ) {
       const roleName = authResponse.revalidateToken.user.role.name
-      if ( userAuthorizationSchema[ roleName as string ] && userAuthorizationSchema[ roleName as string ].entrypoint !== '/' )
+      if ( userAuthorizationSchema[ roleName ] && userAuthorizationSchema[ roleName ].entrypoint !== '/' )
         throw redirect( 302, userAuthorizationSchema[ roleName as string ].entrypoint )
     }
   }
 } )
 
 export default component$( () => {
+  // TODO: Not sign in button when user is logged in
   return (
     <main class={ styles.container }>
       <PublicNavbar />
