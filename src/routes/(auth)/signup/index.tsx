@@ -8,25 +8,29 @@ import { graphqlExceptionsHandler, signupValidationSchema } from '~/utils'
 import { getGenders } from '~/graphql'
 
 import type { IAuthGender, IRouteLoaderError } from '~/interfaces'
+import { userAuthorizationSchema } from '~/auth'
 
 export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
+  let response : any
   try {
-    const json = await signupApi( data )
-    if ( json.token ) {
-      cookie.set( 'jwt', json.token, { secure: true, path: '/' } )
-      redirect( 302, '/' )
-      return { success: true }
-    }
-    return {
-      success: false,
-      error: 'Unimplemented',
-    }
+    response = await signupApi( data )
   } catch ( error : any ) {
-    console.log({ error })
+    console.log( error )
     return {
       success: false,
       error: ( error.message as string ).includes( 'fetch' ) ? 'Could not connect to server' : error.message,
+    }
+  }
+  if ( response.token ) {
+    cookie.set( 'jwt', response.token, { secure: true, path: '/' } )
+    throw redirect( 302, userAuthorizationSchema[ response.user.role.name ].entrypoint )
+  }
+
+  if ( response.error ) {
+    return {
+      success: false,
+      error: response.message,
     }
   }
 }, zod$({ ...signupValidationSchema }) )

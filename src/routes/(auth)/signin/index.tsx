@@ -1,6 +1,7 @@
 import { component$, useTask$ } from '@builder.io/qwik'
 import { Form, type DocumentHead, routeAction$, zod$, Link } from '@builder.io/qwik-city'
 import { signinApi } from '~/api'
+import { userAuthorizationSchema } from '~/auth'
 import { FormField, Modal } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 
@@ -8,26 +9,29 @@ import { signinValidationSchema } from '~/utils'
 
 export const useSignInUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
+  let response : any
   try {
-    const json = await signinApi( data )
-    if ( json.token ) {
-      cookie.set( 'jwt', json.token, { secure: true, path: '/' } )
-      redirect( 302, '/' )
-      return { success: true }
-    }
-    return {
-      success: false,
-      error: json.message,
-    }
+    response = await signinApi( data )
   } catch ( error : any ) {
-    console.error({ error })
+    console.error( error )
     return {
       success: false,
       error: ( ( error.message as string ).includes( 'fetch' ) ) ? 'Could not connect to server' : error.message,
     }
   }
-}, zod$({ ...signinValidationSchema }) )
 
+  if ( response.token ) {
+    cookie.set( 'jwt', response.token, { secure: true, path: '/' } )
+    throw redirect( 302, userAuthorizationSchema[ response.user.role.name ].entrypoint )
+  }
+
+  if ( response.error ) {
+    return {
+      success: false,
+      error: response.message,
+    }
+  }
+}, zod$({ ...signinValidationSchema }) )
 
 export default component$( () => {
 

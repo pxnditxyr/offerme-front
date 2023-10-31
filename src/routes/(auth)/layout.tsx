@@ -11,6 +11,8 @@ export const onGet : RequestHandler = async ({ cacheControl }) => {
   })
 }
 
+// TODO: token validation
+
 export default component$( () => {
   return (
     <>
