@@ -1,7 +1,10 @@
-import { Slot, component$ } from '@builder.io/qwik'
+import { Slot, component$, useContextProvider } from '@builder.io/qwik'
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
 import { UnexpectedErrorPage } from '~/components/shared'
+import { AdminSidebar } from '~/components/shared/sidebars/admin-sidebar'
+import { UserContext } from '~/context'
 import { revalidateToken } from '~/graphql'
+import { IUser } from '~/interfaces'
 import { graphqlExceptionsHandler } from '~/utils'
 
 export const onGet : RequestHandler = async ({ cacheControl }) => {
@@ -31,12 +34,17 @@ const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
 } )
 
 export default component$( () => {
+
   const checkAuth = useCheckAuth()
 
   if ( checkAuth && checkAuth.value.errors ) return <UnexpectedErrorPage />
+
+  const user : IUser = structuredClone( checkAuth.value ) as IUser
+  useContextProvider( UserContext, user )
   
   return (
     <>
+      <AdminSidebar />
       <main>
         <Slot />
       </main>

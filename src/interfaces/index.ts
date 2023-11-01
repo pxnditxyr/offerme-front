@@ -6,3 +6,4 @@ export * from './graphql/graphql-request.interface'
 
 export * from './graphql/auth'
 export * from './route-loader-error.interface'
+export * from './modules'

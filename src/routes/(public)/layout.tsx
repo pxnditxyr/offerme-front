@@ -1,6 +1,6 @@
 import { Slot, component$ } from '@builder.io/qwik'
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
-import { PublicNavbar } from '~/components/shared/navbars/public-navbar'
+import { PublicNavbar } from '~/components/shared'
 
 import styles from './public-layout.module.css'
 import { revalidateToken } from '~/graphql'

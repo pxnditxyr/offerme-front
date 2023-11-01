@@ -16,5 +16,6 @@ export interface IUser {
   id: string
   email: string
   peopleInfo: IPeopleInfo
+  mainAvatar?: string | null
   role: IRole
 }
