@@ -1,11 +1,13 @@
-import { Slot, component$, useContextProvider } from '@builder.io/qwik'
+import { Slot, component$, useContextProvider, useStyles$ } from '@builder.io/qwik'
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
-import { UnexpectedErrorPage } from '~/components/shared'
+import { Sidebar, UnexpectedErrorPage } from '~/components/shared'
 import { AdminSidebar } from '~/components/shared/sidebars/admin-sidebar'
 import { UserContext } from '~/context'
 import { revalidateToken } from '~/graphql'
 import { IUser } from '~/interfaces'
 import { graphqlExceptionsHandler } from '~/utils'
+
+import styles from './admin-layout.styles.css?inline'
 
 export const onGet : RequestHandler = async ({ cacheControl }) => {
   cacheControl({
@@ -34,6 +36,7 @@ const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
 } )
 
 export default component$( () => {
+  useStyles$( styles )
 
   const checkAuth = useCheckAuth()
 
@@ -44,9 +47,11 @@ export default component$( () => {
   
   return (
     <>
-      <AdminSidebar />
-      <main>
-        <Slot />
+      <main class="content">
+        <Sidebar />
+        <div id="content__wrapper">
+          <Slot />
+        </div>
       </main>
     </>
   )

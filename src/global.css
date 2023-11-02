@@ -32,6 +32,7 @@ html {
 
 body {
   color: var( --color-white );
+  min-height: 100vh;
 }
 
 @media ( prefers-color-scheme: light ) {

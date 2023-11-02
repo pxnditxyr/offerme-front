@@ -1,0 +1,37 @@
+#sidebar {
+  height: 100%;
+  overflow: auto;
+  float: left;
+  transition: width .35s;
+}
+
+#sidebar {
+  background: white;
+  width: 30%;
+  box-shadow: 2px 0 4px rgba( 0,0,0,0.5 );
+}
+
+#sidebar.collapsed {
+  width: 0;
+}
+
+#btn__toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  background: black;
+  margin: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+
+.sidebar__menu__title {
+  color: #333;
+}
