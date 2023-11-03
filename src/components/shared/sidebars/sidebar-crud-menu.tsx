@@ -3,11 +3,12 @@ import { Link } from '@builder.io/qwik-city'
 
 interface ISidebarCrudMenu {
   link: string
+  isExpanded: boolean
 }
 
-export const SidebarCrudMenu = component$( ( { link } : ISidebarCrudMenu ) => {
+export const SidebarCrudMenu = component$( ( { link, isExpanded } : ISidebarCrudMenu ) => {
   return (
-    <ul class="sidebar__crud__menu">
+    <ul class={ `sidebar__crud__menu ${ isExpanded ? 'expanded' : '' }` }>
       <li class="sidebar__crud__menu__item">
         <Link href={ `${ link }/list` }> List </Link>
       </li>

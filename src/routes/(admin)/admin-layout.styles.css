@@ -12,9 +12,14 @@
   transition: width .35s;
 }
 
-#sidebar.collapsed + #content__wrapper {
+.sidebar__container.collapsed + #content__wrapper {
   width: 100%;
 }
 
-
+@media ( max-width: 700px ) {
+  .content {
+    display: flex;
+    flex-direction: column;
+  }
+}
 

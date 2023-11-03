@@ -1,7 +1,6 @@
 import { Slot, component$, useContextProvider, useStyles$ } from '@builder.io/qwik'
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
 import { Sidebar, UnexpectedErrorPage } from '~/components/shared'
-import { AdminSidebar } from '~/components/shared/sidebars/admin-sidebar'
 import { UserContext } from '~/context'
 import { revalidateToken } from '~/graphql'
 import { IUser } from '~/interfaces'
