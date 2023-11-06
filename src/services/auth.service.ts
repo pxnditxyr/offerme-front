@@ -1,6 +1,5 @@
-import { graphqlClient } from '~/graphql/graphql-client'
+import { graphqlClient, getGendersQuery, revalidateTokenQuery } from '~/graphql'
 import { getBearerAuthHeader } from '~/utils'
-import { getGendersQuery, revalidateTokenQuery } from '~/graphql'
 
 import { IAuthGender, IAuthResponse } from '~/interfaces'
 
