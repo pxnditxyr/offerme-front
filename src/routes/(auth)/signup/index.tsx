@@ -1,22 +1,20 @@
 import { component$, useTask$ } from '@builder.io/qwik'
 import { DocumentHead, Form, Link, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
-import { signupApi } from '~/api'
 import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 
 import { graphqlExceptionsHandler, signupValidationSchema } from '~/utils'
-import { getGenders } from '~/graphql'
 
 import type { IAuthGender, IRouteLoaderError } from '~/interfaces'
-import { userAuthorizationSchema } from '~/auth'
+import { userAuthorizationSchema } from '~/schemas'
+import { AuthService } from '~/services'
 
 export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
   let response : any
   try {
-    response = await signupApi( data )
+    response = await AuthService.signup( data )
   } catch ( error : any ) {
-    console.log( error )
     return {
       success: false,
       error: ( error.message as string ).includes( 'fetch' ) ? 'Could not connect to server' : error.message,
@@ -37,7 +35,7 @@ export const useSignupUserAction = routeAction$( async ( data, event ) => {
 
 export const useGetGenders = routeLoader$<IAuthGender[] | IRouteLoaderError>( async ({ fail }) => {
   try {
-    const { genders } = await getGenders()
+    const genders = await AuthService.getGenders()
     return genders
   } catch ( error : any ) {
     const errors = graphqlExceptionsHandler( error )

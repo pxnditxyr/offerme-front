@@ -1,59 +1,61 @@
+const linkPrefix = '/management/modules'
+
 export const adminMenuData = [
     {
       label: 'Categories',
       name: 'categories',
       isExpanded: false,
       crud: true,
-      link: '/management/categories',
+      link: `${ linkPrefix }/categories`,
     },
     {
       label: 'Companies',
       name: 'companies',
       isExpanded: false,
       crud: true,
-      link: '/management/companies',
+      link: `${ linkPrefix }/companies`,
     },
     {
-      label: 'Products',
+      label: '/Products',
       name: 'products',
       isExpanded: false,
       crud: true,
-      link: '/management/products',
+      link: `${ linkPrefix }/products`,
     },
     {
       label: 'Parameters',
       name: 'parameters',
       isExpanded: false,
       crud: true,
-      link: '/management/parameters',
+      link: `${ linkPrefix }/parameters`,
     },
     {
       label: 'Users',
       name: 'users',
       isExpanded: false,
       crud: true,
-      link: '/management/users',
+      link: `${ linkPrefix }/users`,
     },
     {
       label: 'Promotions',
       name: 'promotions',
       isExpanded: false,
       crud: false,
-      link: '/management/promotions',
+      link: `${ linkPrefix }/promotions`,
       submenu: [
         {
           label: 'Promotions',
           name: 'promotions-sub',
           isExpanded: false,
           crud: true,
-          link: '/management/promotions',
+          link: `${ linkPrefix }/promotions/promotions`,
         },
         {
           label: 'Code Promotions',
           name: 'code-promotions',
           isExpanded: false,
           crud: true,
-          link: '/management/promotions/code-promotions',
+          link: `${ linkPrefix }/promotions/code-promotions`,
         },
       ],
     },
@@ -62,6 +64,6 @@ export const adminMenuData = [
       name: 'reviews',
       isExpanded: false,
       crud: true,
-      link: '/management/reviews',
+      link: `${ linkPrefix }/reviews`,
     },
   ]

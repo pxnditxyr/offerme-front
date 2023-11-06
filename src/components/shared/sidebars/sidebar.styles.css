@@ -133,6 +133,15 @@
   text-decoration: underline;
 }
 
+#btn__signout {
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
 @media ( max-width: 700px ) {
   #sidebar {
     min-height: auto;
@@ -171,4 +180,3 @@
     right: 1rem;
   }
 }
-

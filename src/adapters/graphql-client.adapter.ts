@@ -1,5 +1,5 @@
 import { request, gql } from 'graphql-request'
-import { GraphQLClientAdapter } from './graphql-client.abstract'
+import type { GraphQLClientAdapter } from './graphql-client.abstract'
 
 import { IGraphQLRequest } from '~/interfaces'
 

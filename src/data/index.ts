@@ -1,1 +1,1 @@
-export { modulesData } from './modules-submodules'
+export { adminMenuData } from './modules-submodules'

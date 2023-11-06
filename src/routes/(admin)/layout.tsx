@@ -2,11 +2,14 @@ import { Slot, component$, useContextProvider, useStyles$ } from '@builder.io/qw
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
 import { Sidebar, UnexpectedErrorPage } from '~/components/shared'
 import { UserContext } from '~/context'
-import { revalidateToken } from '~/graphql'
 import { IUser } from '~/interfaces'
 import { graphqlExceptionsHandler } from '~/utils'
 
+import { AuthProvider } from '~/context'
+import { userAuthorizationSchema } from '~/schemas'
+
 import styles from './admin-layout.styles.css?inline'
+import { AuthService } from '~/services'
 
 export const onGet : RequestHandler = async ({ cacheControl }) => {
   cacheControl({
@@ -20,7 +23,7 @@ const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
   if ( !jwt ) throw redirect( 302, '/signin' )
   let authResponse : any
   try {
-    authResponse = await revalidateToken( jwt.value )
+    authResponse = await AuthService.revalidateToken( jwt.value )
   } catch ( error : any ) {
     const errors : string = graphqlExceptionsHandler( error )
     if ( errors.includes( 'Unauthorized' ) ) {
@@ -29,7 +32,10 @@ const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
     }
     return { errors }
   }
-  if ( authResponse.revalidateToken.user.role.name !== 'ADMIN' ) throw redirect( 302, '/' )
+  if ( authResponse.revalidateToken.user.role.name !== 'ADMIN' ) {
+    const userRole = authResponse.revalidateToken.user.role.name
+    throw redirect( 302, userAuthorizationSchema[ userRole ].entrypoint )
+  }
   cookie.set( 'jwt', authResponse.revalidateToken.token, { secure: true, path: '/' } )
   return authResponse.revalidateToken.user
 } )
@@ -45,13 +51,13 @@ export default component$( () => {
   useContextProvider( UserContext, user )
   
   return (
-    <>
+    <AuthProvider>
       <main class="content">
         <Sidebar />
         <div id="content__wrapper">
           <Slot />
         </div>
       </main>
-    </>
+    </AuthProvider>
   )
 } )

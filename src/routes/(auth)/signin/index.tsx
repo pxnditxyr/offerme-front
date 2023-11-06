@@ -1,17 +1,17 @@
 import { component$, useTask$ } from '@builder.io/qwik'
 import { Form, type DocumentHead, routeAction$, zod$, Link } from '@builder.io/qwik-city'
-import { signinApi } from '~/api'
-import { userAuthorizationSchema } from '~/auth'
+import { userAuthorizationSchema } from '~/schemas'
 import { FormField, Modal } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 
 import { signinValidationSchema } from '~/utils'
+import { AuthService } from '~/services'
 
 export const useSignInUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
   let response : any
   try {
-    response = await signinApi( data )
+    response = await AuthService.signin( data )
   } catch ( error : any ) {
     console.error( error )
     return {

@@ -1,11 +1,12 @@
 import { component$, useStyles$ } from '@builder.io/qwik'
-import { SidebarSubMenu } from './sidebar-menu'
-import { useSidebar } from '~/hooks/sidebar/use-sidebar'
-import { adminMenuData } from '~/data/modules-submodules'
-
-import styles from './sidebar.styles.css?inline'
-import { AdminSidebarUserCard } from '../cards/admin-sidebar-user-card'
 import { Link } from '@builder.io/qwik-city'
+
+import { SidebarSubMenu } from './sidebar-menu'
+import { AdminSidebarUserCard } from '../cards/admin-sidebar-user-card'
+import { useSidebar } from '~/hooks'
+
+import { adminMenuData } from '~/data'
+import styles from './sidebar.styles.css?inline'
 
 export const Sidebar = component$( () => {
   useStyles$( styles )
@@ -48,7 +49,11 @@ export const Sidebar = component$( () => {
               : ( <img src="/icons/menu.icon.svg" alt="menu" /> )
           }
         </button>
+        
       </div>
+      <button id="btn__signout">
+        Sign Out
+      </button>
     </>
   )
 } )

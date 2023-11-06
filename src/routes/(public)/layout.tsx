@@ -1,11 +1,13 @@
 import { Slot, component$ } from '@builder.io/qwik'
 import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
 import { PublicNavbar } from '~/components/shared'
+import { AuthService } from '~/services'
+
+import { userAuthorizationSchema } from '~/schemas'
+import { graphqlExceptionsHandler } from '~/utils'
 
 import styles from './public-layout.module.css'
-import { revalidateToken } from '~/graphql'
-import { graphqlExceptionsHandler } from '~/utils'
-import { userAuthorizationSchema } from '~/auth'
+import { AuthProvider } from '~/context'
 
 export const onGet : RequestHandler = async ({ cacheControl }) => {
   cacheControl({
@@ -19,15 +21,16 @@ export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
   if ( jwt ) {
     let authResponse : any
     try {
-      authResponse = await revalidateToken( jwt.value )
+      authResponse = await AuthService.revalidateToken( jwt.value )
     } catch ( error : any ) {
       const errors = graphqlExceptionsHandler( error )
       if ( errors.includes( 'Unauthorized' ) ) cookie.delete( 'jwt', { path: '/' } )
     }
     if ( authResponse ) {
       const roleName = authResponse.revalidateToken.user.role.name
-      if ( userAuthorizationSchema[ roleName ] && userAuthorizationSchema[ roleName ].entrypoint !== '/' )
-        throw redirect( 302, userAuthorizationSchema[ roleName as string ].entrypoint )
+      if ( userAuthorizationSchema[ roleName ] && userAuthorizationSchema[ roleName ].entrypoint !== '/' ) {
+        throw redirect( 302, userAuthorizationSchema[ roleName ].entrypoint )
+      }
     }
   }
 } )
@@ -35,9 +38,11 @@ export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
 export default component$( () => {
   // TODO: Not sign in button when user is logged in
   return (
-    <main class={ styles.container }>
-      <PublicNavbar />
-      <Slot />
-    </main>
+    <AuthProvider>
+      <main class={ styles.container }>
+        <PublicNavbar />
+        <Slot />
+      </main>
+    </AuthProvider>
   )
 } )
