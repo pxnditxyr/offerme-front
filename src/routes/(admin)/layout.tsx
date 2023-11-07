@@ -1,5 +1,5 @@
 import { Slot, component$, useContextProvider, useStyles$ } from '@builder.io/qwik'
-import { RequestHandler, routeLoader$ } from '@builder.io/qwik-city'
+import { routeLoader$ } from '@builder.io/qwik-city'
 import { Sidebar, UnexpectedErrorPage } from '~/components/shared'
 import { UserContext } from '~/context'
 import { IUser } from '~/interfaces'
@@ -10,13 +10,6 @@ import { userAuthorizationSchema } from '~/schemas'
 
 import styles from './admin-layout.styles.css?inline'
 import { AuthService } from '~/services'
-
-export const onGet : RequestHandler = async ({ cacheControl }) => {
-  cacheControl({
-    staleWhileRevalidate: 60 * 60 * 24 * 7,
-    maxAge: 5,
-  })
-}
 
 const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
   const jwt = cookie.get( 'jwt' )

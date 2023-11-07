@@ -51,9 +51,6 @@ export const Sidebar = component$( () => {
         </button>
         
       </div>
-      <button id="btn__signout">
-        Sign Out
-      </button>
     </>
   )
 } )

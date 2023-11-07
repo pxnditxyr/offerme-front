@@ -11,3 +11,4 @@ export * from './admin-menu.interface'
 
 // Types
 export * from './types/valid-modules.type'
+export * from './admin/admin-users-data.interfaces'

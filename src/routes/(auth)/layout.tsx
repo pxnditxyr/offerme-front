@@ -16,7 +16,7 @@ export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
       authResponse = await AuthService.revalidateToken( jwt.value )
     } catch ( error : any ) {
       const errors = graphqlExceptionsHandler( error )
-      if ( errors.includes( 'Unauthorized' ) ) cookie.delete( 'jwt', { path: '/' } )
+      if ( errors.includes( 'Unauthorized' ) || errors.includes( 'not found' ) ) cookie.delete( 'jwt', { path: '/' } )
     }
     if ( authResponse ) {
       const roleName = authResponse.revalidateToken.user.role.name
