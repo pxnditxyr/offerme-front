@@ -1,13 +1,25 @@
-import { component$, useContext, useStyles$ } from '@builder.io/qwik'
-import { UserContext } from '~/context'
+import { component$, useStyles$ } from '@builder.io/qwik'
 
 import styles from './admin-sidebar-user-card.css?inline'
+import { useAuthStore } from '~/hooks'
 
 export const AdminSidebarUserCard = component$( () => {
 
   useStyles$( styles )
 
-  const { email, peopleInfo, mainAvatar } = useContext( UserContext )
+  const { user, status } = useAuthStore()
+  if ( status.value === 'loading' ) return (
+    <article class="sidebar__mini-card">
+      Loading...
+    </article>
+  )
+
+  if ( !user.value ) return (
+    <article class="sidebar__mini-card">
+      User not found
+    </article>
+  )
+  const { email, peopleInfo } = user.value
   const { name, maternalSurname, paternalSurname } = peopleInfo
 
   return (
@@ -15,7 +27,7 @@ export const AdminSidebarUserCard = component$( () => {
       <section class="sidebar__mini-card__avatar">
         <img
           class="sidebar__mini-card__avatar__image"
-          src={ mainAvatar || "/icons/user-avatar.svg" }
+          src={ "/icons/user-avatar.svg" }
           alt="user avatar"
         />
       </section>

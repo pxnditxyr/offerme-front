@@ -1,25 +1,11 @@
 import { graphqlClient, getGendersQuery, revalidateTokenQuery } from '~/graphql'
 import { getBearerAuthHeader } from '~/utils'
 
-import { IAuthGender, IAuthResponse } from '~/interfaces'
-
-interface ISigninData {
-  email: string
-  password: string
-}
-
-interface ISignupData {
-  name: string
-  paternalSurname: string
-  maternalSurname: string
-  birthdate: string
-  email: string
-  password: string
-  genderId: string
-}
+import { IAuthGender, IAuthResponse, IErrorResponse, ISignupData } from '~/interfaces'
+import { ISigninData } from '~/interfaces'
 
 export class AuthService {
-  static signin = async ( data : ISigninData ) : Promise<IAuthResponse> => {
+  static signin = async ( data : ISigninData ) : Promise<IAuthResponse | IErrorResponse> => {
     const url = import.meta.env.PUBLIC_AUTH_API_URL
     const response = await fetch( `${ url }/signin`, {
       method: 'POST',
@@ -29,7 +15,7 @@ export class AuthService {
     return response.json()
   }
 
-  static signup = async ( data : ISignupData ) : Promise<IAuthResponse> => {
+  static signup = async ( data : ISignupData ) : Promise<IAuthResponse | IErrorResponse> => {
     const url = import.meta.env.PUBLIC_AUTH_API_URL
     const response = await fetch( `${ url }/signup`, {
       method: 'POST',
@@ -39,8 +25,9 @@ export class AuthService {
     return response.json()
   }
 
-  static revalidateToken = async ( jwt : string ) : Promise<IAuthResponse> => {
-    return graphqlClient.query( { document: revalidateTokenQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
+  static revalidateToken = async ( jwt : string ) : Promise<{ revalidateToken: IAuthResponse }> => {
+    const response = await graphqlClient.query( { document: revalidateTokenQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response
   }
 
   static getGenders = async () : Promise<IAuthGender[]> => {

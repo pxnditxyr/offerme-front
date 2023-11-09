@@ -10,14 +10,11 @@ export const useCreateUser = routeLoader$<any | IRouteLoaderError>( async ( { co
   if ( !isUUID( id ) ) redirect( 301, '/management/modules/users' )
   try {
     const token = cookie.get( 'jwt' )
-    console.log( token?.value )
     if ( !token ) return fail( 401, { errors: [ 'Unauthorized' ] } )
     const user = await UsersService.getUserById( token.value, id )
-    console.log( user )
     return user
   } catch ( error : any ) {
     const errors = graphqlExceptionsHandler( error )
-    console.log(errors)
     return fail( 400, { errors } )
   }
 } )
