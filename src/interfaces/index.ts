@@ -9,7 +9,6 @@ export * from './modules'
 export * from './admin-menu.interface'
 
 // Role: ADMIN
-export * from './admin/admin-users-data.interfaces'
 
 // auth
 export * from './auth/auth.interface'
@@ -17,5 +16,7 @@ export * from './auth/auth-context.interface'
 
 // Types
 export * from './types/valid-modules.type'
-export * from './admin/admin-users-data.interfaces'
+
+export * from './admin/management-users-data.interfaces'
+export * from './admin/management-users-mutations.interface'
 

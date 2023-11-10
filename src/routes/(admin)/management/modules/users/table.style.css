@@ -48,19 +48,7 @@
   color: #1fa750;
 }
 
-.is-active__item::before {
-  content: "✔";
-  margin-right: 0.5rem;
-}
-
-.is-inactive__item {
+.is-inactivate__item {
   background-color: #f6d6cf;
   color: #a7501f;
 }
-
-.is-inactive__item::before {
-  content: "✘";
-  margin-right: 0.5rem;
-}
-
-

@@ -11,6 +11,7 @@
 
 .is-activate {
   background: #00bc9c;
+  transition: all 0.5s ease-in-out;
 }
 
 .is-activate::before {
@@ -22,11 +23,11 @@
   position: absolute;
   top: calc( 50% - 20px );
   right: calc( 0 - 20px );
-  animation: is-activate 0.2s ease-in-out;
 }
 
 .is-deactivate {
   background: #eb4f37;
+  transition: all 0.5s ease-in-out;
 }
 
 .is-deactivate::before {
@@ -37,8 +38,7 @@
   border-radius: 50%;
   position: absolute;
   top: calc( 50% - 20px );
-  left: calc( 0 - 20px );
-  animation: is-deactivate 0.2s ease-in-out;
+  left: 15px;
 }
 
 @keyframe is-activate {

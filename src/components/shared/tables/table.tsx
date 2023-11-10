@@ -23,7 +23,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
             <th>{ item }</th>
           ) ) }
           <th>Actions</th>
-          <th>Deactivate</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -34,7 +34,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                 keys.map( ( key, index ) => {
                   if ( key === 'status' )
                     return (
-                      <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactivate__item' }` }> { `${ item[ key ] ? 'Active' : 'Inactive' }` } </td>
+                      <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactivate__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
                     )
                   if ( key === 'id' ) return ( <td> { index } </td> )
                   return ( <td> { item[ key ] } </td> )

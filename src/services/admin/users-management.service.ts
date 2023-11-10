@@ -1,6 +1,5 @@
 import { createUserMutation, deactivateUserMutation, getUserByIdQuery, getUsersQuery, graphqlClient, updateUserMutation } from '~/graphql'
-import { ICreateUserManagement } from '~/hooks/context/admin/use-users-management'
-import { IManagementUsersData } from '~/interfaces'
+import { ICreateUserManagement, IManagementUsersData, IUpdateUserManagement } from '~/interfaces'
 import { getBearerAuthHeader } from '~/utils'
 
 export class UsersManagementService {
@@ -19,13 +18,18 @@ export class UsersManagementService {
     return response.createUser
   }
 
-  static updateUser = async ( jwt : string, user : ICreateUserManagement ) : Promise<IManagementUsersData> => {
-    const response = await graphqlClient.mutation( { document: updateUserMutation, variables: { user }, requestHeaders: getBearerAuthHeader( jwt ) } )
-    return response.updateUser
+  static updateUser = async ( jwt : string, user : IUpdateUserManagement ) : Promise<IManagementUsersData> => {
+    const response = await graphqlClient.mutation( { document: updateUserMutation, variables: { updateManagementUserInput: user }, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response.updateManagementUser
   }
 
   static deactivateUser = async ( jwt : string, id : string ) : Promise<IManagementUsersData> => {
-    const response = await graphqlClient.mutation( { document: deactivateUserMutation, variables: { id }, requestHeaders: getBearerAuthHeader( jwt ) } )
-    return response.deactivateUser
+    const response = await graphqlClient.mutation( { document: deactivateUserMutation, variables: { deactivateManagementUserId: id }, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response.deactivateManagementUser
+  }
+
+  static getGenders = async ( jwt : string ) : Promise<{ id: string, name: string }[]> => {
+    const response = await graphqlClient.query( { document: getUsersQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response.genders
   }
 }
