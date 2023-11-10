@@ -7,6 +7,6 @@ export { AuthProvider } from './auth/auth-provider'
 // Role: ADMIN
 // users
 export { ManagementUsersContext } from './admin/management-users.context'
-export { ManagementUsersProvider } from './admin/management-users.provider'
+export { ManagementProvider } from './admin/management.provider'
 
 

@@ -1,38 +1,38 @@
-export interface IAdminUsersData {
+export interface IManagementUsersData {
   id:              string
   email:           string
   isVerifiedEmail: boolean
   status:          boolean
   createdAt:       string
   updatedAt:       string
-  creator:         IAdminActorData | null
-  updater:         IAdminActorData | null
-  peopleInfo:      IAdminPeopleInfoData
-  role:            IAdminRoleData
+  creator:         IManagementActorData | null
+  updater:         IManagementActorData | null
+  peopleInfo:      IManagementPeopleInfoData
+  role:            IManagementRoleData
   mainAvatar:      string | null
   mainPhone:       string | null
-  mainAddress:     IAdminAddressData | null
-  avatars:         IAdminAvatarData[]
-  phones:          IAdminPhoneData[]
-  addresses:       IAdminAddressData[]
-  creditCards:     IAdminCreditCardData[]
+  mainAddress:     IManagementAddressData | null
+  avatars:         IManagementAvatarData[]
+  phones:          IManagementPhoneData[]
+  addresses:       IManagementAddressData[]
+  creditCards:     IManagementCreditCardData[]
 }
 
-export interface IAdminAvatarData {
+export interface IManagementAvatarData {
   id:     string
   isMain: boolean
   url:    string
   status: boolean
 }
 
-export interface IAdminPhoneData {
+export interface IManagementPhoneData {
   id:         string
   number:     string
-  phoneType:  IAdminSubparameterData
+  phoneType:  IManagementSubparameterData
   status:     boolean
 }
 
-export interface IAdminCreditCardData {
+export interface IManagementCreditCardData {
   id:              string
   number:          string
   cvv:             string
@@ -40,21 +40,21 @@ export interface IAdminCreditCardData {
   expYear:         string
   isMain:          boolean
   status:          boolean
-  creditCardType:  IAdminSubparameterData
+  creditCardType:  IManagementSubparameterData
 }
 
-export interface IAdminPeopleInfoData {
+export interface IManagementPeopleInfoData {
   id:              string
   name:            string
   paternalSurname: string
   maternalSurname: string
   birthdate:       string
-  gender:          IAdminSubparameterData
+  gender:          IManagementSubparameterData
   documentNumber:  string
-  documentType:    IAdminSubparameterData
+  documentType:    IManagementSubparameterData
 }
 
-export interface IAdminAddressData {
+export interface IManagementAddressData {
   id:      string
   street:  string
   city:    string
@@ -64,17 +64,23 @@ export interface IAdminAddressData {
   status:  boolean
 }
 
-export interface IAdminSubparameterData {
+export interface IManagementSubparameterData {
   id:   string
   name: string
 }
 
-export interface IAdminRoleData {
+export interface IManagementRoleData {
   id:   string
   name: string
 }
 
-export interface IAdminActorData {
+export interface IManagementActorData {
   id:              string
   email:           string
+}
+
+export interface IManagementUsersState {
+  users: IManagementUsersData[]
+  isLoading: boolean
+  error: any
 }

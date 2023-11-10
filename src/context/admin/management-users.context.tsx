@@ -1,4 +1,4 @@
 import { createContextId } from '@builder.io/qwik'
-import type { IAdminUsersData } from '~/interfaces'
+import type { IManagementUsersState } from '~/interfaces'
 
-export const ManagementUsersContext = createContextId<IAdminUsersData[]>( 'management-users-context' )
+export const ManagementUsersContext = createContextId<IManagementUsersState>( 'management-users-context' )

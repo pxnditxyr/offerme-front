@@ -1,7 +1,7 @@
-import { useContext } from '@builder.io/qwik'
+import { $, useContext } from '@builder.io/qwik'
 import { ManagementUsersContext } from '~/context'
-import { IAdminUsersData } from '~/interfaces'
 import { UsersManagementService } from '~/services'
+import { useAuthStore } from '../auth/use-auth-store'
 
 export interface ICreateUserManagement {
   birthdate : string
@@ -18,15 +18,28 @@ export interface ICreateUserManagement {
 
 export const useUsersManagementStore = () => {
   const managementUsers = useContext( ManagementUsersContext )
-  const jwt = 'huatnsoehut'
+  const { token } = useAuthStore()
 
-  const createUser = async ( data : ICreateUserManagement ) => {
-    const user = await UsersManagementService.createUser( jwt, data )
+  const setUsers = $( async ( token : string ) => {
+    const users = await UsersManagementService.getUsers( token )
+    managementUsers.users = [ ...users ]
+  } )
+
+  const createUser = $( async ( data : ICreateUserManagement ) => {
+    const user = await UsersManagementService.createUser( token.value || '', data )
     console.log( user )
-  }
+  } )
+
+  const setIsLoading = $( ( value : boolean ) => {
+    managementUsers.isLoading = value
+  } )
 
   return {
-    managementUsers,
-    createUser
+    isLoading: managementUsers.isLoading,
+    users: managementUsers.users,
+    error: managementUsers.error,
+    setUsers,
+    createUser,
+    setIsLoading
   }
 }

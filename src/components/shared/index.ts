@@ -6,3 +6,7 @@ export { Modal } from './modal/modal'
 export { UnexpectedErrorPage } from './error-pages/unexpected-error'
 
 export { Sidebar } from './sidebars/sidebar'
+
+export { LoadingPage } from './loading-pages/loading-page'
+
+export { Table } from './tables/table'

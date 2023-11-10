@@ -8,6 +8,7 @@ export * from './route-loader-error.interface'
 export * from './modules'
 export * from './admin-menu.interface'
 
+// Role: ADMIN
 export * from './admin/admin-users-data.interfaces'
 
 // auth

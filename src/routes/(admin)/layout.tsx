@@ -1,7 +1,7 @@
 import { Slot, component$, useContextProvider, useStyles$ } from '@builder.io/qwik'
 import { routeLoader$ } from '@builder.io/qwik-city'
 import { Sidebar, UnexpectedErrorPage } from '~/components/shared'
-import { UserContext } from '~/context'
+import { ManagementProvider, UserContext } from '~/context'
 import { IUser } from '~/interfaces'
 import { graphqlExceptionsHandler } from '~/utils'
 
@@ -39,18 +39,20 @@ export default component$( () => {
   const checkAuth = useCheckAuth()
 
   if ( checkAuth && checkAuth.value.errors ) return <UnexpectedErrorPage />
-
+  
   const user : IUser = structuredClone( checkAuth.value ) as IUser
   useContextProvider( UserContext, user )
   
   return (
     <AuthProvider>
-      <main class="content">
-        <Sidebar />
-        <div id="content__wrapper">
-          <Slot />
-        </div>
-      </main>
+      <ManagementProvider>
+        <main class="content">
+          <Sidebar />
+          <div id="content__wrapper">
+            <Slot />
+          </div>
+        </main>
+      </ManagementProvider>
     </AuthProvider>
   )
 } )

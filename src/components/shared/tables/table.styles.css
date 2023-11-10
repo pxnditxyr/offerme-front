@@ -1,0 +1,60 @@
+.toggle-radius {
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  transition: all 0.2s ease;
+  border-radius: 25px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.is-activate {
+  background: #00bc9c;
+}
+
+.is-activate::before {
+  background: #fff;
+  content: "";
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: calc( 50% - 20px );
+  right: calc( 0 - 20px );
+  animation: is-activate 0.2s ease-in-out;
+}
+
+.is-deactivate {
+  background: #eb4f37;
+}
+
+.is-deactivate::before {
+  background: #fff;
+  content: "";
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: calc( 50% - 20px );
+  left: calc( 0 - 20px );
+  animation: is-deactivate 0.2s ease-in-out;
+}
+
+@keyframe is-activate {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: 50%;
+  }
+}
+
+@keyframe is-deactivate {
+  0% {
+    right: 0;
+  }
+  100% {
+    right: 50%;
+  }
+}
