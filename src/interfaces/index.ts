@@ -20,3 +20,5 @@ export * from './types/valid-modules.type'
 export * from './admin/management-users-data.interfaces'
 export * from './admin/management-users-mutations.interface'
 
+
+export * from './parametrics/subparameters.interface'

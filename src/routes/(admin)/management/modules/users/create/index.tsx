@@ -1,55 +1,48 @@
 import { component$, useStyles$ } from '@builder.io/qwik'
-import { Form } from '@builder.io/qwik-city'
+import { Form, RequestEventLoader, routeLoader$ } from '@builder.io/qwik-city'
 
 import styles from './create.styles.css?inline'
+import { SubparametersService } from '~/services'
+import { graphqlExceptionsHandler } from '~/utils'
+import { IRouteLoaderError, ISubparameter } from '~/interfaces'
+import { UnexpectedErrorPage } from '~/components/shared'
+import { ManagementRolesService } from '~/services/admin/roles.service'
 
-const documentTypes = [
-  {
-    id: '1',
-    name: 'DNI',
-  },
-  {
-    id: '2',
-    name: 'Carnet de Extranjería',
-  },
-  {
-    id: '3',
-    name: 'Pasaporte',
-  }
-]
+interface ICreateUserSubparameters {
+  documentTypes: ISubparameter[],
+  genders: ISubparameter[]
+  roles: ISubparameter[]
+}
 
-const genders = [
-  {
-    id: '1',
-    name: 'Masculino',
-  },
-  {
-    id: '2',
-    name: 'Femenino',
-  },
-  {
-    id: '3',
-    name: 'Otro',
-  }
-]
+export const getSubparameters = routeLoader$<ICreateUserSubparameters | IRouteLoaderError>( async ( event : RequestEventLoader ) => {
+  const { fail, cookie } = event
 
-const roles = [
-  {
-    id: '1',
-    name: 'Administrador',
-  },
-  {
-    id: '2',
-    name: 'Usuario',
-  },
-  {
-    id: '3',
-    name: 'Invitado',
+  const jwt = cookie.get( 'jwt' )
+  if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
+
+  try {
+    const documentTypes = await SubparametersService.findAllByParameterName( 'document type' )
+    const genders = await SubparametersService.findAllByParameterName( 'gender' )
+    const roles = await ManagementRolesService.findAll( jwt.value, true )
+    return {
+      documentTypes,
+      genders,
+      roles
+    }
+  } catch ( error : any ) {
+    const errors = graphqlExceptionsHandler( error )
+    return  fail( 400, { errors } )
   }
-]
+} )
 
 export default component$( () => {
   useStyles$( styles )
+  const subparameters = getSubparameters()
+
+  if ( 'errors' in subparameters.value ) return <UnexpectedErrorPage />
+  
+  const { genders, documentTypes, roles } = subparameters.value
+
   return (
     <>
       <h1> Create New User </h1>
@@ -90,9 +83,11 @@ export default component$( () => {
             <div class="control">
               <div class="select">
                 <select>
-                  {documentTypes.map( ( { id, name } ) => (
-                    <option value={id}>{name}</option>
-                  ) )}
+                  {
+                    documentTypes.map( ( { id, name } ) => (
+                      <option value={id}>{name}</option>
+                   ) )
+                  }
                 </select>
               </div>
             </div>
