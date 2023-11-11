@@ -14,8 +14,8 @@ export class UsersManagementService {
   }
 
   static createUser = async ( jwt : string, user : ICreateUserManagement ) : Promise<IManagementUsersData> => {
-    const response = await graphqlClient.mutation( { document: createUserMutation, variables: { user }, requestHeaders: getBearerAuthHeader( jwt ) } )
-    return response.createUser
+    const response = await graphqlClient.mutation( { document: createUserMutation, variables: { createManagementUserInput: user }, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response.createManagementUser
   }
 
   static updateUser = async ( jwt : string, user : IUpdateUserManagement ) : Promise<IManagementUsersData> => {

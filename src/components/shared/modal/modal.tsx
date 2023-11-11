@@ -2,14 +2,17 @@ import { Slot, component$ } from '@builder.io/qwik'
 
 import './modal.css'
 
+type IModalType = 'success' | 'error' | 'warning' | 'info' | 'default'
+
 interface IModalProps {
   title?: string
   confirmButton?: string
   isOpen: boolean
   onClose: () => void
+  modalType: IModalType
 }
 
-export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOpen, onClose } : IModalProps ) => {
+export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOpen, onClose, modalType = 'default' } : IModalProps ) => {
 
   return (
     <div class="modal" style={ { display: isOpen ? 'flex' : 'none' } }>
