@@ -1,125 +1,305 @@
 .view__container {
+  position: relative;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  height: 100%;
+  flex-direction: column;
   width: 100%;
+  gap: 2rem;
+  margin-bottom: 1rem;
 }
 
-.view__container .card {
+.view__container__back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  border: 3px solid #009C8C;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 2rem;
+  color: #009C8C;
+  font-weight: 700;
+  font-family: "Roboto", sans-serif;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.view__container__back:hover {
+  background-color: #009C8C;
+  color: #fff;
+}
+
+.view__container__card {
+  width: 100%;
+  max-width: 50rem;
+  padding: 1.3rem;
+  border: 3px solid #009C8C;
+  border-radius: 0.5rem;
+}
+
+.view__container__card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 500px;
-  height: 100%;
-  max-height: 500px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-}
-
-.view__container .card .card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 1rem;
-  background-color: #f1f1f1;
-}
-
-.view__container .card .card__header div {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.view__container .card .card__header div h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.view__container .card .card__header div h3 span {
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.view__container .card .card__header div img {
-  width: 100px;
-  height: 100px;
+.user__detail-item img {
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
 }
 
-.view__container .card .card__body {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 1rem;
-  background-color: #f1f1f1;
+.view__container__card__info p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
 }
 
-.view__container .card .card__body div {
+.view__container__card__detail {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: flex-start;
-}
-
-.view__container .card .card__body div h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.view__container .card .card__body div h3 span {
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.view__container .card .card__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
   width: 100%;
-  padding: 1rem;
-  background-color: #f1f1f1;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.view__container .card .card__footer div {
+.view__container__card__detail p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__avatars {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__avatars p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__avatars .avatars__container {
+  display: flex;
   align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
 }
 
-.view__container .card .card__footer div button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  background-color: #f1f1f1;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
+.view__container__card__footer .user__avatars .avatars__container article {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
 }
 
-.view__container .card .card__footer div button:hover {
-  background-color: #e1e1e1;
+.view__container__card__footer .user__avatars .avatars__container article section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
 }
 
-.view__container .card .card__footer div button:active {
-  background-color: #d1d1d1;
+.view__container__card__footer .user__avatars .avatars__container article section img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
 }
 
-.view__container .card .card__footer div button:focus {
-  outline: none;
+.view__container__card__footer .user__phones {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
 }
 
-.view__container .card .card__footer div button:nth-child(1) {
-  margin-right: 1rem;
+.view__container__card__footer .user__phones p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
 }
 
-.view__container .card .card__footer div button:nth-child(2) {
-  margin-left: 1rem;
+.view__container__card__footer .user__phones .phones__container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__phones .phones__container article {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__phones .phones__container article section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__phones .phones__container article section p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__addresses {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__addresses p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__addresses .addresses__container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__addresses .addresses__container article {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__addresses .addresses__container article section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__addresses .addresses__container article section p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__credit-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__credit-cards p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article section p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article section p:nth-child(2) {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article section p:nth-child(3) {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+}
+
+.view__container__card__footer .user__credit-cards .credit-cards__container article section p:nth-child(4) {
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
 }

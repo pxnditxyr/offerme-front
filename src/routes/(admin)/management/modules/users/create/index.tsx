@@ -1,13 +1,14 @@
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
-import { Form, RequestEventLoader, routeAction$, routeLoader$, z, zod$ } from '@builder.io/qwik-city'
+import { Form, RequestEventLoader, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
 
-import styles from './create.styles.css?inline'
 import { SubparametersService, UsersManagementService } from '~/services'
-import { graphqlExceptionsHandler } from '~/utils'
+import { graphqlExceptionsHandler, managementCreateUsersValidationSchema } from '~/utils'
 import { IRouteLoaderError, ISubparameter } from '~/interfaces'
 import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { ManagementRolesService } from '~/services/admin/roles.service'
 import { useModalStatus } from '~/hooks'
+
+import styles from './create.styles.css?inline'
 
 interface ICreateUserSubparameters {
   documentTypes: ISubparameter[],
@@ -49,18 +50,7 @@ export const createUserAction = routeAction$( async ( data, { cookie, fail } ) =
       errors: graphqlExceptionsHandler( error )
     }
   }
-}, zod$({
-  name: z.string().min( 1, 'Name is required' ),
-  paternalSurname: z.string().min( 1, 'Paternal Surname is required' ),
-  maternalSurname: z.string().min( 1, 'Maternal Surname is required' ),
-  email: z.string().email( 'Invalid email' ),
-  password: z.string().min( 8, 'Password must be at least 8 characters long' ),
-  documentTypeId: z.string().min( 1, 'Document Type is required, or select "Not Specified"' ),
-  genderId: z.string().min( 1, 'Gender is required' ),
-  birthdate: z.string().min( 1, 'Birthdate is required' ),
-  roleId: z.string().min( 1, 'Role is required' ),
-  documentNumber: z.string()
-}) )
+}, zod$({ ...managementCreateUsersValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
@@ -81,7 +71,10 @@ export default component$( () => {
   const { genders, documentTypes, roles } = subparameters.value
 
   return (
-    <div>
+    <div class="create__user__container">
+      <a href="/management/modules/users" class="view__container__back">
+        ←
+      </a>
       <h1> Create New User </h1>
       <div class="form__container">
         <Form class="form" action={ action }>
@@ -115,34 +108,33 @@ export default component$( () => {
             placeholder="Password"
             error={ action.value?.fieldErrors?.password?.join( ', ' ) }
             />
-          <select name="documentTypeId">
-            <option value="null">Not Specified</option>
-            {
-              documentTypes.map( ( { id, name } ) => (
-                <option value={ id }>{ name }</option>
-              ) )
-            }
-          </select>
+          <FormField
+            name="documentTypeId"
+            type="select"
+            error={ action.value?.fieldErrors?.documentTypeId?.join( ', ' ) }
+            options={ [
+              { id: 'null', name: 'Not Specified' },
+              ...documentTypes
+            ] }
+            />
           <FormField
             name="documentNumber"
             type="text"
             placeholder="Document Number"
             error={ action.value?.fieldErrors?.documentNumber?.join( ', ' ) }
             />
-          <select name="genderId">
-            {
-              genders.map( ( { id, name } ) => (
-                <option value={ id }>{ name }</option>
-              ) ) 
-            }
-          </select>
-          <select name="roleId">
-            {
-              roles.map( ( { id, name } ) => (
-                <option value={ id }>{ name }</option>
-              ) )
-            }
-          </select>
+          <FormField
+            name="genderId"
+            type="select"
+            error={ action.value?.fieldErrors?.password?.join( ', ') }
+            options={ genders }
+            />
+          <FormField
+            name="roleId"
+            type="select"
+            error={ action.value?.fieldErrors?.roleId?.join( ', ' ) }
+            options={ roles }
+            />
           <FormField
             name="birthdate"
             type="date"

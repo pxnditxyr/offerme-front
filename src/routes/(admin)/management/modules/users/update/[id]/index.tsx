@@ -1,11 +1,13 @@
-import { component$, useTask$ } from '@builder.io/qwik'
-import { Form, routeAction$, routeLoader$, z, zod$ } from '@builder.io/qwik-city'
-import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
+import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
+import { Form, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
+import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
 import { IManagementUsersData, IRouteLoaderError, ISubparameter } from '~/interfaces'
 import { SubparametersService, UsersManagementService } from '~/services'
 import { ManagementRolesService } from '~/services/admin/roles.service'
-import { graphqlExceptionsHandler, isUUID, serializeDate } from '~/utils'
+import { graphqlExceptionsHandler, isUUID, serializeDate, managementUpdateUsersValidationSchema } from '~/utils'
+
+import styles from './update-users.styles.css?inline'
 
 interface IUpdateSubparameters {
   documentTypes: ISubparameter[]
@@ -64,19 +66,12 @@ export const updateManagementUserAction = routeAction$( async ( data, { fail, co
       errors: graphqlExceptionsHandler( error )
     }
   }
-}, zod$({
-  name: z.string().min( 1, 'Name is required' ),
-  paternalSurname: z.string().min( 1, 'Paternal Surname is required' ),
-  maternalSurname: z.string().min( 1, 'Maternal Surname is required' ),
-  email: z.string().email( 'Invalid email' ),
-  documentTypeId: z.string().min( 1, 'Document Type is required, or select "Not Specified"' ),
-  genderId: z.string().min( 1, 'Gender is required' ),
-  birthdate: z.string().min( 1, 'Birthdate is required' ),
-  roleId: z.string().min( 1, 'Role is required' ),
-  documentNumber: z.string()
-}) )
+}, zod$({ ...managementUpdateUsersValidationSchema }) )
 
 export default component$( () => {
+
+  useStyles$( styles )
+
   const currentUser = useGetManagementUser().value
   const subparameters = getSubparameters().value
   const action = updateManagementUserAction()
@@ -96,10 +91,11 @@ export default component$( () => {
   
 
   return (
-    <div>
-      <h1> Update User </h1>
+    <div class="update__id__container">
+      <BackButton href="/management/modules/users" />
+      <h1 class="modules__title"> Update User </h1>
       <div>
-      <Form action={ action }>
+      <Form action={ action } class="form">
         <FormField
             name="name"
             type="text"
@@ -128,14 +124,16 @@ export default component$( () => {
             value={ currentUser.email }
             error={ action.value?.fieldErrors?.email?.join( ', ' ) }
             />
-          <select name="documentTypeId">
-            <option value="null" selected={ currentUser.peopleInfo.documentType === null }>Not Specified</option>
-            {
-              documentTypes.map( ( { id, name } ) => (
-                <option value={ id } selected={ currentUser.peopleInfo.documentType?.id === id }>{ name }</option>
-              ) )
-            }
-          </select>
+          <FormField
+            name="documentTypeId"
+            type="select"
+            value={ currentUser.peopleInfo.documentType?.id }
+            error={ action.value?.fieldErrors?.documentTypeId?.join( ', ' ) }
+            options={ [ 
+              { id: 'null', name: 'Not Specified' },
+              ...documentTypes
+            ] }
+            />
           <FormField
             name="documentNumber"
             type="text"
@@ -143,20 +141,20 @@ export default component$( () => {
             value={ currentUser.peopleInfo.documentNumber }
             error={ action.value?.fieldErrors?.documentNumber?.join( ', ' ) }
             />
-          <select name="genderId">
-            {
-              genders.map( ( { id, name } ) => (
-                <option value={ id } selected={ currentUser.peopleInfo.gender.id === id }>{ name }</option>
-              ) ) 
-            }
-          </select>
-          <select name="roleId">
-            {
-              roles.map( ( { id, name } ) => (
-                <option value={ id } selected={ currentUser.role.id === id }>{ name }</option>
-              ) )
-            }
-          </select>
+          <FormField
+            name="genderId"
+            type="select"
+            value={ currentUser.peopleInfo.gender.id }
+            error={ action.value?.fieldErrors?.genderId?.join( ', ' ) }
+            options={ genders }
+          />
+          <FormField
+            name="roleId"
+            type="select"
+            value={ currentUser.role.id }
+            error={ action.value?.fieldErrors?.roleId?.join( ', ' ) }
+            options={ roles }
+          />
           <FormField
             name="birthdate"
             type="date"

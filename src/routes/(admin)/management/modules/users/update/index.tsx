@@ -1,11 +1,11 @@
 import { $, QwikSubmitEvent, component$, useComputed$, useStyles$, useTask$, useVisibleTask$ } from '@builder.io/qwik'
 import { routeLoader$, useLocation, useNavigate } from '@builder.io/qwik-city'
 
-import { LoadingPage, Modal, Table, UnexpectedErrorPage } from '~/components/shared'
+import { BackButton, LoadingPage, Modal, Table, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus, useUsersManagementStore } from '~/hooks'
 import { graphqlExceptionsHandler, parseDate } from '~/utils'
 
-import styles from '../table.style.css?inline'
+import styles from '../management-users.styles.css?inline'
 import { UsersManagementService } from '~/services'
 import { IManagementUsersData, IRouteLoaderError } from '~/interfaces'
 
@@ -57,7 +57,6 @@ export default component$( () => {
 
   if ( isLoading ) return ( <LoadingPage /> )
 
-  const onCreateClick  = $( () => nav( '/management/modules/users/create' ))
   const onViewClick    = $( ( id : string ) => nav( `/management/modules/users/view/${ btoa( id ) }` ) )
   const onEditClick    = $( ( id : string ) => nav( `/management/modules/users/update/${ btoa( id ) }` ) )
   const onToggleStatus = $( ( id : string ) => onToggleUserStatus( id, jwt ) )
@@ -91,16 +90,12 @@ export default component$( () => {
 
   return (
     <div class="modules__container">
+      <BackButton href="/management/modules/users" />
       <h1> Users </h1>
       <form class="search__container" onSubmit$={ onSearchSubmit }>
         <input type="text" name="search" placeholder="Search" value={ searchArgument.value } id="search" />
         <button> Search </button>
       </form>
-
-      {
-        searchArgument
-      }
-      <button class="button is-primary" onClick$={ onCreateClick } > Create </button>
       <div class="table__container">
         <Table
           header={ headers }

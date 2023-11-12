@@ -10,3 +10,5 @@ export { Sidebar } from './sidebars/sidebar'
 export { LoadingPage } from './loading-pages/loading-page'
 
 export { Table } from './tables/table'
+
+export { BackButton } from './buttons/back-button'

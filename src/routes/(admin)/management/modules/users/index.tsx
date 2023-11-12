@@ -5,9 +5,10 @@ import { LoadingPage, Modal, Table, UnexpectedErrorPage } from '~/components/sha
 import { useModalStatus, useUsersManagementStore } from '~/hooks'
 import { graphqlExceptionsHandler, parseDate } from '~/utils'
 
-import styles from './table.style.css?inline'
 import { UsersManagementService } from '~/services'
 import { IManagementUsersData, IRouteLoaderError } from '~/interfaces'
+
+import styles from './management-users.styles.css?inline'
 
 interface IGetManagementUsers {
   managementUsers: IManagementUsersData[]
@@ -91,16 +92,12 @@ export default component$( () => {
 
   return (
     <div class="modules__container">
-      <h1> Users </h1>
+      <h1 class="modules__title"> Users </h1>
       <form class="search__container" onSubmit$={ onSearchSubmit }>
         <input type="text" name="search" placeholder="Search" value={ searchArgument.value } id="search" />
         <button> Search </button>
       </form>
-
-      {
-        searchArgument
-      }
-      <button class="button is-primary" onClick$={ onCreateClick } > Create </button>
+      <button class="create__button" onClick$={ onCreateClick } > Create </button>
       <div class="table__container">
         <Table
           header={ headers }

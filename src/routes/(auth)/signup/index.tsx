@@ -12,6 +12,12 @@ import { AuthService } from '~/services'
 export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
   let response : any
+  if ( data.confirmPassword !== data.password ) {
+    return {
+      success: false,
+      error: 'Passwords do not match',
+    }
+  }
   try {
     response = await AuthService.signup( data )
   } catch ( error : any ) {
@@ -45,10 +51,12 @@ export const useGetGenders = routeLoader$<IAuthGender[] | IRouteLoaderError>( as
 
 export default component$( () => {
 
-  const genders = useGetGenders()
+  const genders = useGetGenders().value
   const action = useSignupUserAction()
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
+
+  if ( 'errors' in genders ) return ( <UnexpectedErrorPage /> )
 
   useTask$( ({ track }) => {
     track( () => action.isRunning )
@@ -60,13 +68,12 @@ export default component$( () => {
     if ( !modalStatus.value && action.value ) action.value.error = null
   } )
 
-  if ( ( genders.value as IRouteLoaderError ).failed ) return ( <UnexpectedErrorPage /> )
 
   return (
     <div>
       <h1> Sign Up </h1>
       <div>
-        <Form action={ action } >
+        <Form action={ action } class="form">
           <FormField
             name="name"
             type="text"
@@ -109,14 +116,11 @@ export default component$( () => {
             placeholder="Password"
             error={ action.value?.fieldErrors?.confirmPassword?.join( ', ' ) }
           />
-          <select name="genderId" id="genderId">
-            {
-              ( genders.value as IAuthGender[] ).map( ({ id, name }) => ( 
-                <option key={ id } value={ id }>{ name }</option>
-              ) )
-            }
-          </select>
-  
+          <FormField
+            name="genderId"
+            type="select"
+            options={ genders }
+            />
           <button> Sign Up </button>
         </Form>
       </div>

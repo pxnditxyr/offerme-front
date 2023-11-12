@@ -57,11 +57,11 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                   <>
                   <td>
                     <button
-                      class="button is-primary"
+                      class="button view__button"
                       onClick$={ () => onViewClick( item.id ) }
                     >View</button>
                     <button
-                      class="button is-primary"
+                      class="button edit__button"
                       onClick$={ () => onEditClick( item.id ) }
                     >Edit</button>
                   </td>

@@ -4,6 +4,9 @@
   --color-black: #222;
   --color-gray: #ccc;
   --color-orange: #d34500;
+  --background-gradient: linear-gradient(178deg, #ffff33 10%, #3333ff);
+  --gray: #34495e;
+  --darkgray: #2c3e50;
 }
 
 @font-face {
@@ -33,6 +36,31 @@ html {
 body {
   color: var( --color-white );
   min-height: 100vh;
+}
+
+.form {
+  width: 100%;
+  max-width: 25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #009c8c;
+  border: 3px solid transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+.form button:hover {
+  background-color: #00877a;
 }
 
 @media ( prefers-color-scheme: light ) {

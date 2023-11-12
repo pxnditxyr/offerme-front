@@ -51,7 +51,7 @@ export default component$( () => {
   return (
     <div>
       <h1> Sign In </h1>
-      <Form action={ action }>
+      <Form action={ action } class="form">
         <FormField
           name="email"
           type="text"

@@ -1,3 +1,52 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.table thead tr {
+  background-color: #009c8c;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+.table th, .table td {
+  padding: 12px 15px;
+  font-size: 1.1rem;
+}
+
+.table td {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.table tbody tr:last-of-type {
+  border-bottom: 2px solid #009c8c;
+}
+
+.table tbody tr:hover {
+  background-color: #f3f3f3;
+}
+
+.table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+  border-bottom: 2px solid #009c8c;
+}
+
+.table tbody tr:last-of-type:hover {
+  background-color: #f3f3f3;
+}
+
 .toggle-radius {
   width: 100px;
   height: 50px;
@@ -39,6 +88,45 @@
   position: absolute;
   top: calc( 50% - 20px );
   left: 15px;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0.3rem;
+}
+
+.view__button:hover {
+  background-color: #009c8c;
+  color: #fff;
+}
+
+.view__button:active {
+  background-color: #009c8c;
+  color: #fff;
+}
+
+.view__button:focus {
+  outline: none;
+}
+
+.edit__button:hover {
+  background-color: #009c8c;
+  color: #fff;
+}
+
+.edit__button:active {
+  background-color: #009c8c;
+  color: #fff;
+}
+
+.edit__button:focus {
+  outline: none;
 }
 
 @keyframe is-activate {

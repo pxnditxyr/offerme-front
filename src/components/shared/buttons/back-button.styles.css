@@ -1,0 +1,34 @@
+.back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 3px solid #009C8C;
+  color: #009C8C;
+  background-color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #009C8C;
+  color: #fff;
+}
+
+.back-button svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+.back-button svg path {
+  fill: currentColor;
+}
+
+.back-button svg path:first-child {
+  fill: none;
+}
