@@ -1,4 +1,4 @@
-import { IObject } from './object.interface'
+import { IObject } from '../object.interface'
 
 export interface IGraphQLRequest {
   document: string
@@ -10,3 +10,15 @@ export interface IGraphQLErrorInfo {
   message: string
   path: string
 }
+
+export interface IGraphQLValidationError { 
+  message: string
+  path: string[]
+  extensions: {
+    code: string
+    originalError: {
+      message: string[]
+    }
+  }
+}
+    

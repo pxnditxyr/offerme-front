@@ -8,3 +8,5 @@ export { getBearerAuthHeader } from './graphql/get-bearer-auth-header'
 export { parseDate } from './tools/parse-date'
 
 export { isUUID } from './tools/check-is-uuid'
+
+export { serializeDate } from './tools/serialize-date'

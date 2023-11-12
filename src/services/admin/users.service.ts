@@ -8,7 +8,7 @@ export class UsersService {
   }
 
   static getUserById = async ( jwt : string, id : string ) : Promise<any> => {
-    const response = await graphqlClient.query( { document: getUserByIdQuery, variables: { id }, requestHeaders: getBearerAuthHeader( jwt ) } )
-    return response.user
+    const response = await graphqlClient.query( { document: getUserByIdQuery, variables: { managementUserId: id }, requestHeaders: getBearerAuthHeader( jwt ) } )
+    return response.managementUser
   }
 }

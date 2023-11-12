@@ -1,19 +1,25 @@
-import { component$, useStyles$ } from '@builder.io/qwik'
+import { $, component$, useStyles$ } from '@builder.io/qwik'
 
 import styles from './table.styles.css?inline'
 
 interface ITableProps {
-  header:         string[];
-  keys:           string[];
-  body:           Record<string, any>[];
-  onViewClick:    ( id : string ) => void;
-  onEditClick:    ( id : string ) => void;
-  onToggleStatus: ( id : string ) => void;
+  header:         string[]
+  keys:           string[]
+  body:           Record<string, any>[]
+  onViewClick:    ( id : string ) => void
+  onEditClick:    ( id : string ) => void
+  onToggleStatus: ( id : string ) => void
+  tableType?:     'default' | 'update'
 }
 
-export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus } : ITableProps ) => {
+export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus, tableType = 'default' } : ITableProps ) => {
   
   useStyles$( styles )
+
+  const onRowClick = $( ( id : string ) => {
+    if ( tableType === 'default' ) return
+    onEditClick( id )
+  } )
 
   return (
     <table class="table">
@@ -22,14 +28,20 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
           { header.map( ( item ) => (
             <th>{ item }</th>
           ) ) }
-          <th>Actions</th>
-          <th>Status</th>
+          {
+            ( tableType === 'default' ) && (
+              <>
+                <th>Actions</th>
+                <th>Status</th>
+              </>
+            )
+          }
         </tr>
       </thead>
       <tbody>
         {
           body.map( ( item ) => (
-            <tr>
+            <tr onClick$={ () => onRowClick( item.id ) }>
               {
                 keys.map( ( key, index ) => {
                   if ( key === 'status' )
@@ -40,24 +52,29 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                   return ( <td> { item[ key ] } </td> )
                 } )
               }
-              <td>
-                <button
-                  class="button is-primary"
-                  onClick$={ () => onViewClick( item.id ) }
-                >View</button>
-                <button
-                  class="button is-primary"
-                  onClick$={ () => onEditClick( item.id ) }
-                >Edit</button>
-              </td>
-              <td>
-                <button
-                  class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
-                  onClick$={ () => onToggleStatus( item.id ) }
-                >
-                  <span></span>
-                </button>
-              </td>
+              {
+                ( tableType === 'default' ) && (
+                  <>
+                  <td>
+                    <button
+                      class="button is-primary"
+                      onClick$={ () => onViewClick( item.id ) }
+                    >View</button>
+                    <button
+                      class="button is-primary"
+                      onClick$={ () => onEditClick( item.id ) }
+                    >Edit</button>
+                  </td>
+                  <td>
+                    <button
+                      class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
+                      onClick$={ () => onToggleStatus( item.id ) }
+                    >
+                      <span></span>
+                    </button>
+                  </td>
+                </> )
+              }
             </tr>
           ) )
         }

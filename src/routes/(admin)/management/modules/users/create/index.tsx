@@ -37,13 +37,12 @@ export const createUserAction = routeAction$( async ( data, { cookie, fail } ) =
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   try {
-    const user = await UsersManagementService.createUser( jwt.value, {
+    await UsersManagementService.createUser( jwt.value, {
       ...data,
       documentTypeId: data.documentTypeId === 'null' ? null : data.documentTypeId,
       documentNumber: ( data.documentNumber === '' || data.documentTypeId === 'null' ) ? null : data.documentNumber,
     } )
-    console.log( user )
-    return { success: true, user: data.email }
+    return { success: true, userEmail: data.email }
   } catch ( error : any ) {
     return {
       success: false,
@@ -82,7 +81,7 @@ export default component$( () => {
   const { genders, documentTypes, roles } = subparameters.value
 
   return (
-    <>
+    <div>
       <h1> Create New User </h1>
       <div class="form__container">
         <Form class="form" action={ action }>
@@ -148,6 +147,7 @@ export default component$( () => {
             name="birthdate"
             type="date"
             placeholder="Birthdate"
+            value={ new Date().toISOString().split( 'T' )[0] }
             error={ action.value?.fieldErrors?.birthdate?.join( ', ' ) }
             />
           <button> Create </button>
@@ -157,7 +157,7 @@ export default component$( () => {
             <Modal isOpen={ modalStatus.value } onClose={ onCloseModal } modalType={ `${ action.value?.success ? 'success' : 'error' }` } >
               {
                 ( action.value?.success === true ) && (
-                  <span> User { action.value?.user } Created Successfully </span>
+                  <span> User { action.value?.userEmail } Created Successfully </span>
                 )
               }
               {
@@ -169,6 +169,6 @@ export default component$( () => {
           )
         }
       </div>
-    </>
+    </div>
   )
 } )

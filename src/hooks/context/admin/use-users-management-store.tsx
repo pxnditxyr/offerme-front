@@ -1,21 +1,19 @@
 import { $, useContext } from '@builder.io/qwik'
 import { ManagementUsersContext } from '~/context'
+import { IManagementUsersData } from '~/interfaces'
 import { UsersManagementService } from '~/services'
-
-import { ICreateUserManagement } from '~/interfaces'
 
 export const useUsersManagementStore = () => {
   const managementUsers = useContext( ManagementUsersContext )
 
-  const setUsers = $( async ( token : string ) => {
-    const users = await UsersManagementService.getUsers( token )
+  const setUsers = $( ( users : IManagementUsersData[] ) => {
     managementUsers.users = [ ...users ]
   } )
 
-  const createUser = $( async ( data : ICreateUserManagement ) => {
-    const user = await UsersManagementService.createUser( token.value || '', data )
-    console.log( user )
-  } )
+  // const createUser = $( async ( data : ICreateUserManagement ) => {
+  //   const user = await UsersManagementService.createUser( token.value || '', data )
+  //   console.log( user )
+  // } )
 
   const setIsLoading = $( ( value : boolean ) => {
     managementUsers.isLoading = value
@@ -47,7 +45,7 @@ export const useUsersManagementStore = () => {
     users: managementUsers.users,
     error: managementUsers.error,
     setUsers,
-    createUser,
+    // createUser,
     setIsLoading,
     onToggleUserStatus,
   }

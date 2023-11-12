@@ -5,7 +5,7 @@ import { LoadingPage, Modal, Table, UnexpectedErrorPage } from '~/components/sha
 import { useModalStatus, useUsersManagementStore } from '~/hooks'
 import { graphqlExceptionsHandler, parseDate } from '~/utils'
 
-import styles from './table.style.css?inline'
+import styles from '../table.style.css?inline'
 import { UsersManagementService } from '~/services'
 import { IManagementUsersData, IRouteLoaderError } from '~/interfaces'
 
@@ -109,6 +109,7 @@ export default component$( () => {
           onViewClick={ onViewClick }
           onEditClick={ onEditClick }
           onToggleStatus={ onToggleStatus }
+          tableType="update"
         />
       </div>
       {

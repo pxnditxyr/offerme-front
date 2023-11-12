@@ -9,7 +9,7 @@ interface IModalProps {
   confirmButton?: string
   isOpen: boolean
   onClose: () => void
-  modalType: IModalType
+  modalType?: IModalType
 }
 
 export const Modal = component$( ( { title = 'Modal', confirmButton = 'Ok', isOpen, onClose, modalType = 'default' } : IModalProps ) => {

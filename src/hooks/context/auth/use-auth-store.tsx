@@ -1,5 +1,5 @@
 import { $, useComputed$, useContext } from '@builder.io/qwik'
-import type { RequestEventAction } from '@builder.io/qwik-city'
+import type { Action, Cookie, RequestEventAction, RequestEventLoader } from '@builder.io/qwik-city'
 import { AuthContext } from '~/context'
 import { ISigninData, ISignupData } from '~/interfaces'
 import { AuthService } from '~/services'
@@ -72,6 +72,13 @@ export const useAuthStore = () => {
     }
   } )
 
+  const signout = $( ( action : any  ) => {
+    authState.status = 'unauthenticated'
+    authState.user = null
+    authState.token = null
+    action()
+  } )
+
   return {
     status: useComputed$( () => authState.status ),
     user: useComputed$( () => authState.user ),
@@ -79,6 +86,7 @@ export const useAuthStore = () => {
 
     signin,
     signup,
+    signout,
     revalidateToken
   }
 

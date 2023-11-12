@@ -3,13 +3,13 @@ import { ICreateUserManagement, IManagementUsersData, IUpdateUserManagement } fr
 import { getBearerAuthHeader } from '~/utils'
 
 export class UsersManagementService {
-  static getUsers = async ( jwt : string ) : Promise<IManagementUsersData[]> => {
-    const response = await graphqlClient.query( { document: getUsersQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
+  static getUsers = async ( jwt : string, search : string = '' ) : Promise<IManagementUsersData[]> => {
+    const response = await graphqlClient.query( { document: getUsersQuery, variables: { search }, requestHeaders: getBearerAuthHeader( jwt ) } )
     return response.managementUsers
   }
 
   static getUserById = async ( jwt : string, id : string ) : Promise<IManagementUsersData> => {
-    const response = await graphqlClient.query( { document: getUserByIdQuery, variables: { id }, requestHeaders: getBearerAuthHeader( jwt ) } )
+    const response = await graphqlClient.query( { document: getUserByIdQuery, variables: { managementUserId: id }, requestHeaders: getBearerAuthHeader( jwt ) } )
     return response.managementUser
   }
 

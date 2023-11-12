@@ -13,15 +13,14 @@ export interface ICreateUserManagement {
 
 export interface IUpdateUserManagement {
   id: string
-  birthdate?: string
-  documentNumber?: string
-  documentTypeId?: string
-  email?: string
-  genderId?: string
-  maternalSurname?: string
-  name?: string
-  password?: string
-  paternalSurname?: string
-  status?: boolean
-  roleId?: string
+  birthdate?: string | null
+  documentNumber?: string | null
+  documentTypeId?: string | null
+  email?: string | null
+  genderId?: string | null
+  maternalSurname?: string | null
+  name?: string | null
+  paternalSurname?: string | null
+  status?: boolean | null
+  roleId?: string | null
 }

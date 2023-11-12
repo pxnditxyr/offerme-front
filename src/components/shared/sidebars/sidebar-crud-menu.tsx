@@ -10,7 +10,7 @@ export const SidebarCrudMenu = component$( ( { link, isExpanded } : ISidebarCrud
   return (
     <ul class={ `sidebar__crud__menu ${ isExpanded ? 'expanded' : '' }` }>
       <li class="sidebar__crud__menu__item">
-        <Link href={ `${ link }` }> List </Link>
+        <a href={ `${ link }` }> List </a>
       </li>
       <li class="sidebar__crud__menu__item">
         <Link href={ `${ link }/create` }> Create </Link>

@@ -16,7 +16,7 @@ export const adminMenuData = [
       link: `${ linkPrefix }/companies`,
     },
     {
-      label: '/Products',
+      label: 'Products',
       name: 'products',
       isExpanded: false,
       crud: true,

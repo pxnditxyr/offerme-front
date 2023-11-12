@@ -1,5 +1,5 @@
-import { component$, useStyles$ } from '@builder.io/qwik'
-import { Link } from '@builder.io/qwik-city'
+import { Slot, component$, useStyles$ } from '@builder.io/qwik'
+import { Form, Link } from '@builder.io/qwik-city'
 
 import { SidebarSubMenu } from './sidebar-menu'
 import { AdminSidebarUserCard } from '../cards/admin-sidebar-user-card'
@@ -34,6 +34,11 @@ export const Sidebar = component$( () => {
                 />
               ) )
             }
+          </ul>
+          <ul id="sidebar__menu__bottom">
+            <li class="sidebar__menu__item">
+              <Slot name="signout" />
+            </li>
           </ul>
         </nav>
       </aside>
