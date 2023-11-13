@@ -16,11 +16,13 @@
 .table th, .table td {
   padding: 12px 15px;
   font-size: 1.1rem;
+  text-align: center;
 }
 
 .table td {
   display: table-cell;
   vertical-align: middle;
+  text-align: center;
 }
 
 .table tbody tr {
@@ -127,6 +129,16 @@
 
 .edit__button:focus {
   outline: none;
+}
+
+.is-active__item {
+  background-color: #c2fbd7;
+  color: #fff;
+}
+
+.is-inactive__item {
+  background-color: #eb9ba3;
+  color: #fff;
 }
 
 @keyframe is-activate {

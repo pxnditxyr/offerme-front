@@ -40,38 +40,38 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
       </thead>
       <tbody>
         {
-          body.map( ( item ) => (
+          body.map( ( item, itemIndex ) => (
             <tr onClick$={ () => onRowClick( item.id ) }>
               {
-                keys.map( ( key, index ) => {
+                keys.map( ( key ) => {
                   if ( key === 'status' )
                     return (
-                      <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactivate__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
+                      <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactive__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
                     )
-                  if ( key === 'id' ) return ( <td> { index } </td> )
+                  if ( key === 'id' ) return ( <td> { itemIndex } </td> )
                   return ( <td> { item[ key ] } </td> )
                 } )
               }
               {
                 ( tableType === 'default' ) && (
                   <>
-                  <td>
-                    <button
-                      class="button view__button"
-                      onClick$={ () => onViewClick( item.id ) }
-                    >View</button>
-                    <button
-                      class="button edit__button"
-                      onClick$={ () => onEditClick( item.id ) }
-                    >Edit</button>
-                  </td>
-                  <td>
-                    <button
-                      class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
-                      onClick$={ () => onToggleStatus( item.id ) }
-                    >
-                      <span></span>
-                    </button>
+                    <td>
+                      <button
+                        class="button view__button"
+                        onClick$={ () => onViewClick( item.id ) }
+                      >View</button>
+                      <button
+                        class="button edit__button"
+                        onClick$={ () => onEditClick( item.id ) }
+                      >Edit</button>
+                    </td>
+                    <td>
+                      <button
+                        class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
+                        onClick$={ () => onToggleStatus( item.id ) }
+                      >
+                        <span></span>
+                      </button>
                   </td>
                 </> )
               }
