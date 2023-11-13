@@ -126,13 +126,11 @@ export default component$( () => {
           <FormField
             name="genderId"
             type="select"
-            error={ action.value?.fieldErrors?.password?.join( ', ') }
             options={ genders }
             />
           <FormField
             name="roleId"
             type="select"
-            error={ action.value?.fieldErrors?.roleId?.join( ', ' ) }
             options={ roles }
             />
           <FormField

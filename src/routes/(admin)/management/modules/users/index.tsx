@@ -73,8 +73,8 @@ export default component$( () => {
     if ( error ) onOpenModal()
   } )
 
-  const headers = [ 'Id', 'Email', 'Is Verified Email', 'Created At', 'Created By', 'Updated At', 'Updated By', 'Names', 'Role', 'Avatars' ]
-  const keys = [ 'id', 'email', 'isVerifiedEmail', 'createdAt', 'creator', 'updatedAt', 'updater', 'peopleInfo', 'role', 'avatars' ]
+  const headers = [ 'Id', 'names', 'Email', 'Is Verified Email','status', 'Created At', 'Created By', 'Updated At', 'Updated By', 'Role' ]
+  const keys = [ 'id', 'peopleInfo', 'email', 'isVerifiedEmail', 'status', 'createdAt', 'creator', 'updatedAt', 'updater', 'role' ]
 
   const formatedUsers = users.map( ( user ) => ({
       id: user.id,
