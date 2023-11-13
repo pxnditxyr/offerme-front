@@ -48,7 +48,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                     return (
                       <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactive__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
                     )
-                  if ( key === 'id' ) return ( <td> { itemIndex } </td> )
+                  if ( key === 'id' ) return ( <td> { itemIndex + 1 } </td> )
                   return ( <td> { item[ key ] } </td> )
                 } )
               }

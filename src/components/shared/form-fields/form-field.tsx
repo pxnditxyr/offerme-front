@@ -11,7 +11,7 @@ interface IFormOption {
 
 interface FormFieldProps {
   name: string
-  type: TInputType
+  type?: TInputType
   placeholder?: string
   value?: string
   isRequired?: boolean
