@@ -16,7 +16,6 @@
 .loading__logo {
   width: 200px;
   height: 200px;
-  filter: invert( 1 );
 }
 
 .loading__title {
