@@ -1,12 +1,11 @@
 import { component$, useStyles$ } from '@builder.io/qwik'
 import { routeLoader$ } from '@builder.io/qwik-city'
-import { UnexpectedErrorPage } from '~/components/shared'
+import { UnexpectedErrorPage, BackButton } from '~/components/shared'
 import { IManagementUsersData, IRouteLoaderError } from '~/interfaces'
 import { UsersManagementService } from '~/services'
 import { graphqlExceptionsHandler, isUUID } from '~/utils'
 
 import styles from './view.styles.css?inline'
-import { BackButton } from '~/components/shared/buttons/back-button'
 
 export const useGetManagementUser = routeLoader$<IManagementUsersData | IRouteLoaderError>( async ( { cookie, redirect, params, fail } ) => {
   const id = atob( params.id )

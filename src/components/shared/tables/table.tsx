@@ -69,9 +69,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                       <button
                         class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
                         onClick$={ () => onToggleStatus( item.id ) }
-                      >
-                        <span></span>
-                      </button>
+                      ></button>
                   </td>
                 </> )
               }

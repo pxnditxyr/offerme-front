@@ -1,10 +1,9 @@
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 import { Form, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { useModalStatus } from '~/hooks'
+import { SubparametersService, UsersManagementService, ManagementRolesService } from '~/services'
 import { IManagementUsersData, IRouteLoaderError, ISubparameter } from '~/interfaces'
-import { SubparametersService, UsersManagementService } from '~/services'
-import { ManagementRolesService } from '~/services/admin/roles.service'
+import { useModalStatus } from '~/hooks'
 import { graphqlExceptionsHandler, isUUID, serializeDate, managementUpdateUsersValidationSchema } from '~/utils'
 
 import styles from './update-users.styles.css?inline'
@@ -20,8 +19,8 @@ export const getSubparameters = routeLoader$<IUpdateSubparameters | IRouteLoader
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
   try {
-    const documentTypes = await SubparametersService.findAllByParameterName( 'document type' )
-    const genders = await SubparametersService.findAllByParameterName( 'gender' )
+    const documentTypes = await SubparametersService.findAllByParameterName({ parameterName: 'document type', status: true })
+    const genders = await SubparametersService.findAllByParameterName({ parameterName: 'gender', status: true })
     const roles = await ManagementRolesService.findAll( jwt.value, true )
     return {  documentTypes, genders, roles }
   } catch ( error : any ) {
@@ -32,7 +31,7 @@ export const getSubparameters = routeLoader$<IUpdateSubparameters | IRouteLoader
 
 export const useGetManagementUser = routeLoader$<IManagementUsersData | IRouteLoaderError>( async ( { cookie, redirect, params, fail } ) => {
   const id = atob( params.id )
-  if ( !isUUID( id ) ) redirect( 301, '/management/modules/users' )
+  if ( !isUUID( id ) ) redirect( 302, '/management/modules/users' )
   try {
     const token = cookie.get( 'jwt' )
     if ( !token ) return fail( 401, { errors: 'Unauthorized' } )

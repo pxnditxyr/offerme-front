@@ -1,7 +1,7 @@
 
 export const getSubparametersByParameterName = `
-query getSubparametersByParameterName($parameterName: String!) {
-  subparametersByParameterName(parameterName: $parameterName) {
+query SubparametersByParameterName($parameterName: String!, $status: Boolean) {
+  subparametersByParameterName(parameterName: $parameterName, status: $status) {
     id
     name
   }

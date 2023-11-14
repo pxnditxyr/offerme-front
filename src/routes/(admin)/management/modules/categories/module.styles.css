@@ -1,0 +1,14 @@
+.module__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 2.5rem;
+}
+
+.module__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var( --primary );
+}

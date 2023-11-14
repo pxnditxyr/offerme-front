@@ -8,18 +8,18 @@ export const AdminSidebarUserCard = component$( () => {
   useStyles$( styles )
 
   const { user, status } = useAuthStore()
-  if ( status.value === 'loading' ) return (
+  if ( status === 'loading' ) return (
     <article class="sidebar__mini-card">
       Loading...
     </article>
   )
 
-  if ( !user.value ) return (
+  if ( !user ) return (
     <article class="sidebar__mini-card">
       User not found
     </article>
   )
-  const { email, peopleInfo } = user.value
+  const { email, peopleInfo } = user
   const { name, maternalSurname, paternalSurname } = peopleInfo
 
   return (

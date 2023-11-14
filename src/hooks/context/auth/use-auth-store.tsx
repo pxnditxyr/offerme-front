@@ -80,9 +80,9 @@ export const useAuthStore = () => {
   } )
 
   return {
-    status: useComputed$( () => authState.status ),
-    user: useComputed$( () => authState.user ),
-    token: useComputed$( () => authState.token ),
+    status: authState.status,
+    user: authState.user,
+    token: authState.token,
 
     signin,
     signup,

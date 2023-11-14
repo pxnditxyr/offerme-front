@@ -1,11 +1,10 @@
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 import { Form, RequestEventLoader, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
 
-import { SubparametersService, UsersManagementService } from '~/services'
+import { SubparametersService, UsersManagementService, ManagementRolesService } from '~/services'
 import { graphqlExceptionsHandler, managementCreateUsersValidationSchema } from '~/utils'
 import { IRouteLoaderError, ISubparameter } from '~/interfaces'
 import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { ManagementRolesService } from '~/services/admin/roles.service'
 import { useModalStatus } from '~/hooks'
 
 import styles from './create.styles.css?inline'
@@ -23,8 +22,8 @@ export const getSubparameters = routeLoader$<ICreateUserSubparameters | IRouteLo
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   try {
-    const documentTypes = await SubparametersService.findAllByParameterName( 'document type' )
-    const genders = await SubparametersService.findAllByParameterName( 'gender' )
+    const documentTypes = await SubparametersService.findAllByParameterName({ parameterName: 'document type', status: true })
+    const genders = await SubparametersService.findAllByParameterName({ parameterName: 'gender', status: true })
     const roles = await ManagementRolesService.findAll( jwt.value, true )
     return { documentTypes, genders, roles }
   } catch ( error : any ) {

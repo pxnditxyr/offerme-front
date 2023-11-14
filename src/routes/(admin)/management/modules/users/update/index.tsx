@@ -5,9 +5,10 @@ import { BackButton, LoadingPage, Modal, Table, UnexpectedErrorPage } from '~/co
 import { useModalStatus, useUsersManagementStore } from '~/hooks'
 import { graphqlExceptionsHandler, parseDate } from '~/utils'
 
-import styles from '../management-users.styles.css?inline'
 import { UsersManagementService } from '~/services'
 import { IManagementUsersData, IRouteLoaderError } from '~/interfaces'
+
+import styles from '../management-users.styles.css?inline'
 
 interface IGetManagementUsers {
   managementUsers: IManagementUsersData[]
