@@ -16,6 +16,7 @@ export * from './admin/management-users-data.interfaces'
 export * from './admin/management-users-mutations.interface'
 
 export * from './admin/management-categories.interface'
+export * from './admin/management-companies.interface'
 
 
 // auth

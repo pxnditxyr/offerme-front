@@ -6,3 +6,5 @@ export * from './admin/roles/roles.queries'
 
 export * from './admin/categories/categories.queries'
 export * from './admin/categories/category-images.queries'
+
+export * from './admin/companies/companies.queries'
