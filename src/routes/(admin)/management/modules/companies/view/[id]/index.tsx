@@ -1,9 +1,9 @@
 import { $, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 import { DocumentHead, Link, routeLoader$, useNavigate } from '@builder.io/qwik-city'
 import { BackButton, LoadingPage, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
-import { ManagementCompaniesService } from '~/services'
-import { isUUID } from '~/utils'
+import { IGQLErrorResponse, IManagementCompany, IManagementUsersData } from '~/interfaces'
+import { ManagementCompaniesService, UsersManagementService } from '~/services'
+import { graphqlExceptionsHandler, isUUID } from '~/utils'
 
 import styles from './view.styles.css?inline'
 import { useAuthStore, useModalStatus } from '~/hooks'
@@ -19,11 +19,24 @@ export const useGetCompanyById = routeLoader$<IManagementCompany | IGQLErrorResp
   return company
 } )
 
+export const useGetUsers = routeLoader$<IManagementUsersData[] | IGQLErrorResponse>( async ({ cookie, redirect }) => {
+  const jwt = cookie.get( 'jwt' )
+  if ( !jwt ) throw redirect( 302, '/signin' )
+  try {
+    const users = await UsersManagementService.getUsers( jwt.value )
+    return users
+  } catch ( error : any ) {
+    return { errors: graphqlExceptionsHandler( error ) }
+  }
+} )
+
 export default component$( () => {
   useStyles$( styles )
 
   const company = useGetCompanyById().value
-  if ( 'errors' in company ) return ( <UnexpectedErrorPage /> )
+  const users = useGetUsers().value
+  if ( 'errors' in company || 'errors' in users ) return ( <UnexpectedErrorPage /> )
+
   const { token, status } = useAuthStore()
   if ( status === 'loading' ) return ( <LoadingPage /> )
 
@@ -34,6 +47,10 @@ export default component$( () => {
 
   const onImageClick = $( ( id : string ) => {
     nav( `/management/modules/companies/company-logos/view/${ btoa( id ) }` )
+  } )
+
+  const onUserClick = $( ( id : string ) => {
+    nav( `/management/modules/companies/company-users/view/${ btoa( id ) }` )
   } )
 
   const onProductClick = $( ( id : string ) => {
@@ -122,6 +139,38 @@ export default component$( () => {
             href={ `/management/modules/companies/company-logos/create/${ btoa( company.id ) }` }
             class="view__link"
           > Add Image </Link>
+          
+          <div class="view__images">
+            <p> Users </p>
+            <div class="view__gallery">
+              { company.users.map( ( user ) => (
+                  ( user.status )
+                    ? (
+                      <article
+                        class="view__gallery__card"
+                        key={ user.id } onClick$={ () => onUserClick( user.id ) }
+                      >
+                        <section>
+                          <p> Email: </p>
+                          <p> { users.find( ( fullUser ) => fullUser.id === user.userId )?.email } </p>
+                          <p> Role: </p>
+                          <p> { users.find( ( fullUser ) => fullUser.id === user.userId )?.role.name } </p>
+                        </section>
+                      </article>
+                    )
+                    : ( <></> )
+                ))
+              }
+              {
+                company.users.length === 0 && ( <p> No Users </p> )
+              }
+            </div>
+          </div>
+          <Link
+            href={ `/management/modules/companies/company-users/create/${ btoa( company.id ) }` }
+            class="view__link"
+          > Add User </Link>
+
           <div class="view__images">
             <p> Products </p>
             <div class="view__gallery">
@@ -201,7 +250,7 @@ export default component$( () => {
       }
     </div>
   )
-}  )
+} )
 
 export const head : DocumentHead = {
   title: 'View Companies',

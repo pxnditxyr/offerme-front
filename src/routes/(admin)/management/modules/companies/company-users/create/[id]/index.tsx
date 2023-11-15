@@ -1,57 +1,80 @@
-import { DocumentHead, Form, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
+import { DocumentHead, Form, routeAction$, routeLoader$, z, zod$ } from '@builder.io/qwik-city'
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
-import { ManagementCategoriesService } from '~/services'
-import { isUUID, managementCreateCategoryImageValidationSchema } from '~/utils'
+import { ManagementCompaniesService, UsersManagementService } from '~/services'
+import { graphqlExceptionsHandler, isUUID  } from '~/utils'
 
-import { IGQLErrorResponse, IManagementCategory } from '~/interfaces'
+import { IGQLErrorResponse,  IManagementCompany, IManagementUsersData } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
-import { ManagementCategoryImagesService } from '~/services'
+import { ManagementCompanyUsersService } from '~/services/admin/management-company-users.service'
 
+interface IUseGetDataResponse {
+  company: IManagementCompany | IGQLErrorResponse
+  users: IManagementUsersData[] | IGQLErrorResponse
+}
 
-export const useGetCategory = routeLoader$<IManagementCategory | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
+export const useGetData = routeLoader$<IUseGetDataResponse>( async ({ cookie, redirect, params }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const id = atob( params.id )
-  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/categories' )
+  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/companies' )
 
-  const category = await ManagementCategoriesService.category({ jwt: jwt.value, categoryId: id })
-  return category
+  const company = await ManagementCompaniesService.company({ jwt: jwt.value, companyId: id })
+  if ( 'errors' in company ) throw redirect( 302, '/management/modules/companies' )
+
+  try {
+    const users = await UsersManagementService.getUsers( jwt.value )
+    const companyUsers = users.filter( ( user ) => ( user.role.name === 'COMPANY_REPRESENTATIVE' ) || ( user.role.name === 'SELLER' ) )
+
+    const usersThatAreNotInCompany = companyUsers.filter( ( user ) => !company.users.find( ( companyUser ) => ( companyUser.userId === user.id && companyUser.status ) ) )
+
+    const activeUsers = usersThatAreNotInCompany.filter( ( user ) => user.status === true )
+    return {
+      company,
+      users: activeUsers
+    }
+  } catch ( error : any ) {
+    return {
+      company,
+      users: { errors: graphqlExceptionsHandler( error ) }
+    }
+  }
 } )
 
-export const createCategoryAction = routeAction$( async ( data, { cookie, fail, params } ) => {
+export const createCompanyAction = routeAction$( async ( data, { cookie, fail, params } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   const id = atob( params.id ) || ''
 
-  const categoryImage = await ManagementCategoryImagesService.createCategoryImage({ createCategoryImageInput: {
-    ...data,
-    categoryId: id,
+  const companyUser = await ManagementCompanyUsersService.createCompanyUser({ createCompanyUserInput: {
+    companyId: id,
+    userId: data.userId
   }, jwt: jwt.value })
 
-  if ( 'errors' in categoryImage ) {
+  if ( 'errors' in companyUser ) {
     return {
       success: false,
-      errors: categoryImage.errors
+      errors: companyUser.errors
     }
   }
-  return { success: true, categoryImage }
-}, zod$({ ...managementCreateCategoryImageValidationSchema }) )
+  return { success: true, companyUser }
+}, zod$({ userId: z.string().min( 10, 'User is required' ) }) )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const getCategory = useGetCategory().value
-  if ( 'errors' in getCategory ) return ( <UnexpectedErrorPage /> )
+  const { company, users } = useGetData().value
+  if ( 'errors' in company || 'errors' in users ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = createCategoryAction()
+  const action = createCompanyAction()
+
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -60,18 +83,18 @@ export default component$( () => {
 
   return (
     <div class="create__container">
-      <BackButton href="/management/modules/categories" />
-      <h1 class="create__title"> Create new Category </h1>
+      <BackButton href="/management/modules/companies" />
+      <h1 class="create__title"> Create new Company </h1>
       <Form class="form" action={ action }>
         <FormField
-          name="url"
-          placeholder="Url"
-          error={ action.value?.fieldErrors?.url?.join( ', ' ) }
-          />
-        <FormField
-          name="alt"
-          placeholder="Description"
-          error={ action.value?.fieldErrors?.alt?.join( ', ' ) }
+          name="userId"
+          type="select"
+          options={[
+            ...users.map( ( user ) => ({
+              id: user.id,
+              name: user.email
+            }) )
+          ]}
           />
         <button> Create </button>
       </Form>
@@ -80,7 +103,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Category created successfully </span>
+                <span> Company created successfully </span>
               )
             }
             {
@@ -96,5 +119,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Category',
+  title: 'Create Company User',
 }

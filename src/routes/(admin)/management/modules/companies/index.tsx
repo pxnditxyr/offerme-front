@@ -30,6 +30,7 @@ export default component$( () => {
   useStyles$( styles )
 
   const companies = useGetManagementCompanies().value
+  console.log( companies )
   if ( 'errors' in companies ) return ( <UnexpectedErrorPage /> )
   const searchValue = useGetSearch().value
 

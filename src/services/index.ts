@@ -7,7 +7,8 @@ export { ManagementCategoriesService } from './admin/management-categories.servi
 export { ManagementRolesService } from './admin/roles.service'
 export { ManagementCategoryImagesService } from './admin/management-category-images.service'
 export { ManagementCompaniesService } from './admin/management-companies.service'
-export { ManagementCompanyLogosService } from './admin/management-company-images.service'
+export { ManagementCompanyLogosService } from './admin/management-company-logos.service'
+export { ManagementCompanyUsersService } from './admin/management-company-users.service'
 
 // Parametrics
 export { SubparametersService } from './parametrics/subparameters.service'

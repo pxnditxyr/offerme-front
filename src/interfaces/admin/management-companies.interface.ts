@@ -49,7 +49,8 @@ export interface IManagementCompanyProduct {
   
 export interface IManagementCompanyUser {
   id:    string
-  email: string
+  userId: string
+  status: boolean
 }
 
 export interface IManagementCompanyPromotionRequest {
@@ -101,4 +102,9 @@ export interface ICreateCompanyLogoInput {
   companyId: string
   alt:       string
   url:       string
+}
+
+export interface ICreateCompanyUserInput {
+  companyId: string
+  userId:    string
 }

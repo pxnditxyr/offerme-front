@@ -42,7 +42,8 @@ query Companies($offset: Int, $limit: Int, $search: String, $status: Boolean) {
     }
     users {
       id
-      email
+      userId
+      status
     }
     promotionRequests {
       id
@@ -115,7 +116,8 @@ query Company($companyId: ID!) {
     }
     users {
       id
-      email
+      userId
+      status
     }
     promotionRequests {
       id
@@ -188,7 +190,8 @@ mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
     }
     users {
       id
-      email
+      userId
+      status
     }
     promotionRequests {
       id
@@ -261,7 +264,8 @@ mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!) {
     }
     users {
       id
-      email
+      userId
+      status
     }
     promotionRequests {
       id
@@ -334,7 +338,8 @@ mutation ToggleStatusCompany($toggleStatusCompanyId: ID!) {
     }
     users {
       id
-      email
+      userId
+      status
     }
     promotionRequests {
       id
