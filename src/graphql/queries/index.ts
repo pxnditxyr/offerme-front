@@ -8,3 +8,4 @@ export * from './admin/categories/categories.queries'
 export * from './admin/categories/category-images.queries'
 
 export * from './admin/companies/companies.queries'
+export * from './admin/companies/company-logos.queries'

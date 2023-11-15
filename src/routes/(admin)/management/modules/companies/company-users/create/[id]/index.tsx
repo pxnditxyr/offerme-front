@@ -3,56 +3,55 @@ import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
-import { ManagementCompaniesService, ManagementCompanyLogosService } from '~/services'
-import { isUUID, managementCreateCompanyLogoValidationSchema } from '~/utils'
+import { ManagementCategoriesService } from '~/services'
+import { isUUID, managementCreateCategoryImageValidationSchema } from '~/utils'
 
-import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
+import { IGQLErrorResponse, IManagementCategory } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
+import { ManagementCategoryImagesService } from '~/services'
 
 
-export const useGetCompany = routeLoader$<IManagementCompany | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
+export const useGetCategory = routeLoader$<IManagementCategory | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const id = atob( params.id )
-  console.log( 'id', id )
-  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/companies' )
+  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/categories' )
 
-  const company = await ManagementCompaniesService.company({ jwt: jwt.value, companyId: id })
-  return company
+  const category = await ManagementCategoriesService.category({ jwt: jwt.value, categoryId: id })
+  return category
 } )
 
-export const createCompanyAction = routeAction$( async ( data, { cookie, fail, params } ) => {
+export const createCategoryAction = routeAction$( async ( data, { cookie, fail, params } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   const id = atob( params.id ) || ''
-  console.log( 'id', id )
 
-  const companyLogo = await ManagementCompanyLogosService.createCompanyLogo({ createCompanyLogoInput: {
+  const categoryImage = await ManagementCategoryImagesService.createCategoryImage({ createCategoryImageInput: {
     ...data,
-    companyId: id,
+    categoryId: id,
   }, jwt: jwt.value })
 
-  if ( 'errors' in companyLogo ) {
+  if ( 'errors' in categoryImage ) {
     return {
       success: false,
-      errors: companyLogo.errors
+      errors: categoryImage.errors
     }
   }
-  return { success: true, companyLogo }
-}, zod$({ ...managementCreateCompanyLogoValidationSchema }) )
+  return { success: true, categoryImage }
+}, zod$({ ...managementCreateCategoryImageValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const getCompany = useGetCompany().value
-  if ( 'errors' in getCompany ) return ( <UnexpectedErrorPage /> )
+  const getCategory = useGetCategory().value
+  if ( 'errors' in getCategory ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = createCompanyAction()
+  const action = createCategoryAction()
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -61,8 +60,8 @@ export default component$( () => {
 
   return (
     <div class="create__container">
-      <BackButton href="/management/modules/companies" />
-      <h1 class="create__title"> Create new Company </h1>
+      <BackButton href="/management/modules/categories" />
+      <h1 class="create__title"> Create new Category </h1>
       <Form class="form" action={ action }>
         <FormField
           name="url"
@@ -81,7 +80,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Company created successfully </span>
+                <span> Category created successfully </span>
               )
             }
             {
@@ -97,5 +96,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Company Logo',
+  title: 'Create Category',
 }

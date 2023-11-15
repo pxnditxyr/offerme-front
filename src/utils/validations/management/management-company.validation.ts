@@ -10,3 +10,8 @@ export const managementCreateCompanyValidationSchema = {
   email: z.string().optional(),
   website: z.string().optional(),
 }
+
+export const managementCreateCompanyLogoValidationSchema = {
+  url: z.string().min( 2, 'Name must be at least 2 characters' ),
+  alt: z.string().min( 2, 'Description must be at least 2 characters' ),
+}

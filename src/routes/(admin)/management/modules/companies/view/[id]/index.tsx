@@ -1,6 +1,6 @@
 import { $, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 import { DocumentHead, Link, routeLoader$, useNavigate } from '@builder.io/qwik-city'
-import { BackButton, LoadingPage, UnexpectedErrorPage } from '~/components/shared'
+import { BackButton, LoadingPage, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
 import { ManagementCompaniesService } from '~/services'
 import { isUUID } from '~/utils'
@@ -33,7 +33,7 @@ export default component$( () => {
   const errors = useSignal<string | null>( null )
 
   const onImageClick = $( ( id : string ) => {
-    nav( `/management/modules/companies/company-images/view/${ btoa( id ) }` )
+    nav( `/management/modules/companies/company-logos/view/${ btoa( id ) }` )
   } )
 
   const onProductClick = $( ( id : string ) => {
@@ -192,6 +192,13 @@ export default component$( () => {
           </div>
         </section>
       </div>
+      {
+        ( modalStatus.value ) && (
+          <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
+            <span> { errors.value } </span>
+          </Modal>
+        )
+      }
     </div>
   )
 }  )

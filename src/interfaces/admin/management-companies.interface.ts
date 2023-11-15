@@ -96,3 +96,9 @@ export interface IUpdateCompanyInput {
   website?:        string | null
   name?:           string | null
 }
+
+export interface ICreateCompanyLogoInput {
+  companyId: string
+  alt:       string
+  url:       string
+}
