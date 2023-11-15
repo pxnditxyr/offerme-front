@@ -1,3 +1,7 @@
+.table__container {
+  padding: 2rem 0;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -141,6 +145,15 @@
   color: #fff;
 }
 
+.is-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.is-clickable:hover {
+  background-color: #fcd34d !important;
+}
+
 @keyframe is-activate {
   0% {
     left: 0;
@@ -158,3 +171,5 @@
     right: 50%;
   }
 }
+
+

@@ -56,7 +56,7 @@ export const FormField = component$<FormFieldProps>( ( { name, type = 'text', pl
             type={ type }
             name={ name }
             placeholder={ placeholder }
-            value={ value }
+            value={ ( type === 'date' ) ? value.split( 'T' )[ 0 ] : value }
             required={ isRequired }
             class={ `${ ( error ) ? 'form__field__input--error' : 'form__field__input' }` }
           />
