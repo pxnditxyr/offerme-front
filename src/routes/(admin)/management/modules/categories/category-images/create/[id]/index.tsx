@@ -96,5 +96,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Category',
+  title: 'Create Category Image',
 }

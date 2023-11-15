@@ -89,5 +89,5 @@ export default component$( () => {
 }  )
 
 export const head : DocumentHead = {
-  title: 'View Categories',
+  title: 'View Category Image',
 }
