@@ -1,14 +1,16 @@
-import { Slot, component$ } from '@builder.io/qwik'
+import { Slot, component$, useStyles$ } from '@builder.io/qwik'
 import { routeLoader$ } from '@builder.io/qwik-city'
 
-import styles from './auth-layout.module.css'
 import { AuthNavbar } from '~/components/shared'
 import { graphqlExceptionsHandler } from '~/utils'
 import { userAuthorizationSchema } from '~/schemas'
 import { AuthService } from '~/services'
 import { AuthProvider } from '~/context'
 
+import styles from './auth-layout.styles.css?inline'
+
 export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
+
   const jwt = cookie.get( 'jwt' )
   if ( jwt ) {
     let authResponse : any
@@ -26,11 +28,16 @@ export const useCheckAuth = routeLoader$( async ({ cookie, redirect }) => {
 } )
 
 export default component$( () => {
+
+  useStyles$( styles )
+
   return (
     <AuthProvider>
-      <main class={ styles.container }>
+      <main class="auth__container">
         <AuthNavbar />
-        <Slot />
+        <div class="auth__content">
+          <Slot />
+        </div>
       </main>
     </AuthProvider>
   )

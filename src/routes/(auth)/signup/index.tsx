@@ -1,4 +1,4 @@
-import { component$, useTask$ } from '@builder.io/qwik'
+import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 import { DocumentHead, Form, Link, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
 import { FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
@@ -8,6 +8,8 @@ import { graphqlExceptionsHandler, signupValidationSchema } from '~/utils'
 import type { IAuthGender, IRouteLoaderError } from '~/interfaces'
 import { userAuthorizationSchema } from '~/schemas'
 import { AuthService } from '~/services'
+
+import styles from './signup.styles.css?inline'
 
 export const useSignupUserAction = routeAction$( async ( data, event ) => {
   const { cookie, redirect } = event
@@ -50,6 +52,7 @@ export const useGetGenders = routeLoader$<IAuthGender[] | IRouteLoaderError>( as
 } )
 
 export default component$( () => {
+  useStyles$( styles )
 
   const genders = useGetGenders().value
   const action = useSignupUserAction()
@@ -70,63 +73,68 @@ export default component$( () => {
 
 
   return (
-    <div>
-      <h1> Sign Up </h1>
-      <div>
-        <Form action={ action } class="form">
-          <FormField
-            name="name"
-            type="text"
-            placeholder="Names"
-            error={ action.value?.fieldErrors?.name?.join( ', ' ) }
-          />
-          <FormField
-            name="paternalSurname"
-           type="text"
-            placeholder="Paternal Surname"
-            error={ action.value?.fieldErrors?.paternalSurname?.join( ', ' ) }
-          />
-          <FormField
-            name="maternalSurname"
-            type="text"
-            placeholder="Maternal Surname"
-            error={ action.value?.fieldErrors?.maternalSurname?.join( ', ' ) }
-          />
-          <FormField
-            name="birthdate"
-            type="date"
-            value="2000-01-01"
-            error={ action.value?.fieldErrors?.birthdate?.join( ', ' ) }
-          />
-          <FormField
-            name="email"
-            type="text"
-            placeholder="Email"
-            error={ action.value?.fieldErrors?.email?.join( ', ' ) }
-          />
-          <FormField
-            name="password"
-            type="password"
-            placeholder="Password"
-            error={ action.value?.fieldErrors?.password?.join( ', ' ) }
-          />
-          <FormField
-            name="confirmPassword"
-            type="password"
-            placeholder="Password"
-            error={ action.value?.fieldErrors?.confirmPassword?.join( ', ' ) }
-          />
-          <FormField
-            name="genderId"
-            type="select"
-            options={ genders }
+    <div class="signup__container">
+      <div class="signup__content">
+        <section>
+          <img src="/offer-me-icon.svg" alt="Offer Me Logo" />
+        </section>
+        <section>
+          <h1 class="signup__title"> Sign Up </h1>
+          <Form action={ action } class="form signup__form">
+            <FormField
+              name="name"
+              type="text"
+              placeholder="Names"
+              error={ action.value?.fieldErrors?.name?.join( ', ' ) }
             />
-          <button> Sign Up </button>
-        </Form>
-      </div>
-      <Link href="/signin">
-        Already have an account? Sign In
-      </Link>
+            <FormField
+              name="paternalSurname"
+              type="text"
+              placeholder="Paternal Surname"
+              error={ action.value?.fieldErrors?.paternalSurname?.join( ', ' ) }
+            />
+            <FormField
+              name="maternalSurname"
+              type="text"
+              placeholder="Maternal Surname"
+              error={ action.value?.fieldErrors?.maternalSurname?.join( ', ' ) }
+            />
+            <FormField
+              name="birthdate"
+              type="date"
+              value="2000-01-01"
+              error={ action.value?.fieldErrors?.birthdate?.join( ', ' ) }
+            />
+            <FormField
+              name="email"
+              type="text"
+              placeholder="Email"
+              error={ action.value?.fieldErrors?.email?.join( ', ' ) }
+            />
+            <FormField
+              name="password"
+              type="password"
+              placeholder="Password"
+              error={ action.value?.fieldErrors?.password?.join( ', ' ) }
+            />
+            <FormField
+              name="confirmPassword"
+              type="password"
+              placeholder="Password"
+              error={ action.value?.fieldErrors?.confirmPassword?.join( ', ' ) }
+            />
+            <FormField
+              name="genderId"
+              type="select"
+              options={ genders }
+            />
+            <button> Sign Up </button>
+          </Form>
+          <Link href="/signin" class="signup__link">
+            Already have an account? Sign In
+          </Link>
+        </section>
+    </div>
       {
         ( modalStatus.value ) && (
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
