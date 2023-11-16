@@ -65,6 +65,7 @@
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   cursor: pointer;
+  transition: all .35s;
 }
 
 .sidebar__menu__item.expanded {
@@ -209,4 +210,26 @@
   margin-right: 10px;
   /* invert */
   filter: invert( 1 );
+}
+
+.sidebar__menu__item.no-expanded:before {
+  content: "〉";
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sidebar__menu__item.expanded:before {
+  content: "⌄";
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sidebar__menu__item:hover {
+  padding: 0.5rem;
+  border-radius: 10px;
+  box-shadow: 10px 20px 15px rgba( 255, 120, 0, 0.5 );
 }

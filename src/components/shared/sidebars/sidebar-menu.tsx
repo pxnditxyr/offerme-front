@@ -14,7 +14,7 @@ export const SidebarSubMenu = component$( ( { menuData, onToggleMenu } : ISideba
   return (
     <li
       id={ `${ name }__menu` }
-      class={ `sidebar__menu__item ${ isExpanded ? 'expanded' : '' }` }
+      class={ `sidebar__menu__item ${ isExpanded ? 'expanded' : 'no-expanded' }` }
       onClick$={ ( event ) => {
         const elementId = ( event.target as HTMLElement ).id
         if ( elementId === `${ name }__menu` || elementId === `${ name }__title` ) onToggleMenu( name )
