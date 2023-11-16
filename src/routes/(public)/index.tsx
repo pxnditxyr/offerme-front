@@ -1,16 +1,21 @@
-import { component$ } from '@builder.io/qwik'
+import { component$, useStyles$ } from '@builder.io/qwik'
 import { type DocumentHead } from '@builder.io/qwik-city'
 
+import styles from './public.styles.css?inline'
+
 export default component$( () => {
+
+  useStyles$( styles )
+  
   return (
     <>
-      <div class="container" id="main">
+      <div class="public__container" id="main">
         <h1> Offer Me </h1>
         <p>
           Welcome to official page of Offer Me. We are a company that provides
         </p>
       </div>
-      <div class="container" id="about">
+      <div class="public__container" id="about">
         <h1> About Us </h1>
         <div>
           <article>
@@ -31,7 +36,7 @@ export default component$( () => {
           </article>
         </div>
       </div>
-      <div class="container" id="join">
+      <div class="public__container" id="join">
         <h1> Join Us </h1>
         <div>
           <article>

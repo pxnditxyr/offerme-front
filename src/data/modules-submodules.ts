@@ -63,7 +63,7 @@ export const adminMenuData = [
       label: 'Reviews',
       name: 'reviews',
       isExpanded: false,
-      crud: true,
+      crud: false,
       link: `${ linkPrefix }/reviews`,
     },
   ]
