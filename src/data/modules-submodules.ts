@@ -26,8 +26,24 @@ export const adminMenuData = [
       label: 'Parameters',
       name: 'parameters',
       isExpanded: false,
-      crud: true,
+      crud: false,
       link: `${ linkPrefix }/parameters`,
+      submenu: [
+        {
+          label: 'Parameters',
+          name: 'parameters-sub',
+          isExpanded: false,
+          crud: true,
+          link: `${ linkPrefix }/parameters`,
+        },
+        {
+          label: 'Subparameters',
+          name: 'subparameters',
+          isExpanded: false,
+          crud: true,
+          link: `${ linkPrefix }/subparameters`,
+        }
+      ]
     },
     {
       label: 'Users',
