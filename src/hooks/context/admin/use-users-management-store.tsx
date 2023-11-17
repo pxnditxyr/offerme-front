@@ -10,11 +10,6 @@ export const useUsersManagementStore = () => {
     managementUsers.users = [ ...users ]
   } )
 
-  // const createUser = $( async ( data : ICreateUserManagement ) => {
-  //   const user = await UsersManagementService.createUser( token.value || '', data )
-  //   console.log( user )
-  // } )
-
   const setIsLoading = $( ( value : boolean ) => {
     managementUsers.isLoading = value
   } )

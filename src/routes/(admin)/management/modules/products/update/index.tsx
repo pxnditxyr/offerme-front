@@ -1,7 +1,8 @@
+
 import { DocumentHead, routeLoader$, useNavigate } from '@builder.io/qwik-city'
 import { $, QwikSubmitEvent, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 
-import { LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
+import { BackButton, LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
 import { useAuthStore, useModalStatus } from '~/hooks'
 import { parseDate } from '~/utils'
 
@@ -9,7 +10,7 @@ import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
 import { ManagementCompaniesService } from '~/services'
 
 
-import styles from './module.styles.css?inline'
+import styles from './update.styles.css?inline'
 
 export const useGetSearch = routeLoader$<string>( async ({ query }) => {
   const search = query.get( 'search' ) || ''
@@ -79,8 +80,9 @@ export default component$( () => {
   } )
 
   return (
-    <div class="module__container">
-      <h1 class="module__title"> Companies </h1>
+    <div class="update__container">
+      <h1 class="update__title"> Select a Company to update </h1>
+      <BackButton href="/management/modules/companies" />
       <SearchBar value={ searchValue } onSearchSubmit={ onSearchSubmit } />
       <Table 
         header={ headers }
@@ -89,6 +91,7 @@ export default component$( () => {
         onEditClick={ onEditClick }
         onViewClick={ onViewClick }
         onToggleStatus={ onToggleStatus }
+        tableType="update"
       />
       {
         ( modalStatus.value ) && (
@@ -102,5 +105,6 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Companies',
+  title: 'Update Companies',
 }
+
