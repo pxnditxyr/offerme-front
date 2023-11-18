@@ -12,3 +12,5 @@ export * from './admin/companies/company-logos.queries'
 export * from './admin/companies/company-users.queries'
 
 export * from './admin/products/products.queries'
+export * from './admin/products/product-images.queries'
+export * from './admin/products/product-categories.queries'

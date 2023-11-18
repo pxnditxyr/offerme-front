@@ -11,6 +11,11 @@ export {
   managementCreateCategoryImageValidationSchema
 } from './validations/management/management-category.validation'
 
+export {
+  managementCreateProductValidationSchema,
+  managementCreateProductImageValidationSchema
+} from './validations/management/management-product.validation'
+
 export * from './validations/management/management-company.validation'
 
 

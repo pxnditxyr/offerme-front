@@ -1,13 +1,12 @@
-
 import { DocumentHead, routeLoader$, useNavigate } from '@builder.io/qwik-city'
 import { $, QwikSubmitEvent, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 
-import { BackButton, LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
+import { LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
 import { useAuthStore, useModalStatus } from '~/hooks'
 import { parseDate } from '~/utils'
 
-import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
-import { ManagementCompaniesService } from '~/services'
+import { IGQLErrorResponse, IManagementProduct } from '~/interfaces'
+import { ManagementProductsService } from '~/services'
 
 
 import styles from './update.styles.css?inline'
@@ -17,21 +16,22 @@ export const useGetSearch = routeLoader$<string>( async ({ query }) => {
   return search
 } )
 
-export const useGetManagementCompanies = routeLoader$<IManagementCompany[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
+export const useGetManagementProducts = routeLoader$<IManagementProduct[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
   const search = query.get( 'search' ) || ''
 
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
   
-  const companies = await ManagementCompaniesService.companies({ search, jwt: jwt.value })
-  return companies
+  const products = await ManagementProductsService.products({ search, jwt: jwt.value })
+  return products
 } )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const companies = useGetManagementCompanies().value
-  if ( 'errors' in companies ) return ( <UnexpectedErrorPage /> )
+  const products = useGetManagementProducts().value
+
+  if ( 'errors' in products ) return ( <UnexpectedErrorPage /> )
   const searchValue = useGetSearch().value
 
   const { token, status } = useAuthStore()
@@ -41,38 +41,39 @@ export default component$( () => {
   const nav = useNavigate()
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const onEditClick = $( ( id : string ) => nav( `/management/modules/companies/update/${ btoa( id ) }` ) )
-  const onViewClick = $( ( id : string ) => nav( `/management/modules/companies/view/${ btoa( id ) }` ) )
+  const onEditClick = $( ( id : string ) => nav( `/management/modules/products/update/${ btoa( id ) }` ) )
+  const onViewClick = $( ( id : string ) => nav( `/management/modules/products/view/${ btoa( id ) }` ) )
 
   const onToggleStatus = $( async ( id : string ) => {
-    const company =  await ManagementCompaniesService.toggleStatusCompany({ toggleStatusCompanyId: id, jwt: token || '' })
-    if ( 'errors' in company ) {
-      errors.value = company.errors
+    const product =  await ManagementProductsService.toggleStatusProduct({ toggleStatusProductId: id, jwt: token || '' })
+    if ( 'errors' in product ) {
+      errors.value = product.errors
       onOpenModal()
       return
     }
     nav()
   } )
 
-  const headers = [ 'Id', 'Name', 'Description', 'Website', 'Email', 'Status', 'Created At', 'Creator', 'Updated At', 'Updater' ]
-  const keys = [ 'id', 'name', 'description', 'website', 'email', 'status', 'createdAt', 'creator', 'updatedAt', 'updater' ]
+  const headers = [ 'Id', 'Name', 'Description', 'Stock', 'Price', 'Code', 'Status', 'Created At', 'Creator', 'Updated At', 'Updater' ]
+  const keys = [ 'id', 'name', 'description', 'stock', 'price', 'code', 'status', 'createdAt', 'creator', 'updatedAt', 'updater' ]
 
-  const formatedCompanies = companies.map( ( company ) => ({
-    id: company.id,
-    name: company.name,
-    description: company.description,
-    website: company.website || 'No Website',
-    email: company.email || 'No Email',
-    status: company.status,
-    createdAt: parseDate( company.createdAt ),
-    creator: company.creator?.email || '',
-    updatedAt: parseDate( company.updatedAt ),
-    updater: company.updater?.email || 'No Updated',
+  const formatedProducts = products.map( ( product ) => ({
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    stock: product.stock,
+    price: product.price,
+    code: product.code,
+    status: product.status,
+    createdAt: parseDate( product.createdAt ),
+    creator: product.creator?.email || '',
+    updatedAt: parseDate( product.updatedAt ),
+    updater: product.updater?.email || 'No Updated',
   }) )
 
   const onSearchSubmit = $( ( event : QwikSubmitEvent<HTMLFormElement> ) => {
     const { target } = event as any
-    nav( `/management/modules/companies?${ `search=${ target.search.value }` }` )
+    nav( `/management/modules/products?${ `search=${ target.search.value }` }` )
   } )
 
   const newOnCloseModal = $( () => {
@@ -81,13 +82,12 @@ export default component$( () => {
 
   return (
     <div class="update__container">
-      <h1 class="update__title"> Select a Company to update </h1>
-      <BackButton href="/management/modules/companies" />
+      <h1 class="update__title"> Select Product to Update </h1>
       <SearchBar value={ searchValue } onSearchSubmit={ onSearchSubmit } />
       <Table 
         header={ headers }
         keys={ keys }
-        body={ formatedCompanies }
+        body={ formatedProducts }
         onEditClick={ onEditClick }
         onViewClick={ onViewClick }
         onToggleStatus={ onToggleStatus }
@@ -105,6 +105,6 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Update Companies',
+  title: 'Update Products',
 }
 

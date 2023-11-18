@@ -62,7 +62,7 @@ export default component$( () => {
   const errors = useSignal<string | null>( null )
 
   const onImageClick = $( ( id : string ) => {
-    nav( `/management/modules/products/product-logos/view/${ btoa( id ) }` )
+    nav( `/management/modules/products/product-images/view/${ btoa( id ) }` )
   } )
 
   const onCategoryClick = $( ( id : string ) => {
@@ -141,7 +141,7 @@ export default component$( () => {
             </div>
           </div>
           <Link
-            href={ `/management/modules/products/product-logos/create/${ btoa( product.id ) }` }
+            href={ `/management/modules/products/product-images/create/${ btoa( product.id ) }` }
             class="view__link"
           > Add Image </Link>
           <div class="view__images">
@@ -152,7 +152,7 @@ export default component$( () => {
                 return (
                   ( category )
                     ? (
-                      <article class="view__gallery__card" key={ category.id } onClick$={ () => onCategoryClick( category.id ) }> 
+                      <article class="view__gallery__card" key={ category.id } onClick$={ () => onCategoryClick( productCategory.id ) }> 
                         <section>
                           <p> Name: </p>
                           <p> { category.name } </p>

@@ -3,13 +3,12 @@ import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
-import { ManagementCompaniesService, UsersManagementService } from '~/services'
+import { ManagementCompaniesService, ManagementCompanyUsersService, UsersManagementService } from '~/services'
 import { graphqlExceptionsHandler, isUUID  } from '~/utils'
 
 import { IGQLErrorResponse,  IManagementCompany, IManagementUsersData } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
-import { ManagementCompanyUsersService } from '~/services/admin/management-company-users.service'
 
 interface IUseGetDataResponse {
   company: IManagementCompany | IGQLErrorResponse

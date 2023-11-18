@@ -2,8 +2,8 @@ import { DocumentHead, Form, routeAction$, routeLoader$, zod$ } from '@builder.i
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { ManagementCompaniesService, SubparametersService } from '~/services'
-import { managementCreateCompanyValidationSchema } from '~/utils'
+import { ManagementCompaniesService, ManagementProductsService, SubparametersService } from '~/services'
+import { managementCreateProductValidationSchema } from '~/utils'
 
 import { IGQLErrorResponse, ISubparameter } from '~/interfaces'
 
@@ -12,43 +12,43 @@ import { useModalStatus } from '~/hooks'
 
 
 interface IGetSubparametersResponse {
-  documentTypes: ISubparameter[] | IGQLErrorResponse
-  companyTypes: ISubparameter[] | IGQLErrorResponse
+  companies: ISubparameter[] | IGQLErrorResponse
+  productTypes: ISubparameter[] | IGQLErrorResponse
 } 
 
 export const useGetSubparameters = routeLoader$<IGetSubparametersResponse>( async ({ cookie, redirect }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const documentTypes = await SubparametersService.findAllByParameterName({ parameterName: 'document type', status: true })
-  const companyTypes = await SubparametersService.findAllByParameterName({ parameterName: 'company type', status: true })
-  return { documentTypes, companyTypes }
+  const companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
+  const productTypes = await SubparametersService.findAllByParameterName({ parameterName: 'product type', status: true })
+  return { companies, productTypes }
 } )
 
-export const createCompanyAction = routeAction$( async ( data, { cookie, fail } ) => {
+export const createProductAction = routeAction$( async ( data, { cookie, fail } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
-  const company = await ManagementCompaniesService.createCompany({ createCompanyInput: data, jwt: jwt.value })
+  const product = await ManagementProductsService.createProduct({ createProductInput: data, jwt: jwt.value })
 
-  if ( 'errors' in company ) {
+  if ( 'errors' in product ) {
     return {
       success: false,
-      errors: company.errors
+      errors: product.errors
     }
   }
-  return { success: true, company }
-}, zod$({ ...managementCreateCompanyValidationSchema }) )
+  return { success: true, product }
+}, zod$({ ...managementCreateProductValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const { companyTypes, documentTypes } = useGetSubparameters().value
-  if ( 'errors' in companyTypes || 'errors' in documentTypes ) return <UnexpectedErrorPage />
+  const { productTypes, companies } = useGetSubparameters().value
+  if ( 'errors' in productTypes || 'errors' in companies ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = createCompanyAction()
+  const action = createProductAction()
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -57,52 +57,58 @@ export default component$( () => {
 
   return (
     <div class="create__container">
-      <BackButton href="/management/modules/companies" />
-      <h1 class="create__title"> Create new Company </h1>
+      <BackButton href="/management/modules/products" />
+      <h1 class="create__title"> Create new Product </h1>
       <Form class="form" action={ action }>
         <FormField
+          label="Name"
           name="name"
           placeholder="Name"
           error={ action.value?.fieldErrors?.name?.join( ', ' ) }
           />
         <FormField
+          label="Description"
           name="description"
           placeholder="Description"
           error={ action.value?.fieldErrors?.description?.join( ', ' ) }
           />
         <FormField
-          name="companyTypeId"
+          label="Code"
+          name="code"
+          placeholder="Code"
+          error={ action.value?.fieldErrors?.code?.join( ', ' ) }
+          />
+        <FormField
+          label="Notes"
+          name="notes"
+          placeholder="Notes"
+          error={ action.value?.fieldErrors?.notes?.join( ', ' ) }
+          />
+        <FormField
+          label="Product Type"
+          name="productTypeId"
           type="select"
-          options={ companyTypes }
+          options={ productTypes }
           />
         <FormField
-          name="documentTypeId"
+          label="Company"
+          name="companyId"
           type="select"
-          options={[
-            { id: 'null', name: 'No Document' },
-            ...documentTypes,
-          ]}
+          options={ [
+            ...companies.map( ( company ) => ({ id: company.id, name: company.name }) )
+          ] }
           />
         <FormField
-          name="documentNumber"
-          placeholder="Document Number"
-          error={ action.value?.fieldErrors?.documentNumber?.join( ', ' ) }
+          label="Price of product(Bs.)"
+          name="price"
+          placeholder="Price"
+          error={ action.value?.fieldErrors?.price?.join( ', ' ) }
           />
         <FormField
-          name="foundedAt"
-          type="date"
-          placeholder="Founded At"
-          error={ action.value?.fieldErrors?.foundedAt?.join( ', ' ) }
-          />
-        <FormField
-          name="email"
-          placeholder="Email"
-          error={ action.value?.fieldErrors?.email?.join( ', ' ) }
-          />
-        <FormField
-          name="website"
-          placeholder="Website"
-          error={ action.value?.fieldErrors?.website?.join( ', ' ) }
+          label="Stock"
+          name="stock"
+          placeholder="Stock"
+          error={ action.value?.fieldErrors?.stock?.join( ', ' ) }
           />
         <button> Create </button>
       </Form>
@@ -111,7 +117,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Company { action.value.company?.name } created successfully </span>
+                <span> Product { action.value.product?.name } created successfully </span>
               )
             }
             {
@@ -127,5 +133,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Company',
+  title: 'Create Product',
 }

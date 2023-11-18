@@ -176,3 +176,25 @@
   top: calc( 50% - 20px );
   left: 15px;
 }
+
+.button__view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 250px;
+  padding: 1rem;
+  height: 50px;
+  border-radius: 0.5rem;
+  border: 3px solid #009C8C;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  color: #222;
+  cursor: pointer;
+}
+
+.button__view:hover {
+  background-color: #009C8C;
+  color: #fff;
+}

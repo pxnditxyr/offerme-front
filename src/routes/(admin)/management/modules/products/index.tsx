@@ -63,6 +63,7 @@ export default component$( () => {
     description: product.description,
     stock: product.stock,
     price: product.price,
+    code: product.code,
     status: product.status,
     createdAt: parseDate( product.createdAt ),
     creator: product.creator?.email || '',

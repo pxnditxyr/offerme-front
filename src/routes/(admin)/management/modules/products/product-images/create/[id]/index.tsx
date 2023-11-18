@@ -3,54 +3,54 @@ import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
-import { ManagementCompaniesService, ManagementCompanyLogosService } from '~/services'
-import { isUUID, managementCreateCompanyLogoValidationSchema } from '~/utils'
+import { ManagementProductsService, ManagementProductImagesService } from '~/services'
+import { isUUID, managementCreateProductImageValidationSchema } from '~/utils'
 
-import { IGQLErrorResponse, IManagementCompany } from '~/interfaces'
+import { IGQLErrorResponse, IManagementProduct } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
 
 
-export const useGetCompany = routeLoader$<IManagementCompany | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
+export const useGetProduct = routeLoader$<IManagementProduct | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const id = atob( params.id )
-  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/companies' )
+  if ( !isUUID( id ) ) throw redirect( 302, '/management/modules/products' )
 
-  const company = await ManagementCompaniesService.company({ jwt: jwt.value, companyId: id })
-  return company
+  const product = await ManagementProductsService.product({ jwt: jwt.value, productId: id })
+  return product
 } )
 
-export const createCompanyAction = routeAction$( async ( data, { cookie, fail, params } ) => {
+export const createProductAction = routeAction$( async ( data, { cookie, fail, params } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   const id = atob( params.id ) || ''
 
-  const companyLogo = await ManagementCompanyLogosService.createCompanyLogo({ createCompanyLogoInput: {
+  const productImage = await ManagementProductImagesService.createProductImage({ createProductImageInput: {
     ...data,
-    companyId: id,
+    productId: id,
   }, jwt: jwt.value })
 
-  if ( 'errors' in companyLogo ) {
+  if ( 'errors' in productImage ) {
     return {
       success: false,
-      errors: companyLogo.errors
+      errors: productImage.errors
     }
   }
-  return { success: true, companyLogo }
-}, zod$({ ...managementCreateCompanyLogoValidationSchema }) )
+  return { success: true, productImage }
+}, zod$({ ...managementCreateProductImageValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const getCompany = useGetCompany().value
-  if ( 'errors' in getCompany ) return ( <UnexpectedErrorPage /> )
+  const getProduct = useGetProduct().value
+  if ( 'errors' in getProduct ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = createCompanyAction()
+  const action = createProductAction()
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -59,8 +59,8 @@ export default component$( () => {
 
   return (
     <div class="create__container">
-      <BackButton href="/management/modules/companies" />
-      <h1 class="create__title"> Create new Company </h1>
+      <BackButton href="/management/modules/products" />
+      <h1 class="create__title"> Upload Product Image </h1>
       <Form class="form" action={ action }>
         <FormField
           name="url"
@@ -79,7 +79,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Company created successfully </span>
+                <span> Product created successfully </span>
               )
             }
             {
@@ -95,5 +95,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Company Logo',
+  title: 'Create Product Image',
 }

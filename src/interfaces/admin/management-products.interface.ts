@@ -1,4 +1,5 @@
 import { ISubparameter } from '../parametrics/subparameters.interface'
+import { IManagementCategoriesStatus, IManagementCategory } from './management-categories.interface'
 import { IManagementActorData } from './management-users-data.interfaces'
 
 export interface IManagementProduct {
@@ -19,13 +20,13 @@ export interface IManagementProduct {
   company: ISubparameter
   productType: ISubparameter
 
-  images: IManagementProductImages[]
+  images: IManagementProductImage[]
   categories: IManagementProductCategory[]
   promotionRequests: IManagementProductPromotionRequest[]
   discountProducts: IManagementProductDiscountProduct[]
 }
 
-export interface IManagementProductImages {
+export interface IManagementProductImage {
   id:     string
   alt:    string
   url:    string
@@ -37,6 +38,8 @@ export interface IManagementProductCategory {
   productId: string
   categoryId: string
   status: boolean
+  product: IManagementProduct | null
+  category: IManagementCategory | null
 } 
 
 export interface IManagementProductPromotionRequest {
@@ -79,14 +82,13 @@ export interface IUpdateProductInput {
   stock?: number | null
 }
 
-// export interface ICreateProductLogoInput {
-//   productId: string
-//   alt:       string
-//   url:       string
-//   status:    boolean
-// }
-//
-// export interface ICreateProductUserInput {
-//   productId: string
-//   userId:    string
-// }
+export interface ICreateProductImageInput {
+  productId: string
+  alt:       string
+  url:       string
+}
+
+export interface ICreateProductCategoryInput {
+  productId: string
+  categoryId: string
+}
