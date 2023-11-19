@@ -3,25 +3,13 @@ import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { ManagementCompaniesService, SubparametersService } from '~/services'
-import { managementCreateCompanyValidationSchema, parseDate } from '~/utils'
+import { managementCreateCompanyValidationSchema } from '~/utils'
 
 import { IGQLErrorResponse, IManagementCompany, ISubparameter } from '~/interfaces'
 
 import styles from './update-index.styles.css?inline'
 import { useModalStatus } from '~/hooks'
 
-// export interface IUpdateCompanyInput {
-//   id:              string
-//   companyTypeId?:  string | null
-//   description?:    string | null
-//   documentNumber?: string | null
-//   documentTypeId?: string | null
-//   foundedAt?:      string | null
-//   email?:          string | null
-//   website?:        string | null
-//   name?:           string | null
-// }
-//
 interface IGetSubparametersResponse {
   documentTypes: ISubparameter[] | IGQLErrorResponse
   companyTypes: ISubparameter[] | IGQLErrorResponse

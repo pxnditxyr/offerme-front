@@ -20,6 +20,10 @@ interface FormFieldProps {
   options?: IFormOption[]
 }
 
+const getFormattedDate = ( date : string ) => {
+  return ( date === '' ) ? new Date().toISOString().split( 'T' )[ 0 ] : date.split( 'T' )[ 0 ]
+}
+
 export const FormField = component$<FormFieldProps>( ( { name, type = 'text', placeholder = '', value = '', isRequired = false, label = '', error = '', options = [] } ) => {
 
   useStyles$( styles )
@@ -56,7 +60,7 @@ export const FormField = component$<FormFieldProps>( ( { name, type = 'text', pl
             type={ type }
             name={ name }
             placeholder={ placeholder }
-            value={ ( type === 'date' ) ? value.split( 'T' )[ 0 ] : value }
+            value={ ( type === 'date' ) ? ( getFormattedDate( value ) ) : value }
             required={ isRequired }
             class={ `${ ( error ) ? 'form__field__input--error' : 'form__field__input' }` }
           />

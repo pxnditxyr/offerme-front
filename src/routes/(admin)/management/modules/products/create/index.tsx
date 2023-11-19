@@ -16,12 +16,19 @@ interface IGetSubparametersResponse {
   productTypes: ISubparameter[] | IGQLErrorResponse
 } 
 
-export const useGetSubparameters = routeLoader$<IGetSubparametersResponse>( async ({ cookie, redirect }) => {
+export const useGetSubparameters = routeLoader$<IGetSubparametersResponse>( async ({ cookie, redirect, query }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
+  const id = query.get( 'companyId' )
+
+  let companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
   const productTypes = await SubparametersService.findAllByParameterName({ parameterName: 'product type', status: true })
+
+  if ( 'errors' in companies || 'errors' in productTypes ) return { companies, productTypes }
+
+  if ( id ) companies = companies.filter( ( company ) => company.id === atob( id ) )
+
   return { companies, productTypes }
 } )
 

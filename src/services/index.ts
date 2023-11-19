@@ -19,5 +19,13 @@ export { ManagementProductsService } from './admin/products/management-products.
 export { ManagementProductImagesService } from './admin/products/management-product-images.service'
 export { ManagementProductCategoriesService } from './admin/products/management-product-categories.service'
 
+export { ManagementPromotionsService } from './admin/promotions/management-promotions.service'
+
+export { ManagementPromotionRequestsService } from './admin/promotion-requests/management-promotion-requests.service'
+export { ManagementPromotionImagesService } from './admin/promotion-requests/management-promotion-images.service'
+export { ManagementPromotionPaymentsService } from './admin/promotion-requests/management-promotion-payments.service'
+export { ManagementPromotionTargetProductsService } from './admin/promotion-requests/management-promotion-target-products.service'
+export { ManagementDiscountProductsService } from './admin/promotion-requests/management-discount-products.service'
+
 
 export { SubparametersService } from './parametrics/subparameters.service'

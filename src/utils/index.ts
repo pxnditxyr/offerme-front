@@ -3,18 +3,16 @@ export { signinValidationSchema } from './validations/signin.validation'
 export { signupValidationSchema } from './validations/signup.validation'
 
 // management validations
-export { managementCreateUsersValidationSchema } from './validations/management/management-create-users.validation'
-export { managementUpdateUsersValidationSchema } from './validations/management/management-update-users.validation'
+export * from './validations/management/management-create-users.validation'
+export * from './validations/management/management-update-users.validation'
 
-export {
-  managementCreateCategoryValidationSchema,
-  managementCreateCategoryImageValidationSchema
-} from './validations/management/management-category.validation'
+export * from './validations/management/management-category.validation'
+export * from './validations/management/management-product.validation'
+export * from './validations/management/management-promotion-request.validation'
+export * from './validations/management/management-promotion-payment.validation'
+export * from './validations/management/management-discount-products.validation'
 
-export {
-  managementCreateProductValidationSchema,
-  managementCreateProductImageValidationSchema
-} from './validations/management/management-product.validation'
+
 
 export * from './validations/management/management-company.validation'
 
@@ -29,4 +27,3 @@ export { parseDate } from './tools/parse-date'
 export { isUUID } from './tools/check-is-uuid'
 
 export { serializeDate } from './tools/serialize-date'
-

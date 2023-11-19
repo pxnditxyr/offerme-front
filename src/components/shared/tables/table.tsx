@@ -27,7 +27,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
         <thead>
           <tr>
             { header.map( ( item ) => (
-              <th>{ item }</th>
+              <th key={ item }>{ item }</th>
             ) ) }
             {
               ( tableType === 'default' ) && (
@@ -42,15 +42,18 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
         <tbody>
           {
             body.map( ( item, itemIndex ) => (
-              <tr onClick$={ () => onRowClick( item.id ) } class={ `${ ( tableType === 'update' ) ? 'is-clickable' : 'no-clickable' }` }>
+              <tr
+                onClick$={ () => onRowClick( item.id ) } class={ `${ ( tableType === 'update' ) ? 'is-clickable' : 'no-clickable' }` }
+                key={ item.id }
+              >
                 {
                   keys.map( ( key ) => {
                     if ( key === 'status' )
                     return (
-                      <td class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactive__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
+                      <td key={ key } class={ `${ ( item[ key ] ) ? 'is-active__item' : 'is-inactive__item' }` }> { `${ item[ key ] ? '✔' : '✖' }` } </td>
                     )
-                    if ( key === 'id' ) return ( <td> { itemIndex + 1 } </td> )
-                    return ( <td> { item[ key ] } </td> )
+                    if ( key === 'id' ) return ( <td key={ key }> { itemIndex + 1 } </td> )
+                    return ( <td key={ key }> { item[ key ] } </td> )
                   } )
                 }
                 {

@@ -41,7 +41,7 @@ export default component$( () => {
           </h1>
           <p class="view__image-item">
             <img src={ ( category.images.find( ( image ) => image.status ) )
-                ? category.images[ 0 ].url
+                ? category.images.find( ( image ) => image.status )?.url
                 : '/images/fallback-image.png'
             } alt={ category.name } />
           </p>

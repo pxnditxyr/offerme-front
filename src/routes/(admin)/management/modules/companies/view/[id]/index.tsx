@@ -89,7 +89,7 @@ export default component$( () => {
           </h1>
           <p class="view__image-item">
             <img src={ ( company.logos.find( ( image ) => image.status ) )
-                ? company.logos[ 0 ].url
+                ? company.logos.find( ( image ) => image.status )?.url
                 : '/images/fallback-image.png'
             } alt={ company.name } />
           </p>

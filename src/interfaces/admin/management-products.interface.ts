@@ -1,5 +1,5 @@
 import { ISubparameter } from '../parametrics/subparameters.interface'
-import { IManagementCategoriesStatus, IManagementCategory } from './management-categories.interface'
+import { IManagementCategory } from './management-categories.interface'
 import { IManagementActorData } from './management-users-data.interfaces'
 
 export interface IManagementProduct {

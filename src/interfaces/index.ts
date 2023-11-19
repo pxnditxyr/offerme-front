@@ -17,8 +17,12 @@ export * from './admin/management-users-mutations.interface'
 
 export * from './admin/management-categories.interface'
 export * from './admin/management-companies.interface'
-
 export * from './admin/management-products.interface'
+export * from './admin/management-promotions.interface'
+export * from './admin/management-promotion-requests.interface'
+export * from './admin/management-promotion-payments.interface'
+export * from './admin/management-promotion-target-products.interface'
+export * from './admin/management-discount-products.interface'
 
 // auth
 export * from './auth/auth.interface'
@@ -30,5 +34,4 @@ export * from './types/valid-modules.type'
 
 
 export * from './parametrics/subparameters.interface'
-
 

@@ -14,3 +14,11 @@ export * from './admin/companies/company-users.queries'
 export * from './admin/products/products.queries'
 export * from './admin/products/product-images.queries'
 export * from './admin/products/product-categories.queries'
+
+export * from './admin/promotions/promotions.queries'
+
+export * from './admin/promotion-requests/promotion-requests.queries'
+export * from './admin/promotion-requests/promotion-images.queries'
+export * from './admin/promotion-requests/promotion-payments.queries'
+export * from './admin/promotion-requests/promotion-target-products.queries'
+export * from './admin/promotion-requests/discount-products.queries'
