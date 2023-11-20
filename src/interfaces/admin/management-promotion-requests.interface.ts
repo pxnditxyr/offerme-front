@@ -25,7 +25,7 @@ export interface IManagementPromotionRequest {
 
   images: IManagementPromotionImage[]
   targetProducts: IManagementPromotionRequestTargetProduct[]
-  promotionStatus: IManagementPromotionRequestStatus
+  promotionStatus: IManagementPromotionRequestStatus[]
   promotionPayments: IManagementPromotionRequestPayment[]
   discountProducts: IManagementPromotionRequestDiscountProduct[]
 }

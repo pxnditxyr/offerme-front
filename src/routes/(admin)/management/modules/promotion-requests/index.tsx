@@ -1,7 +1,7 @@
 import { DocumentHead, routeLoader$, useNavigate } from '@builder.io/qwik-city'
 import { $, QwikSubmitEvent, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 
-import { LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
+import { FormField, LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/components/shared'
 import { useAuthStore, useModalStatus } from '~/hooks'
 import { parseDate } from '~/utils'
 
@@ -18,11 +18,28 @@ export const useGetSearch = routeLoader$<string>( async ({ query }) => {
 
 export const useGetManagementPromotionRequests = routeLoader$<IManagementPromotionRequest[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
   const search = query.get( 'search' ) || ''
+  const state = query.get( 'state' ) || ''
 
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
   
   const promotionRequests = await ManagementPromotionRequestsService.promotionRequests({ search, jwt: jwt.value })
+  if ( 'errors' in promotionRequests ) return promotionRequests
+  if ( state === 'approved' ) {
+    const approvedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => promotionRequest.promotionStatus[ 0 ].adminApprovedStatus )
+    return approvedPromotionRequests 
+  }
+
+  if ( state === 'rejected' ) {
+    const rejectedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => promotionRequest.promotionStatus[ 0 ].adminRejectedStatus )
+    return rejectedPromotionRequests 
+  }
+
+  if ( state === 'pending' ) {
+    const pendingPromotionRequests = promotionRequests.filter( ( promotionRequest ) => !( promotionRequest.promotionStatus[ 0 ].adminApprovedStatus || promotionRequest.promotionStatus[ 0 ].adminRejectedStatus ) )
+    return pendingPromotionRequests 
+  }
+
   return promotionRequests
 } )
 
@@ -73,7 +90,12 @@ export default component$( () => {
 
   const onSearchSubmit = $( ( event : QwikSubmitEvent<HTMLFormElement> ) => {
     const { target } = event as any
-    nav( `/management/modules/promotion-requests?${ `search=${ target.search.value }` }` )
+    nav( `?${ `search=${ target.search.value }` }` )
+  } )
+  
+  const onSearchState = $( ( event : QwikSubmitEvent<HTMLFormElement> ) => {
+    const { target } = event as any
+    nav( `?${ `state=${ target.state.value }` }` )
   } )
 
   const newOnCloseModal = $( () => {
@@ -84,6 +106,19 @@ export default component$( () => {
     <div class="module__container">
       <h1 class="module__title"> Promotion Requests </h1>
       <SearchBar value={ searchValue } onSearchSubmit={ onSearchSubmit } />
+      <form class="form__state__selector" onSubmit$={ onSearchState }>
+        <FormField
+          name="state"
+          type="select"
+          options={ [
+            { id: '', name: 'All' },
+            { id: 'pending', name: 'Pending' },
+            { id: 'approved', name: 'Approved' },
+            { id: 'rejected', name: 'Rejected' }
+          ] }
+          />
+        <button> Search </button>
+      </form>
       <Table 
         header={ headers }
         keys={ keys }

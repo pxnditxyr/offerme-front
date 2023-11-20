@@ -1,8 +1,8 @@
 import { $, component$, useSignal, useStyles$ } from '@builder.io/qwik'
 import { DocumentHead, Link, routeLoader$, useNavigate } from '@builder.io/qwik-city'
 import { BackButton, LoadingPage, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { IGQLErrorResponse, IManagementProduct, IManagementPromotionRequest } from '~/interfaces'
-import { ManagementProductsService, ManagementPromotionRequestsService } from '~/services'
+import { IGQLErrorResponse, IManagementProduct, IManagementPromotionRequest, IManagementPromotionStatus } from '~/interfaces'
+import { ManagementProductsService, ManagementPromotionRequestsService, ManagementPromotionStatusService } from '~/services'
 import { isUUID } from '~/utils'
 
 import { useAuthStore, useModalStatus } from '~/hooks'
@@ -10,17 +10,19 @@ import { MiniCard } from '~/components/shared'
 
 import styles from './view.styles.css?inline'
 
-interface IGetPromotionRequestById {
+interface IGetDataResponse {
   promotionRequest: IManagementPromotionRequest | IGQLErrorResponse
   products: IManagementProduct[] | IGQLErrorResponse
+  promotionStatus: IManagementPromotionStatus | IGQLErrorResponse
 }
 
-export const useGetPromotionRequestById = routeLoader$<IGetPromotionRequestById>( async ({ params, cookie, redirect }) => {
+export const useGetPromotionRequestById = routeLoader$<IGetDataResponse>( async ({ params, cookie, redirect }) => {
   const id = atob( params.id )
   if ( !isUUID( id ) ) {
     return {
       promotionRequest: { errors: 'Invalid PromotionRequest ID' },
-      products: { errors: 'Invalid PromotionRequest ID' }
+      products: { errors: 'Invalid PromotionRequest ID' },
+      promotionStatus: { errors: 'Invalid PromotionRequest ID' }
     }
   }
 
@@ -29,8 +31,10 @@ export const useGetPromotionRequestById = routeLoader$<IGetPromotionRequestById>
 
   const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ promotionRequestId: id, jwt: jwt.value })
   let products = await ManagementProductsService.products({ jwt: jwt.value, status: true })
+  if ( 'errors' in products || 'errors' in promotionRequest ) return { promotionRequest, products, promotionStatus: { errors: 'Invalid PromotionRequest ID' } }
 
-  if ( 'errors' in products || 'errors' in promotionRequest ) return { promotionRequest, products }
+  const promotionStatus = await ManagementPromotionStatusService.findOne({ promotionStatesId: promotionRequest.promotionStatus[ 0 ].id, jwt: jwt.value })
+  if ( 'errors' in promotionStatus ) return { promotionRequest, products, promotionStatus }
 
   products = products.filter( ( product ) => 
     ( product.company.id === promotionRequest.company.id )
@@ -39,15 +43,16 @@ export const useGetPromotionRequestById = routeLoader$<IGetPromotionRequestById>
   )
   return {
     promotionRequest,
-    products
+    products,
+    promotionStatus
   }
 } )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const { promotionRequest, products } = useGetPromotionRequestById().value
-  if ( 'errors' in promotionRequest || 'errors' in products ) return ( <UnexpectedErrorPage /> )
+  const { promotionRequest, products, promotionStatus } = useGetPromotionRequestById().value
+  if ( 'errors' in promotionRequest || 'errors' in products || 'errors' in promotionStatus ) return ( <UnexpectedErrorPage /> )
 
   const { token, status } = useAuthStore()
   if ( status === 'loading' ) return ( <LoadingPage /> )
@@ -87,6 +92,29 @@ export default component$( () => {
     nav()
   } )
 
+  const onApproveClick = $( async ( id : string ) => {
+    if ( promotionRequest.discountProducts.length === 0 ) {
+      errors.value = 'You need to add at least one discount product'
+      onOpenModal()
+      return
+    }
+    if ( !promotionRequest.status ) {
+      errors.value = 'You need to activate the promotion request'
+      onOpenModal()
+      return
+    }
+    if ( !( promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.status ) ) ) {
+      errors.value = 'You need to activate all discount products'
+      onOpenModal()
+      return
+    }
+    nav( `/management/modules/promotion-requests/promotion-status/approve/${ btoa( id ) }` )
+  } )
+
+  const onRejectClick = $( async ( id : string ) => {
+    nav( `/management/modules/promotion-requests/promotion-status/reject/${ btoa( id ) }` )
+  } )
+
   return (
     <div class="view__container">
       <BackButton href="/management/modules/promotion-requests" />
@@ -101,7 +129,6 @@ export default component$( () => {
                 : '/images/fallback-image.png'
             } alt={ promotionRequest.title } />
           </p>
-
         </section>
         <section class="view__container__card__info">
           <p class="view__info-item"> Description: { promotionRequest.description } </p>
@@ -111,6 +138,8 @@ export default component$( () => {
           <p class="view__info-item"> Code: { promotionRequest.code } </p>
           <p class="view__info-item"> Reason: { promotionRequest.reason } </p>
           <p class="view__info-item"> Inversion Amount: { promotionRequest.inversionAmount } { promotionRequest.currency.name } </p>
+          <p class="view__info-item"> Start Date: { promotionRequest.promotionStartAt } </p>
+          <p class="view__info-item"> End Date: { promotionRequest.promotionEndAt } </p>
           <p class="view__info-item"> 
             Status: { promotionRequest.status ? 'Active' : 'Inactive' }
           </p>
@@ -123,10 +152,56 @@ export default component$( () => {
             Updated By: { promotionRequest.updater?.email || 'No Updated' }
           </p>
         </section>
+
+        <section class="view__container__card__info">
+          <h2> Promotion Status </h2>
+          {
+            ( promotionStatus.adminApprovedStatus ) && (
+              <>
+                <p class="view__info-item"> Comment: { promotionStatus.adminComment } </p>
+                <p class="view__info-item"> Reason: { promotionStatus.adminReason } </p>
+                <p class="view__info-item"> Approved By: { promotionStatus.adminApproved?.email || 'No Approved' } </p>
+                <p class="view__info-item"> Approved At: { promotionStatus.adminApprovedAt } </p>
+                <p class="view__info-item"> Approved Status: { promotionStatus.adminApprovedStatus ? 'Active' : 'Inactive' } </p>
+              </>
+            )
+          }
+          {
+            ( promotionStatus.adminRejectedStatus ) && (
+              <>
+                <p class="view__info-item"> Comment: { promotionStatus.adminComment } </p>
+                <p class="view__info-item"> Reason: { promotionStatus.adminReason } </p>
+                <p class="view__info-item"> Rejected By: { promotionStatus.adminRejected?.email || 'No Rejected' } </p>
+                <p class="view__info-item"> Rejected At: { promotionStatus.adminRejectedAt } </p>
+                <p class="view__info-item"> Rejected Status: { promotionStatus.adminRejectedStatus ? 'Active' : 'Inactive' } </p>
+              </>
+            )
+          }
+          {
+            ( !promotionStatus.adminApprovedStatus && !promotionStatus.adminRejectedStatus ) && (
+              <p> Promotion Status is Pending, please approve or reject </p>
+            )
+          }
+        </section>
+
+        <section class="view__container__card__actions">
+          <button
+            class="approve__button"
+            onClick$={ () => onApproveClick( promotionStatus.id ) }
+            disabled={ promotionStatus.adminApprovedStatus }
+          > Approve </button>
+          <button
+            class="reject__button"
+            onClick$={ () => onRejectClick( promotionStatus.id ) }
+            disabled={ promotionStatus.adminRejectedStatus }
+          > Reject </button>
+        </section>
+
         <section class="view__container__card__actions">
           <button class="edit__button" onClick$={ () => onEditClick( promotionRequest.id ) }> Edit </button>
           <button class={ `toggle-radius ${ promotionRequest.status ? 'is-activate' : 'is-deactivate' }` } onClick$={ () => onToggleStatus( promotionRequest.id ) }></button>
         </section>
+
 
         <section class="view__container__card__footer">
           <div class="view__images">

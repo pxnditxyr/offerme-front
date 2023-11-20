@@ -3,7 +3,7 @@ import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
 import { useModalStatus } from '~/hooks'
-import { ManagementCompaniesService, ManagementPromotionRequestsService, SubparametersService } from '~/services'
+import { ManagementCompaniesService, ManagementPromotionRequestsService, ManagementPromotionStatusService, SubparametersService } from '~/services'
 import { managementCreatePromotionRequestValidationSchema } from '~/utils'
 
 import { IGQLErrorResponse, ISubparameter } from '~/interfaces'
@@ -42,6 +42,14 @@ export const createPromotionRequestAction = routeAction$( async ( data, { cookie
     return {
       success: false,
       errors: promotionRequest.errors
+    }
+  }
+
+  const promotionStatus = await ManagementPromotionStatusService.create({ createPromotionStatusInput: { promotionRequestId: promotionRequest.id }, jwt: jwt.value } )
+  if ( 'errors' in promotionStatus ) {
+    return {
+      success: false,
+      errors: promotionStatus.errors
     }
   }
   return { success: true, promotionRequest }

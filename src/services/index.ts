@@ -26,6 +26,7 @@ export { ManagementPromotionImagesService } from './admin/promotion-requests/man
 export { ManagementPromotionPaymentsService } from './admin/promotion-requests/management-promotion-payments.service'
 export { ManagementPromotionTargetProductsService } from './admin/promotion-requests/management-promotion-target-products.service'
 export { ManagementDiscountProductsService } from './admin/promotion-requests/management-discount-products.service'
+export { ManagementPromotionStatusService } from './admin/promotion-requests/management-promotion-status.service'
 
 
 export { SubparametersService } from './parametrics/subparameters.service'
