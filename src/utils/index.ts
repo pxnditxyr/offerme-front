@@ -8,6 +8,7 @@ export * from './validations/management/management-update-users.validation'
 
 export * from './validations/management/management-category.validation'
 export * from './validations/management/management-product.validation'
+export * from './validations/management/management-promotion.validation'
 export * from './validations/management/management-promotion-request.validation'
 export * from './validations/management/management-promotion-payment.validation'
 export * from './validations/management/management-discount-products.validation'

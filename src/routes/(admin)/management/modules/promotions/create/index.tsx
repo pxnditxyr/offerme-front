@@ -2,53 +2,71 @@ import { DocumentHead, Form, routeAction$, routeLoader$, zod$ } from '@builder.i
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { ManagementCompaniesService, ManagementProductsService, SubparametersService } from '~/services'
-import { managementCreateProductValidationSchema } from '~/utils'
+import { ManagementCompaniesService, ManagementPromotionPaymentsService, ManagementPromotionsService, SubparametersService } from '~/services'
+import { managementCreatePromotionValidationSchema } from '~/utils'
 
-import { IGQLErrorResponse, ISubparameter } from '~/interfaces'
+import { IGQLErrorResponse, IManagementPromotionPayment, ISubparameter } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
 import { useModalStatus } from '~/hooks'
 
+// code: z.string().min( 2, 'Code must be at least 2 characters' ),
+//   comment: z.string().min( 2, 'Comment must be at least 2 characters' ),
+//   companyId: z.string().min( 2, 'Company must be at least 2 characters' ),
+//   description: z.string().min( 2, 'Description must be at least 2 characters' ),
+//   currencyId: z.string().min( 2, 'Currency must be at least 2 characters' ),
+//   inversionAmount: z.preprocess( ( value ) => parseInt( z.string().parse( value ), 10 ),
+//     z.number().int().min( 0, 'Inversion Amount must be at least 0' ) ),
+//   promotionEndAt: z.string().min( 2, 'Promotion End At must be at least 2 characters' ),
+//   promotionStartAt: z.string().min( 2, 'Promotion Start At must be at least 2 characters' ),
+//   promotionTypeId: z.string().min( 2, 'Promotion Type must be at least 2 characters' ),
+//   promotionPaymentId: z.string().min( 2, 'Promotion Payment must be at least 2 characters' ),
+//   promotionRequestId: z.string().min( 2, 'Promotion Request must be at least 2 characters' ),
+//   reason: z.string().min( 2, 'Reason must be at least 2 characters' ),
+//   title: z.string().min( 2, 'Title must be at least 2 characters' )
 
-interface IGetSubparametersResponse {
+
+interface IGetDataResponse {
   companies: ISubparameter[] | IGQLErrorResponse
-  productTypes: ISubparameter[] | IGQLErrorResponse
+  promotionTypes: ISubparameter[] | IGQLErrorResponse
+  promotionPayments: IManagementPromotionPayment[] | IGQLErrorResponse
+  promotionRequests: ISubparameter[] | IGQLErrorResponse
 } 
 
-export const useGetSubparameters = routeLoader$<IGetSubparametersResponse>( async ({ cookie, redirect }) => {
+export const useGetSubparameters = routeLoader$<IGetDataResponse>( async ({ cookie, redirect }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
-  const productTypes = await SubparametersService.findAllByParameterName({ parameterName: 'product type', status: true })
-  return { companies, productTypes }
+  const promotionTypes = await SubparametersService.findAllByParameterName({ parameterName: 'Promotion type', status: true })
+  const promotionPayments = await ManagementPromotionPaymentsService.promotionPayment()
+  return { companies, promotionTypes }
 } )
 
-export const createProductAction = routeAction$( async ( data, { cookie, fail } ) => {
+export const createPromotionAction = routeAction$( async ( data, { cookie, fail } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
-  const product = await ManagementProductsService.createProduct({ createProductInput: data, jwt: jwt.value })
+  const Promotion = await ManagementPromotionsService.createPromotion({ createPromotionInput: data, jwt: jwt.value })
 
-  if ( 'errors' in product ) {
+  if ( 'errors' in Promotion ) {
     return {
       success: false,
-      errors: product.errors
+      errors: Promotion.errors
     }
   }
-  return { success: true, product }
-}, zod$({ ...managementCreateProductValidationSchema }) )
+  return { success: true, Promotion }
+}, zod$({ ...managementCreatePromotionValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const { productTypes, companies } = useGetSubparameters().value
-  if ( 'errors' in productTypes || 'errors' in companies ) return ( <UnexpectedErrorPage /> )
+  const { PromotionTypes, companies } = useGetSubparameters().value
+  if ( 'errors' in PromotionTypes || 'errors' in companies ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = createProductAction()
+  const action = createPromotionAction()
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -58,7 +76,7 @@ export default component$( () => {
   return (
     <div class="create__container">
       <BackButton href="/management/modules/promotions" />
-      <h1 class="create__title"> Create new Product </h1>
+      <h1 class="create__title"> Create new Promotion </h1>
       <Form class="form" action={ action }>
         <FormField
           label="Name"
@@ -85,10 +103,10 @@ export default component$( () => {
           error={ action.value?.fieldErrors?.notes?.join( ', ' ) }
           />
         <FormField
-          label="Product Type"
-          name="productTypeId"
+          label="Promotion Type"
+          name="PromotionTypeId"
           type="select"
-          options={ productTypes }
+          options={ PromotionTypes }
           />
         <FormField
           label="Company"
@@ -99,7 +117,7 @@ export default component$( () => {
           ] }
           />
         <FormField
-          label="Price of product(Bs.)"
+          label="Price of Promotion(Bs.)"
           name="price"
           placeholder="Price"
           error={ action.value?.fieldErrors?.price?.join( ', ' ) }
@@ -117,7 +135,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Product { action.value.product?.name } created successfully </span>
+                <span> Promotion { action.value.Promotion?.name } created successfully </span>
               )
             }
             {
@@ -133,5 +151,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Create Product',
+  title: 'Create Promotion',
 }

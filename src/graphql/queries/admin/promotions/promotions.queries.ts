@@ -65,20 +65,20 @@ query Promotion($promotionId: ID!) {
 export const managementPromotionCreateMutation = `
 mutation CreatePromotion($createPromotionInput: CreatePromotionInput!) {
   createPromotion(createPromotionInput: $createPromotionInput) {
-    
+    ${ managementPromotionsData }
   }
 }`
 
 export const managementPromotionUpdateMutation = `
 mutation UpdatePromotion($updatePromotionInput: UpdatePromotionInput!) {
   updatePromotion(updatePromotionInput: $updatePromotionInput) {
-    
+    ${ managementPromotionsData }
   }
 }`
 
 export const managementPromotionToggleStatusMutation = `
 mutation ToggleStatusPromotion($toggleStatusPromotionId: ID!) {
   toggleStatusPromotion(id: $toggleStatusPromotionId) {
-    
+    ${ managementPromotionsData }
   }
 }`

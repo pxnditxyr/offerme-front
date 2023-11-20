@@ -4,6 +4,14 @@ import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
 import { ICreatePromotionPaymentInput, IGQLErrorResponse, IManagementPromotionPayment } from '~/interfaces'
 
 
+interface IFindAllParams {
+  search?: string
+  offset?: number
+  limit?:  number
+  status?: boolean
+  jwt:     string
+}
+
 interface IPromotionByIdParams {
   promotionPaymentId: string
   jwt:        string
@@ -20,6 +28,17 @@ interface IToggleStatusPromotionPaymentsParams {
 }
 
 export class ManagementPromotionPaymentsService {
+
+  static promotionPayments = async ( { search, offset, limit, status, jwt } : IFindAllParams ) : Promise<IManagementPromotionPayment[] | IGQLErrorResponse> => {
+    try {
+      
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
   static promotionPayment = async ( { promotionPaymentId, jwt } : IPromotionByIdParams ) : Promise<IManagementPromotionPayment | IGQLErrorResponse> => {
     try {
       const response = await graphqlClient.query({ document: managementPromotionPaymentQuery, variables: { promotionPaymentId }, requestHeaders: getBearerAuthHeader( jwt ) })
