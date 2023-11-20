@@ -4,6 +4,7 @@ import { IManagementActorData } from './management-users-data.interfaces'
 export interface IManagementPromotion {
   id: string
   title: string
+  promotionRequestId: string
   code: string
   description: string
   reason: string
@@ -38,32 +39,30 @@ export interface IManagementPromotionPromotionPayment {
 }
 
 export interface ICreatePromotionInput {
-  code: string
-  comment: string
-  companyId: string
-  description: string
-  promotionEndAt: string
-  userId: string
   title: string
   reason: string
   promotionTypeId: string
   promotionStartAt: string
   promotionRequestId: string
   promotionPaymentId: string
+  promotionEndAt: string
+  description: string
+  comment: string
+  companyId: string
+  code: string
 }
 
 export interface IUpdatePromotionInput {
   id: string
-  code?: string | null
-  comment?: string | null
-  companyId?: string | null
-  description?: string | null
-  promotionEndAt?: string | null
-  userId?: string | null
   title?: string | null
   reason?: string | null
   promotionTypeId?: string | null
   promotionStartAt?: string | null
   promotionRequestId?: string | null
   promotionPaymentId?: string | null
+  promotionEndAt?: string | null
+  description?: string | null
+  comment?: string | null
+  companyId?: string | null
+  code?: string | null
 }

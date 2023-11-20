@@ -10,9 +10,10 @@ interface ITableProps {
   onEditClick:    ( id : string ) => void
   onToggleStatus: ( id : string ) => void
   tableType?:     'default' | 'update'
+  idToRedirect?:  string
 }
 
-export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus, tableType = 'default' } : ITableProps ) => {
+export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus, tableType = 'default', idToRedirect } : ITableProps ) => {
   
   useStyles$( styles )
 
@@ -43,7 +44,7 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
           {
             body.map( ( item, itemIndex ) => (
               <tr
-                onClick$={ () => onRowClick( item.id ) } class={ `${ ( tableType === 'update' ) ? 'is-clickable' : 'no-clickable' }` }
+                onClick$={ () => onRowClick( item[ idToRedirect || 'id' ] ) } class={ `${ ( tableType === 'update' ) ? 'is-clickable' : 'no-clickable' }` }
                 key={ item.id }
               >
                 {
@@ -62,11 +63,11 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                       <td>
                         <button
                           class="button view__button"
-                          onClick$={ () => onViewClick( item.id ) }
+                          onClick$={ () => onViewClick( item[ idToRedirect || 'id' ] ) }
                         >View</button>
                         <button
                           class="button edit__button"
-                          onClick$={ () => onEditClick( item.id ) }
+                          onClick$={ () => onEditClick( item[ idToRedirect || 'id' ] ) }
                         >Edit</button>
                       </td>
                       <td>

@@ -106,19 +106,16 @@ export default component$( () => {
         <FormField
           label="Discount Amount"
           name="discountAmount"
-          type="number"
           error={ action.value?.fieldErrors?.discountAmount?.join( ', ' ) }
           />
         <FormField
           label="Discount Percentage"
           name="discountPercentage"
-          type="number"
           error={ action.value?.fieldErrors?.discountPercentage?.join( ', ' ) }
           />
         <FormField
           label="Discount Price"
           name="discountPrice"
-          type="number"
           error={ action.value?.fieldErrors?.discountPrice?.join( ', ' ) }
           />
         <button> Create </button>

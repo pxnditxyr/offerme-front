@@ -82,7 +82,6 @@ export default component$( () => {
         <FormField
           name="order"
           placeholder="Order"
-          type="number"
           value={ String( getCategoryById.order ) }
           error={ action.value?.fieldErrors?.order?.join( ', ' ) }
           />

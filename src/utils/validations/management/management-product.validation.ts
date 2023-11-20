@@ -6,8 +6,8 @@ export const managementCreateProductValidationSchema = {
   description: z.string().min( 2, 'Description must be at least 2 characters' ),
   name: z.string().min( 2, 'Name must be at least 2 characters' ),
   notes: z.string().min( 2, 'Notes must be at least 2 characters' ),
-  price: z.preprocess( ( value ) => parseInt( z.string().parse( value ), 10 ),
-    z.number().int().min( 0, 'Price must be at least 0' ) ),
+  price: z.preprocess( ( value ) => parseFloat( z.string().parse( value ) ),
+    z.number().min( 0, 'Price must be at least 0' ) ),
   productTypeId: z.string().min( 2, 'Product Type must be at least 2 characters' ),
   stock: z.preprocess( ( value ) => parseInt( z.string().parse( value ), 10 ),
     z.number().int().min( 0, 'Stock must be at least 0' ) )

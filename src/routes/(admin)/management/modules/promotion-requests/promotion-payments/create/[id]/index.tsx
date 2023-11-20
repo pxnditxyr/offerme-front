@@ -77,7 +77,6 @@ export default component$( () => {
         <FormField
           label="Amount"
           name="amount"
-          type="number"
           error={ action.value?.fieldErrors?.amount?.join( ', ' ) }
           />
         <FormField

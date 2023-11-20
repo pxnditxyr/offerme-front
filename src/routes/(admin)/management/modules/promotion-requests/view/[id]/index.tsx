@@ -31,16 +31,20 @@ export const useGetPromotionRequestById = routeLoader$<IGetDataResponse>( async 
 
   const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ promotionRequestId: id, jwt: jwt.value })
   let products = await ManagementProductsService.products({ jwt: jwt.value, status: true })
+
+
   if ( 'errors' in products || 'errors' in promotionRequest ) return { promotionRequest, products, promotionStatus: { errors: 'Invalid PromotionRequest ID' } }
 
   const promotionStatus = await ManagementPromotionStatusService.findOne({ promotionStatesId: promotionRequest.promotionStatus[ 0 ].id, jwt: jwt.value })
   if ( 'errors' in promotionStatus ) return { promotionRequest, products, promotionStatus }
 
+
   products = products.filter( ( product ) => 
     ( product.company.id === promotionRequest.company.id )
      &&
-    ( promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.productId === product.id ) )
+    ( !promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.productId === product.id ) )
   )
+
   return {
     promotionRequest,
     products,
@@ -103,7 +107,7 @@ export default component$( () => {
       onOpenModal()
       return
     }
-    if ( !( promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.status ) ) ) {
+    if ( ( promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.status ) ) ) {
       errors.value = 'You need to activate all discount products'
       onOpenModal()
       return

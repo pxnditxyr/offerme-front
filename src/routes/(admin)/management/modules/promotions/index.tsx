@@ -8,7 +8,6 @@ import { parseDate } from '~/utils'
 import { IGQLErrorResponse, IManagementPromotion } from '~/interfaces'
 import { ManagementPromotionsService } from '~/services'
 
-
 import styles from './module.styles.css?inline'
 
 export const useGetSearch = routeLoader$<string>( async ({ query }) => {
@@ -41,8 +40,8 @@ export default component$( () => {
   const nav = useNavigate()
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const onEditClick = $( ( id : string ) => nav( `/management/modules/promotions/update/${ btoa( id ) }` ) )
-  const onViewClick = $( ( id : string ) => nav( `/management/modules/promotions/view/${ btoa( id ) }` ) )
+  const onEditClick = $( ( id : string ) => nav( `/management/modules/promotion-requests/update/${ btoa( id ) }` ) )
+  const onViewClick = $( ( id : string ) => nav( `/management/modules/promotion-requests/view/${ btoa( id ) }` ) )
 
   const onToggleStatus = $( async ( id : string ) => {
     const promotion =  await ManagementPromotionsService.toggleStatusPromotion({ toggleStatusPromotionId: id, jwt: token || '' })
@@ -69,6 +68,7 @@ export default component$( () => {
     creator: promotion.creator?.email || '',
     updatedAt: parseDate( promotion.updatedAt ),
     updater: promotion.updater?.email || 'No Updated',
+    newId: promotion.promotionRequestId
   }) )
 
   const onSearchSubmit = $( ( event : QwikSubmitEvent<HTMLFormElement> ) => {
@@ -91,6 +91,7 @@ export default component$( () => {
         onEditClick={ onEditClick }
         onViewClick={ onViewClick }
         onToggleStatus={ onToggleStatus }
+        idToRedirect="newId"
       />
       {
         ( modalStatus.value ) && (

@@ -115,21 +115,18 @@ export default component$( () => {
         <FormField
           label="Discount Amount"
           name="discountAmount"
-          type="number"
           value={ String( discountProduct.discountAmount ) }
           error={ action.value?.fieldErrors?.discountAmount?.join( ', ' ) }
           />
         <FormField
           label="Discount Percentage"
           name="discountPercentage"
-          type="number"
           value={ String( discountProduct.discountPercentage ) }
           error={ action.value?.fieldErrors?.discountPercentage?.join( ', ' ) }
           />
         <FormField
           label="Discount Price"
           name="discountPrice"
-          type="number"
           value={ String( discountProduct.discountPrice ) }
           error={ action.value?.fieldErrors?.discountPrice?.join( ', ' ) }
           />

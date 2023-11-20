@@ -1,68 +1,114 @@
-import { DocumentHead, Form, routeAction$, routeLoader$, zod$ } from '@builder.io/qwik-city'
-import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
+import { DocumentHead, Form, routeAction$, routeLoader$, useNavigate, zod$ } from '@builder.io/qwik-city'
+import { QwikSubmitEvent, component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { ManagementCompaniesService, ManagementPromotionPaymentsService, ManagementPromotionsService, SubparametersService } from '~/services'
+import { ManagementPromotionPaymentsService, ManagementPromotionRequestsService, ManagementPromotionsService, SubparametersService } from '~/services'
 import { managementCreatePromotionValidationSchema } from '~/utils'
 
-import { IGQLErrorResponse, IManagementPromotionPayment, ISubparameter } from '~/interfaces'
+import { IGQLErrorResponse, IManagementPromotionPayment, IManagementPromotionRequest, ISubparameter } from '~/interfaces'
 
 import styles from './create.styles.css?inline'
 import { useModalStatus } from '~/hooks'
 
-// code: z.string().min( 2, 'Code must be at least 2 characters' ),
-//   comment: z.string().min( 2, 'Comment must be at least 2 characters' ),
-//   companyId: z.string().min( 2, 'Company must be at least 2 characters' ),
-//   description: z.string().min( 2, 'Description must be at least 2 characters' ),
-//   currencyId: z.string().min( 2, 'Currency must be at least 2 characters' ),
-//   inversionAmount: z.preprocess( ( value ) => parseInt( z.string().parse( value ), 10 ),
-//     z.number().int().min( 0, 'Inversion Amount must be at least 0' ) ),
-//   promotionEndAt: z.string().min( 2, 'Promotion End At must be at least 2 characters' ),
-//   promotionStartAt: z.string().min( 2, 'Promotion Start At must be at least 2 characters' ),
-//   promotionTypeId: z.string().min( 2, 'Promotion Type must be at least 2 characters' ),
-//   promotionPaymentId: z.string().min( 2, 'Promotion Payment must be at least 2 characters' ),
-//   promotionRequestId: z.string().min( 2, 'Promotion Request must be at least 2 characters' ),
-//   reason: z.string().min( 2, 'Reason must be at least 2 characters' ),
-//   title: z.string().min( 2, 'Title must be at least 2 characters' )
-
-
 interface IGetDataResponse {
-  companies: ISubparameter[] | IGQLErrorResponse
-  promotionTypes: ISubparameter[] | IGQLErrorResponse
-  promotionPayments: IManagementPromotionPayment[] | IGQLErrorResponse
-  promotionRequests: ISubparameter[] | IGQLErrorResponse
+  promotionRequest: IManagementPromotionRequest[] | IManagementPromotionRequest  | IGQLErrorResponse
 } 
+interface ISubparametersResponse {
+  currencies: ISubparameter[] | IGQLErrorResponse
+  promotionPayments: IManagementPromotionPayment[] | IGQLErrorResponse
+}
 
-export const useGetSubparameters = routeLoader$<IGetDataResponse>( async ({ cookie, redirect }) => {
+export const useGetDataResponse = routeLoader$<IGetDataResponse>( async ({ cookie, redirect, query }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
-  const promotionTypes = await SubparametersService.findAllByParameterName({ parameterName: 'Promotion type', status: true })
-  const promotionPayments = await ManagementPromotionPaymentsService.promotionPayment()
-  return { companies, promotionTypes }
+  const promotionRequestId = query.get( 'promotionRequestId' ) || ''
+  if ( promotionRequestId ) {
+    const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ promotionRequestId, jwt: jwt.value })
+    if ( 'errors' in promotionRequest ) return { promotionRequest }
+    if ( !promotionRequest.promotionStatus[ 0 ].adminApprovedStatus ) return { promotionRequest: { errors: 'Promotion Request is not approved by admin' } }
+    return { promotionRequest }
+  }
+  let promotionRequest = await ManagementPromotionRequestsService.promotionRequests({ jwt: jwt.value, status: true })
+  if ( 'errors' in promotionRequest ) return { promotionRequest }
+
+  promotionRequest = promotionRequest.filter( ( promotionRequest ) => ( promotionRequest.promotionStatus[ 0 ].adminApprovedStatus === true ) )
+  return { promotionRequest }
 } )
 
-export const createPromotionAction = routeAction$( async ( data, { cookie, fail } ) => {
+export const useGetSubparameters = routeLoader$<ISubparametersResponse>( async ({ cookie, redirect }) => {
+  const jwt = cookie.get( 'jwt' )
+  if ( !jwt ) throw redirect( 302, '/signin' )
+
+  const currencies = await SubparametersService.findAllByParameterName({ parameterName: 'currency', status: true })
+  const promotionPayments = await ManagementPromotionPaymentsService.promotionPayments({ jwt: jwt.value, status: true })
+  return {
+    currencies,
+    promotionPayments
+  }
+} )
+
+export const createPromotionAction = routeAction$( async ( data, { cookie, fail, query } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
-  const Promotion = await ManagementPromotionsService.createPromotion({ createPromotionInput: data, jwt: jwt.value })
+  const promotionRequestId = query.get( 'promotionRequestId' ) || ''
+  if ( !promotionRequestId ) return fail( 400, { errors: 'Promotion Request Id is required' } )
 
-  if ( 'errors' in Promotion ) {
+  const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ promotionRequestId, jwt: jwt.value })
+  if ( 'errors' in promotionRequest ) return fail( 400, { errors: promotionRequest.errors } )
+
+  const promotion = await ManagementPromotionsService.createPromotion({
+    createPromotionInput: {
+      ...data,
+      promotionRequestId,
+      companyId: promotionRequest.company.id,
+      promotionTypeId: promotionRequest.promotionType.id,
+    },
+    jwt: jwt.value
+  })
+
+  if ( 'errors' in promotion ) {
     return {
       success: false,
-      errors: Promotion.errors
+      errors: promotion.errors
     }
   }
-  return { success: true, Promotion }
+  return { success: true, promotion }
 }, zod$({ ...managementCreatePromotionValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
+  const { promotionRequest } = useGetDataResponse().value
+  if ( 'errors' in promotionRequest ) return ( <UnexpectedErrorPage error={ promotionRequest.errors }/> )
+  const nav = useNavigate()
 
-  const { PromotionTypes, companies } = useGetSubparameters().value
-  if ( 'errors' in PromotionTypes || 'errors' in companies ) return ( <UnexpectedErrorPage /> )
+  if ( !( 'id' in promotionRequest ) ) {
+    return (
+      <div class="create__container">
+        <BackButton href="/management/modules/promotions" />
+        <h1 class="create__title"> Create new Promotion </h1>
+        <span> No promotion request found </span>
+        <h2> Please select a promotion request </h2>
+        <form class="form" onSubmit$={ ( event : QwikSubmitEvent<HTMLFormElement> ) => {
+          const { target } = event as any
+          nav( `?promotionRequestId=${ target.promotionRequestId.value }` )
+        } }>
+          <FormField
+            label="Promotion Request"
+            name="promotionRequestId"
+            type="select"
+            options={ promotionRequest.map( ( promotionRequest ) =>
+              ( { id: promotionRequest.id, name: promotionRequest.title } )
+            ) }
+            />
+            <button> Create </button>
+        </form>
+      </div>
+    )
+  }
+  const { currencies } = useGetSubparameters().value
+  if ( 'errors' in currencies ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
@@ -79,54 +125,62 @@ export default component$( () => {
       <h1 class="create__title"> Create new Promotion </h1>
       <Form class="form" action={ action }>
         <FormField
-          label="Name"
-          name="name"
-          placeholder="Name"
-          error={ action.value?.fieldErrors?.name?.join( ', ' ) }
+          label="Title"
+          name="title"
+          placeholder="Title"
+          value={ promotionRequest.title }
+          error={ action.value?.fieldErrors?.title?.join( ', ' ) }
           />
         <FormField
           label="Description"
           name="description"
           placeholder="Description"
+          value={ promotionRequest.description }
           error={ action.value?.fieldErrors?.description?.join( ', ' ) }
           />
         <FormField
           label="Code"
           name="code"
           placeholder="Code"
+          value={ promotionRequest.code }
           error={ action.value?.fieldErrors?.code?.join( ', ' ) }
           />
         <FormField
-          label="Notes"
-          name="notes"
-          placeholder="Notes"
-          error={ action.value?.fieldErrors?.notes?.join( ', ' ) }
+          label="Reason"
+          name="reason"
+          placeholder="Reason"
+          value={ promotionRequest.reason }
+          error={ action.value?.fieldErrors?.reason?.join( ', ' ) }
           />
         <FormField
-          label="Promotion Type"
-          name="PromotionTypeId"
+          label="Comment"
+          name="comment"
+          placeholder="Comment"
+          value={ promotionRequest.comment }
+          error={ action.value?.fieldErrors?.comment?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion Start At"
+          name="promotionStartAt"
+          type="date"
+          value={ promotionRequest.promotionStartAt }
+          error={ action.value?.fieldErrors?.promotionStartAt?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion End At"
+          name="promotionEndAt"
+          type="date"
+          value={ promotionRequest.promotionEndAt }
+          error={ action.value?.fieldErrors?.promotionEndAt?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion Payment"
+          name="promotionPaymentId"
           type="select"
-          options={ PromotionTypes }
-          />
-        <FormField
-          label="Company"
-          name="companyId"
-          type="select"
-          options={ [
-            ...companies.map( ( company ) => ({ id: company.id, name: company.name }) )
-          ] }
-          />
-        <FormField
-          label="Price of Promotion(Bs.)"
-          name="price"
-          placeholder="Price"
-          error={ action.value?.fieldErrors?.price?.join( ', ' ) }
-          />
-        <FormField
-          label="Stock"
-          name="stock"
-          placeholder="Stock"
-          error={ action.value?.fieldErrors?.stock?.join( ', ' ) }
+          options={ promotionRequest.promotionPayments.map( ( promotionPayment ) =>
+            ( { id: promotionPayment.id, name: String( promotionPayment.amount ) } )
+          ) }
+          error={ action.value?.fieldErrors?.promotionPaymentId?.join( ', ' ) }
           />
         <button> Create </button>
       </Form>
@@ -135,7 +189,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Promotion { action.value.Promotion?.name } created successfully </span>
+                <span> Promotion { action.value.promotion?.title } created successfully </span>
               )
             }
             {

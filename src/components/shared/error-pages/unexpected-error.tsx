@@ -2,7 +2,11 @@ import { component$, useStyles$ } from '@builder.io/qwik'
 
 import styles from './unexpected-error.styles.css?inline'
 
-export const UnexpectedErrorPage = component$( () => {
+interface IUnexpectedErrorPageProps {
+  error?: string
+}
+
+export const UnexpectedErrorPage = component$( ( { error }: IUnexpectedErrorPageProps ) => {
 
   useStyles$( styles )
 
@@ -345,7 +349,7 @@ export const UnexpectedErrorPage = component$( () => {
         Woops! <br />Something went wrong :(
       </h1>
       <h2 class="error-subtitle">
-        Have you tried turning it off and on again?
+        { ( error ) ? error : 'Please contact support' }
       </h2>
       <a href="/" class="error-link">
         Go back to home
