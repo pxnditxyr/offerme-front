@@ -14,7 +14,6 @@ interface IGetDataResponse {
   promotionRequest: IManagementPromotionRequest[] | IManagementPromotionRequest  | IGQLErrorResponse
 } 
 interface ISubparametersResponse {
-  currencies: ISubparameter[] | IGQLErrorResponse
   promotionPayments: IManagementPromotionPayment[] | IGQLErrorResponse
 }
 
@@ -40,10 +39,8 @@ export const useGetSubparameters = routeLoader$<ISubparametersResponse>( async (
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const currencies = await SubparametersService.findAllByParameterName({ parameterName: 'currency', status: true })
   const promotionPayments = await ManagementPromotionPaymentsService.promotionPayments({ jwt: jwt.value, status: true })
   return {
-    currencies,
     promotionPayments
   }
 } )
@@ -107,8 +104,6 @@ export default component$( () => {
       </div>
     )
   }
-  const { currencies } = useGetSubparameters().value
-  if ( 'errors' in currencies ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 

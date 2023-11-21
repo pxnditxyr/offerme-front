@@ -2,69 +2,95 @@ import { DocumentHead, Form, routeAction$, routeLoader$, zod$ } from '@builder.i
 import { component$, useStyles$, useTask$ } from '@builder.io/qwik'
 
 import { BackButton, FormField, Modal, UnexpectedErrorPage } from '~/components/shared'
-import { ManagementCompaniesService, ManagementProductsService, SubparametersService } from '~/services'
-import { managementCreateProductValidationSchema } from '~/utils'
+import { ManagementPromotionPaymentsService, ManagementPromotionRequestsService, ManagementPromotionsService, SubparametersService } from '~/services'
+import { isUUID, managementCreatePromotionValidationSchema } from '~/utils'
 
-import { IGQLErrorResponse, IManagementProduct, ISubparameter } from '~/interfaces'
+import { IGQLErrorResponse, IManagementPromotion, IManagementPromotionPayment, IManagementPromotionRequest, ISubparameter } from '~/interfaces'
 
-import styles from './update-index.styles.css?inline'
+import styles from './update.styles.css?inline'
 import { useModalStatus } from '~/hooks'
 
-interface IGetSubparametersResponse {
-  companies: ISubparameter[] | IGQLErrorResponse
-  productTypes: ISubparameter[] | IGQLErrorResponse
+interface IGetDataResponse {
+  promotion: IManagementPromotion | IGQLErrorResponse
+  promotionRequest: IManagementPromotionRequest | IGQLErrorResponse
+}
+  
+interface ISubparametersResponse {
+  currencies: ISubparameter[] | IGQLErrorResponse
+  promotionPayments: IManagementPromotionPayment[] | IGQLErrorResponse
 }
 
-export const useGetSubparameters = routeLoader$<IGetSubparametersResponse>( async ({ cookie, redirect }) => {
+export const useGetPromotion = routeLoader$<IGetDataResponse>( async ({ cookie, redirect, params }) => {
+  
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const companies = await ManagementCompaniesService.companies({ jwt: jwt.value, status: true })
-  const productTypes = await SubparametersService.findAllByParameterName({ parameterName: 'product type', status: true })
+  const id = atob( params.id )
+  console.log( id )
+  if ( !isUUID( id ) ) {
+    return {
+      promotion: { errors: 'Invalid Promotion ID' },
+      promotionRequest: { errors: 'Invalid Promotion ID' },
+    }
+  }
 
+  const promotion = await ManagementPromotionsService.promotion({ jwt: jwt.value, promotionId: id })
+  console.log(  'promo', promotion )
+  if ( 'errors' in promotion ) {
+    return {
+      promotion,
+      promotionRequest: { errors: 'Invalid Promotion ID' },
+    }
+  }
+
+  const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ jwt: jwt.value, promotionRequestId: promotion.promotionRequestId })
   return {
-    companies,
-    productTypes
+    promotion,
+    promotionRequest,
   }
 } )
 
-export const useGetCurrentProduct = routeLoader$<IManagementProduct | IGQLErrorResponse>( async ({ cookie, redirect, params }) => {
+export const useGetSubparameters = routeLoader$<ISubparametersResponse>( async ({ cookie, redirect }) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
 
-  const product = await ManagementProductsService.product({ productId: atob( params.id ), jwt: jwt.value })
-  return product
+  const currencies = await SubparametersService.findAllByParameterName({ parameterName: 'currency', status: true })
+  const promotionPayments = await ManagementPromotionPaymentsService.promotionPayments({ jwt: jwt.value, status: true })
+  return {
+    currencies,
+    promotionPayments
+  }
 } )
 
-export const updateProductAction = routeAction$( async ( data, { cookie, fail, params } ) => {
+export const updatePromotionAction = routeAction$( async ( data, { cookie, fail, params } ) => {
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) return fail( 401, { errors: 'Unauthorized' } )
 
   const id = atob( params.id )
+  if ( !isUUID( id ) ) return fail( 400, { errors: 'Invalid Promotion ID' } )
 
-  const product = await ManagementProductsService.updateProduct({ updateProductInput: { ...data, id }, jwt: jwt.value })
+  const promotion = await ManagementPromotionsService.updatePromotion({
+    updatePromotionInput: { ...data, id },
+    jwt: jwt.value
+  })
 
-  if ( 'errors' in product ) {
+  if ( 'errors' in promotion ) {
     return {
       success: false,
-      errors: product.errors
+      errors: promotion.errors
     }
   }
-  return { success: true, product }
-}, zod$({ ...managementCreateProductValidationSchema }) )
+  return { success: true, promotion }
+}, zod$({ ...managementCreatePromotionValidationSchema }) )
 
 export default component$( () => {
   useStyles$( styles )
-
-  const { companies, productTypes } = useGetSubparameters().value
-  if ( 'errors' in productTypes || 'errors' in companies ) return ( <UnexpectedErrorPage /> )
-
-  const currentProduct = useGetCurrentProduct().value
-  if ( 'errors' in currentProduct ) return ( <UnexpectedErrorPage /> )
+  const { promotion, promotionRequest } = useGetPromotion().value
+  if ( 'errors' in promotion || 'errors' in promotionRequest ) return ( <UnexpectedErrorPage /> )
 
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const action = updateProductAction()
+  const action = updatePromotionAction()
   useTask$( ({ track }) => {
     track( () => action.isRunning )
     if ( action.value && action.value.success === false )  onOpenModal()
@@ -72,67 +98,67 @@ export default component$( () => {
   } )
 
   return (
-    <div class="update__index__container">
-      <BackButton href="/management/modules/products" />
-      <h1 class="update__index__title"> Update Product </h1>
+    <div class="update__container">
+      <BackButton href="/management/modules/promotions" />
+      <h1 class="update_title"> Update Promotion </h1>
       <Form class="form" action={ action }>
         <FormField
-          label="Name"
-          name="name"
-          placeholder="Name"
-          value={ currentProduct.name }
-          error={ action.value?.fieldErrors?.name?.join( ', ' ) }
+          label="Title"
+          name="title"
+          placeholder="Title"
+          value={ promotion.title }
+          error={ action.value?.fieldErrors?.title?.join( ', ' ) }
           />
         <FormField
           label="Description"
           name="description"
           placeholder="Description"
-          value={ currentProduct.description }
+          value={ promotion.description }
           error={ action.value?.fieldErrors?.description?.join( ', ' ) }
           />
         <FormField
           label="Code"
           name="code"
           placeholder="Code"
-          value={ currentProduct.code }
+          value={ promotion.code }
           error={ action.value?.fieldErrors?.code?.join( ', ' ) }
           />
         <FormField
-          label="Notes"
-          name="notes"
-          placeholder="Notes"
-          value={ currentProduct.notes }
-          error={ action.value?.fieldErrors?.notes?.join( ', ' ) }
+          label="Reason"
+          name="reason"
+          placeholder="Reason"
+          value={ promotion.reason }
+          error={ action.value?.fieldErrors?.reason?.join( ', ' ) }
           />
         <FormField
-          label="Product Type"
-          name="productTypeId"
+          label="Comment"
+          name="comment"
+          placeholder="Comment"
+          value={ promotion.comment }
+          error={ action.value?.fieldErrors?.comment?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion Start At"
+          name="promotionStartAt"
+          type="date"
+          value={ promotion.promotionStartAt }
+          error={ action.value?.fieldErrors?.promotionStartAt?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion End At"
+          name="promotionEndAt"
+          type="date"
+          value={ promotion.promotionEndAt }
+          error={ action.value?.fieldErrors?.promotionEndAt?.join( ', ' ) }
+          />
+        <FormField
+          label="Promotion Payment"
+          name="promotionPaymentId"
           type="select"
-          value={ currentProduct.productType.id }
-          options={ productTypes }
-          />
-        <FormField
-          label="Company"
-          name="companyId"
-          type="select"
-          value={ currentProduct.company.id }
-          options={ [
-            ...companies.map( ( company ) => ({ id: company.id, name: company.name }) )
-          ] }
-          />
-        <FormField
-          label="Price of product(Bs.)"
-          name="price"
-          placeholder="Price"
-          value={ String( currentProduct.price ) }
-          error={ action.value?.fieldErrors?.price?.join( ', ' ) }
-          />
-        <FormField
-          label="Stock"
-          name="stock"
-          placeholder="Stock"
-          value={ String( currentProduct.stock ) }
-          error={ action.value?.fieldErrors?.stock?.join( ', ' ) }
+          options={ promotionRequest.promotionPayments.map( ( promotionPayment ) =>
+            ( { id: promotionPayment.id, name: String( promotionPayment.amount ) } )
+          ) }
+          error={ action.value?.fieldErrors?.promotionPaymentId?.join( ', ' ) }
           />
         <button> Update </button>
       </Form>
@@ -141,7 +167,7 @@ export default component$( () => {
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Product { action.value.product?.name } created successfully </span>
+                <span> Promotion { action.value.promotion?.title } updated successfully </span>
               )
             }
             {
@@ -156,7 +182,6 @@ export default component$( () => {
   )
 } )
 
-
 export const head : DocumentHead = {
-  title: 'Update Product',
+  title: 'Update Promotion',
 }

@@ -5,9 +5,8 @@ import { LoadingPage, Modal, SearchBar, Table, UnexpectedErrorPage } from '~/com
 import { useAuthStore, useModalStatus } from '~/hooks'
 import { parseDate } from '~/utils'
 
-import { IGQLErrorResponse, IManagementProduct } from '~/interfaces'
-import { ManagementProductsService } from '~/services'
-
+import { IGQLErrorResponse, IManagementPromotion } from '~/interfaces'
+import { ManagementPromotionsService } from '~/services'
 
 import styles from './update.styles.css?inline'
 
@@ -16,22 +15,22 @@ export const useGetSearch = routeLoader$<string>( async ({ query }) => {
   return search
 } )
 
-export const useGetManagementProducts = routeLoader$<IManagementProduct[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
+export const useGetManagementPromotions = routeLoader$<IManagementPromotion[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
   const search = query.get( 'search' ) || ''
 
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
   
-  const products = await ManagementProductsService.products({ search, jwt: jwt.value })
-  return products
+  const promotions = await ManagementPromotionsService.promotions({ search, jwt: jwt.value })
+  return promotions
 } )
 
 export default component$( () => {
   useStyles$( styles )
 
-  const products = useGetManagementProducts().value
+  const promotions = useGetManagementPromotions().value
 
-  if ( 'errors' in products ) return ( <UnexpectedErrorPage /> )
+  if ( 'errors' in promotions ) return ( <UnexpectedErrorPage /> )
   const searchValue = useGetSearch().value
 
   const { token, status } = useAuthStore()
@@ -41,39 +40,39 @@ export default component$( () => {
   const nav = useNavigate()
   const { modalStatus, onOpenModal, onCloseModal } = useModalStatus()
 
-  const onEditClick = $( ( id : string ) => nav( `/management/modules/products/update/${ btoa( id ) }` ) )
-  const onViewClick = $( ( id : string ) => nav( `/management/modules/products/view/${ btoa( id ) }` ) )
+  const onEditClick = $( ( id : string ) => nav( `/management/modules/promotions/update/${ btoa( id ) }` ) )
+  const onViewClick = $( ( id : string ) => nav( `/management/modules/promotions/view/${ btoa( id ) }` ) )
 
   const onToggleStatus = $( async ( id : string ) => {
-    const product =  await ManagementProductsService.toggleStatusProduct({ toggleStatusProductId: id, jwt: token || '' })
-    if ( 'errors' in product ) {
-      errors.value = product.errors
+    const promotion =  await ManagementPromotionsService.toggleStatusPromotion({ toggleStatusPromotionId: id, jwt: token || '' })
+    if ( 'errors' in promotion ) {
+      errors.value = promotion.errors
       onOpenModal()
       return
     }
     nav()
   } )
 
-  const headers = [ 'Id', 'Name', 'Description', 'Stock', 'Price', 'Code', 'Status', 'Created At', 'Creator', 'Updated At', 'Updater' ]
-  const keys = [ 'id', 'name', 'description', 'stock', 'price', 'code', 'status', 'createdAt', 'creator', 'updatedAt', 'updater' ]
+  const headers = [ 'Id', 'Title', 'Code', 'Company', 'Promotion Started At', 'Promotion End At', 'Status', 'Created At', 'Creator', 'Updated At', 'Updater' ]
+  const keys = [ 'id', 'title', 'code', 'company', 'promotionStartAt', 'promotionEndAt', 'status', 'createdAt', 'creator', 'updatedAt', 'updater' ]
 
-  const formatedProducts = products.map( ( product ) => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    stock: product.stock,
-    price: product.price,
-    code: product.code,
-    status: product.status,
-    createdAt: parseDate( product.createdAt ),
-    creator: product.creator?.email || '',
-    updatedAt: parseDate( product.updatedAt ),
-    updater: product.updater?.email || 'No Updated',
+  const formatedPromotions = promotions.map( ( promotion ) => ({
+    id: promotion.id,
+    title: promotion.title,
+    code: promotion.code,
+    company: promotion.company.name,
+    promotionStartAt: parseDate( promotion.promotionStartAt ),
+    promotionEndAt: parseDate( promotion.promotionEndAt ),
+    status: promotion.status,
+    createdAt: parseDate( promotion.createdAt ),
+    creator: promotion.creator?.email || '',
+    updatedAt: parseDate( promotion.updatedAt ),
+    updater: promotion.updater?.email || 'No Updated',
   }) )
 
   const onSearchSubmit = $( ( event : QwikSubmitEvent<HTMLFormElement> ) => {
     const { target } = event as any
-    nav( `/management/modules/products?${ `search=${ target.search.value }` }` )
+    nav( `/management/modules/promotions?${ `search=${ target.search.value }` }` )
   } )
 
   const newOnCloseModal = $( () => {
@@ -81,13 +80,13 @@ export default component$( () => {
   } )
 
   return (
-    <div class="update__container">
-      <h1 class="update__title"> Select Product to Update </h1>
+    <div class="module__container">
+      <h1 class="module__title"> Promotions </h1>
       <SearchBar value={ searchValue } onSearchSubmit={ onSearchSubmit } />
       <Table 
         header={ headers }
         keys={ keys }
-        body={ formatedProducts }
+        body={ formatedPromotions }
         onEditClick={ onEditClick }
         onViewClick={ onViewClick }
         onToggleStatus={ onToggleStatus }
@@ -105,6 +104,5 @@ export default component$( () => {
 } )
 
 export const head : DocumentHead = {
-  title: 'Update Products',
+  title: 'Promotions',
 }
-
