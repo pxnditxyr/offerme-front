@@ -36,6 +36,7 @@ const managementPromotionsData = `
       id
       amount
       paymentDate
+      voucher
       status
     }
     creator {

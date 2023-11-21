@@ -35,6 +35,7 @@ export interface IManagementPromotionPromotionPayment {
   id:               string
   amount:           number
   paymentDate:      string
+  voucher:          string
   status:           boolean
 }
 
