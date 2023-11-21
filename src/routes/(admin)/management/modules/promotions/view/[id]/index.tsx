@@ -29,27 +29,36 @@ export const useGetPromotionById = routeLoader$<IGetDataResponse>( async ({ para
 
   const jwt = cookie.get( 'jwt' )
   if ( !jwt ) throw redirect( 302, '/signin' )
-  console.log( 'entran', jwt.value )
 
   const promotion = await ManagementPromotionsService.promotion({ promotionId: id, jwt: jwt.value })
   let products = await ManagementProductsService.products({ jwt: jwt.value, status: true })
-  console.log( promotion, products)
-
-  if ( 'errors' in products || 'errors' in promotion ) return { promotion, products, promotionRequest: { errors: 'Invalid Promotion ID' } }
+  if ( 'errors' in products || 'errors' in promotion ) {
+    return {
+      promotion,
+      products,
+      promotionRequest: { errors: 'Invalid Promotion ID' },
+    }
+  }
 
   const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ jwt: jwt.value, promotionRequestId: promotion.promotionRequestId })
 
-  if ( 'errors' in promotionRequest ) return { promotion, products, promotionRequest: { errors: 'Invalid Promotion ID' } }
+  if ( 'errors' in promotionRequest ) return {
+    promotion,
+    products,
+    promotionRequest: { errors: 'Invalid Promotion ID' }
+  }
   
-  products = products.filter( ( product ) => 
-    ( product.company.id === promotion.company.id )
-     &&
-    ( !promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.productId === product.id ) )
+  const companyProducts  = products.filter( ( product ) => 
+    ( product.company.id === promotionRequest.company.id )
+  )
+
+  const productsIsInTargetProducts = companyProducts.filter( ( product ) =>
+    ( promotionRequest.targetProducts.find( ( targetProduct ) => targetProduct.productId === product.id ) )
   )
 
   return {
     promotion,
-    products,
+    products: productsIsInTargetProducts,
     promotionRequest,
   }
 } )
@@ -58,7 +67,6 @@ export default component$( () => {
   useStyles$( styles )
 
   const { promotion, products, promotionRequest } = useGetPromotionById().value
-  console.log( promotion, products, promotionRequest )
   if ( 'errors' in promotion || 'errors' in products || 'errors' in promotionRequest ) return ( <UnexpectedErrorPage /> )
 
   const { token, status } = useAuthStore()
@@ -82,7 +90,7 @@ export default component$( () => {
   } )
 
   const onDiscountProductClick = $( ( id : string ) => {
-    nav( `/management/modules/promotion-requests/discount-products/view/${ btoa( id ) }` )
+    nav( `/management/modules/promotions/discount-products/view/${ btoa( id ) }` )
   } )
 
   const onToggleStatus = $( async ( id : string ) => {
@@ -179,10 +187,42 @@ export default component$( () => {
               onViewClick={ onPaymentClick }
             />
           </div>
-          {/* <Link */}
-          {/*   href={ `/management/modules/promotion-requests/promotion-payments/create/${ btoa( promotionRequest.id ) }` } */}
-          {/*   class="view__link" */}
-          {/* > Add Payment </Link> */}
+          <div class="view__images">
+            <p> Discount Products </p>
+            {
+              ( promotionRequest.discountProducts.length === 0 )
+                ? ( <p> No Discount Products </p> )
+                : (
+                  <div class="cards__gallery">
+                    {
+                      promotionRequest.discountProducts.map( ( discountProduct ) => {
+                        const product = products.find( ( product ) => product.id === discountProduct.productId )
+                        if ( !product ) return ( <></> )
+                        return (
+                          <MiniCard
+                            header={ [ 'Title', 'Description', 'Name', 'Price', 'New Price', 'Stock', 'Status',  ] }
+                            keys={ [ 'title', 'description', 'name', 'price', 'newPrice', 'stock', 'status' ] }
+                            body={ {
+                              id: discountProduct.id,
+                              title: discountProduct.title,
+                              description: discountProduct.description,
+                              name: product.name,
+                              price: product.price,
+                              stock: product.stock,
+                              newPrice: discountProduct.discountPrice,
+                              status: discountProduct.status ? 'Active' : 'Inactive',
+                            } }
+                            image={ product.images.find( ( image ) => image.status )?.url }
+                            onViewClick={ onDiscountProductClick }
+                            existsImage
+                          />
+                        )
+                      } )
+                    }
+                  </div>
+                )
+            }
+          </div>
         </section>
       </div>
       {

@@ -16,6 +16,7 @@ export * from './admin/products/product-images.queries'
 export * from './admin/products/product-categories.queries'
 
 export * from './admin/promotions/promotions.queries'
+export * from './admin/promotions/code-promotion-discount-products.queries'
 
 export * from './admin/promotion-requests/promotion-requests.queries'
 export * from './admin/promotion-requests/promotion-images.queries'

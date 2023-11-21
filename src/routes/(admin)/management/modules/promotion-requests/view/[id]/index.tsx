@@ -30,7 +30,7 @@ export const useGetPromotionRequestById = routeLoader$<IGetDataResponse>( async 
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const promotionRequest = await ManagementPromotionRequestsService.promotionRequest({ promotionRequestId: id, jwt: jwt.value })
-  let products = await ManagementProductsService.products({ jwt: jwt.value, status: true })
+  const products = await ManagementProductsService.products({ jwt: jwt.value, status: true })
 
 
   if ( 'errors' in products || 'errors' in promotionRequest ) return { promotionRequest, products, promotionStatus: { errors: 'Invalid PromotionRequest ID' } }
@@ -38,16 +38,13 @@ export const useGetPromotionRequestById = routeLoader$<IGetDataResponse>( async 
   const promotionStatus = await ManagementPromotionStatusService.findOne({ promotionStatesId: promotionRequest.promotionStatus[ 0 ].id, jwt: jwt.value })
   if ( 'errors' in promotionStatus ) return { promotionRequest, products, promotionStatus }
 
-
-  products = products.filter( ( product ) => 
+  const companyProducts  = products.filter( ( product ) => 
     ( product.company.id === promotionRequest.company.id )
-     &&
-    ( !promotionRequest.targetProducts.some( ( targetProduct ) => targetProduct.productId === product.id ) )
   )
 
   return {
     promotionRequest,
-    products,
+    products: companyProducts,
     promotionStatus
   }
 } )

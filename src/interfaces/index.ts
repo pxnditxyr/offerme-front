@@ -24,6 +24,7 @@ export * from './admin/management-promotion-payments.interface'
 export * from './admin/management-promotion-target-products.interface'
 export * from './admin/management-discount-products.interface'
 export * from './admin/management-promotion-status.interface'
+export * from './admin/management-code-promotion-discount-product.interface'
 
 // auth
 export * from './auth/auth.interface'

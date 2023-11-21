@@ -26,7 +26,6 @@ export const useGetPromotion = routeLoader$<IGetDataResponse>( async ({ cookie, 
   if ( !jwt ) throw redirect( 302, '/signin' )
 
   const id = atob( params.id )
-  console.log( id )
   if ( !isUUID( id ) ) {
     return {
       promotion: { errors: 'Invalid Promotion ID' },
@@ -35,7 +34,6 @@ export const useGetPromotion = routeLoader$<IGetDataResponse>( async ({ cookie, 
   }
 
   const promotion = await ManagementPromotionsService.promotion({ jwt: jwt.value, promotionId: id })
-  console.log(  'promo', promotion )
   if ( 'errors' in promotion ) {
     return {
       promotion,

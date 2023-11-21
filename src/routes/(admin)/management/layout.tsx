@@ -12,8 +12,7 @@ export default component$( ()  => {
   const { status } = useAuthStore()
   const signoutAction = useSignoutAction()
 
-  if ( status.value === 'loading' ) return ( <LoadingPage /> )
-
+  if ( status === 'loading' ) return ( <LoadingPage /> )
 
   return (
     <main class="content">
