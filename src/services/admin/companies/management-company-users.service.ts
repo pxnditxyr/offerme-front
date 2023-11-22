@@ -1,7 +1,7 @@
-import { graphqlClient, managementCompanyUserCreateMutation, managementCompanyUserQuery, toggleStatusManagementCompanyUserMutation } from '~/graphql'
+import { graphqlClient, managementCompanyUserCreateMutation, managementCompanyUserQuery, managementCompanyByUserIdQuery, toggleStatusManagementCompanyUserMutation } from '~/graphql'
 import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
 
-import { ICreateCompanyUserInput, IGQLErrorResponse, IManagementCompanyUser } from '~/interfaces'
+import { ICreateCompanyUserInput, IGQLErrorResponse, IManagementCompany, IManagementCompanyUser } from '~/interfaces'
 
 interface ICompanyByIdParams {
   companyUserId: string
@@ -18,11 +18,27 @@ interface IToggleStatusCompanyUsersParams {
   jwt: string
 }
 
+interface ICompanyByUserIdParams {
+  userId: string
+  jwt: string
+}
+
 export class ManagementCompanyUsersService {
   static companyUser = async ( { companyUserId, jwt } : ICompanyByIdParams ) : Promise<IManagementCompanyUser | IGQLErrorResponse> => {
     try {
       const response = await graphqlClient.query({ document: managementCompanyUserQuery, variables: { companyUserId }, requestHeaders: getBearerAuthHeader( jwt ) })
       return response.companyUser
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
+  static companyByUserId = async ( { userId, jwt } : ICompanyByUserIdParams ) : Promise<IManagementCompany | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.query({ document: managementCompanyByUserIdQuery, variables: { userId }, requestHeaders: getBearerAuthHeader( jwt ) })
+      return response.companyByUserId
     } catch ( error : any ) {
       return {
         errors: graphqlExceptionsHandler( error )

@@ -1,12 +1,29 @@
-import { createUserMutation, deactivateUserMutation, getUserByIdQuery, getUsersQuery, graphqlClient, updateUserMutation } from '~/graphql'
-import { ICreateUserManagement, IManagementUsersData, IUpdateUserManagement } from '~/interfaces'
-import { getBearerAuthHeader } from '~/utils'
+import { createUserMutation, deactivateUserMutation, getUserByIdQuery, getUsersQuery, graphqlClient, managementToggleStatusUserMutation, updateUserMutation } from '~/graphql'
+import { ICreateUserManagement, IGQLErrorResponse, IManagementUsersData, IUpdateUserManagement } from '~/interfaces'
+import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
+
+interface IToggleStatusParams {
+  toggleStatusManagementUserId: string
+  jwt: string
+}
+
 
 export class UsersManagementService {
   static getUsers = async ( jwt : string, search : string = '' ) : Promise<IManagementUsersData[]> => {
     const response = await graphqlClient.query( { document: getUsersQuery, variables: { search }, requestHeaders: getBearerAuthHeader( jwt ) } )
     return response.managementUsers
   }
+
+  static newGetUsers = async ( jwt : string, search : string = '' ) : Promise<IManagementUsersData[] | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.query( { document: getUsersQuery, variables: { search }, requestHeaders: getBearerAuthHeader( jwt ) } )
+      return response.managementUsers
+    } catch ( error ) {
+      return {
+        errors: graphqlExceptionsHandler( error ),
+      }
+    }
+  } 
 
   static getUserById = async ( jwt : string, id : string ) : Promise<IManagementUsersData> => {
     const response = await graphqlClient.query( { document: getUserByIdQuery, variables: { managementUserId: id }, requestHeaders: getBearerAuthHeader( jwt ) } )
@@ -31,5 +48,16 @@ export class UsersManagementService {
   static getGenders = async ( jwt : string ) : Promise<{ id: string, name: string }[]> => {
     const response = await graphqlClient.query( { document: getUsersQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
     return response.genders
+  }
+
+  static toggleStatus = async ( { toggleStatusManagementUserId, jwt } : IToggleStatusParams ) : Promise<IManagementUsersData | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.mutation( { document: managementToggleStatusUserMutation, variables: { toggleStatusManagementUserId }, requestHeaders: getBearerAuthHeader( jwt ) } )
+      return response.toggleStatusManagementUser
+    } catch ( error ) {
+      return {
+        errors: graphqlExceptionsHandler( error ),
+      }
+    }
   }
 }

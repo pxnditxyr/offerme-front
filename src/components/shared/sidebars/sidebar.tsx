@@ -7,14 +7,21 @@ import { useSidebar } from '~/hooks'
 
 import { adminMenuData } from '~/data'
 import styles from './sidebar.styles.css?inline'
+import { IMenuData } from '~/interfaces'
 
-export const Sidebar = component$( () => {
+interface ISidebarProps {
+  isOpenSidebarInitialValue?: boolean
+  data?: IMenuData[]
+}
+
+
+export const Sidebar = component$( ( { isOpenSidebarInitialValue = true, data = adminMenuData }: ISidebarProps ) => {
   useStyles$( styles )
 
   const {
     isOpenSidebar, menuData,
     onToggleMenu, onToggleSidebar
-  } = useSidebar({ isOpenValue: true, initialMenuData: adminMenuData })
+  } = useSidebar({ isOpenValue: isOpenSidebarInitialValue, initialMenuData: data })
 
   return (
     <>

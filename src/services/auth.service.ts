@@ -1,7 +1,7 @@
 import { graphqlClient, getGendersQuery, revalidateTokenQuery } from '~/graphql'
-import { getBearerAuthHeader } from '~/utils'
+import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
 
-import { IAuthGender, IAuthResponse, IErrorResponse, ISignupData } from '~/interfaces'
+import { IAuthGender, IAuthResponse, IErrorResponse, IGQLErrorResponse, ISignupData } from '~/interfaces'
 import { ISigninData } from '~/interfaces'
 
 export class AuthService {
@@ -28,6 +28,17 @@ export class AuthService {
   static revalidateToken = async ( jwt : string ) : Promise<{ revalidateToken: IAuthResponse }> => {
     const response = await graphqlClient.query( { document: revalidateTokenQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
     return response
+  }
+
+  static newRevalidateToken = async ( jwt : string ) : Promise<IAuthResponse | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.query( { document: revalidateTokenQuery, requestHeaders: getBearerAuthHeader( jwt ) } )
+      return response.revalidateToken
+    } catch ( error ) {
+      return {
+        errors: graphqlExceptionsHandler( error ),
+      }
+    }
   }
 
   static getGenders = async () : Promise<IAuthGender[]> => {

@@ -1,7 +1,7 @@
-import { $, useComputed$, useContext } from '@builder.io/qwik'
-import type { Action, Cookie, RequestEventAction, RequestEventLoader } from '@builder.io/qwik-city'
+import { $, useContext } from '@builder.io/qwik'
+import type { RequestEventAction } from '@builder.io/qwik-city'
 import { AuthContext } from '~/context'
-import { ISigninData, ISignupData } from '~/interfaces'
+import { ISigninData, ISignupData, IUser } from '~/interfaces'
 import { AuthService } from '~/services'
 import { graphqlExceptionsHandler } from '~/utils'
 
@@ -79,6 +79,11 @@ export const useAuthStore = () => {
     action()
   } )
 
+  const setUser = $( ( user : IUser ) => {
+    authState.user = user
+    authState.status = 'authenticated'
+  } )
+
   return {
     status: authState.status,
     user: authState.user,
@@ -87,7 +92,9 @@ export const useAuthStore = () => {
     signin,
     signup,
     signout,
-    revalidateToken
+    revalidateToken,
+    setUser,
+    authState,
   }
 
 }

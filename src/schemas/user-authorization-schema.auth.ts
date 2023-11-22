@@ -15,7 +15,7 @@ export const userAuthorizationSchema : IUserAuthorizationSchema = {
     entrypoint: '/',
   },
   'COMPANY_REPRESENTATIVE': {
-    entrypoint: '/',
+    entrypoint: '/company/dashboard',
   },
   'AUTH': {
     entrypoint: '/signin',

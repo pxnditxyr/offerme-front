@@ -59,11 +59,11 @@ export const adminMenuData = [
       }
     ],
   },
-  {
-    label: 'Reviews',
-    name: 'reviews',
-    isExpanded: false,
-    crud: false,
-    link: `${ linkPrefix }/reviews`,
-  },
+  // {
+  //   label: 'Reviews',
+  //   name: 'reviews',
+  //   isExpanded: false,
+  //   crud: false,
+  //   link: `${ linkPrefix }/reviews`,
+  // },
 ]

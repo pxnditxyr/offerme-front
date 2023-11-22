@@ -1,0 +1,17 @@
+.create__user__container {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.create__user__container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: "Roboto", sans-serif;
+}
+

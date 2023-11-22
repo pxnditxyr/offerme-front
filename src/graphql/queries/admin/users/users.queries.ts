@@ -436,3 +436,90 @@ mutation DeactivateManagementUser($deactivateManagementUserId: ID!) {
     }
   }
 }`
+
+export const managementToggleStatusUserMutation = `
+mutation ToggleStatusManagementUser($toggleStatusManagementUserId: ID!) {
+  toggleStatusManagementUser(id: $toggleStatusManagementUserId) {
+     id
+    email
+    peopleInfo {
+      birthdate
+      id
+      name
+      maternalSurname
+      paternalSurname
+      gender {
+        id
+        name
+      }
+      documentNumber
+      documentType {
+        name
+        id
+      }
+    }
+    role {
+      id
+      name
+    }
+    mainAvatar
+    mainPhone
+    mainAddress {
+      state
+      street
+      zipCode
+      country
+      city
+      status
+    }
+    isVerifiedEmail
+    googleId
+    status
+    createdAt
+    updatedAt
+    creator {
+      id
+      email
+    }
+    updater {
+      id
+      email
+    }
+    avatars {
+      id
+      isMain
+      url
+      status
+    }
+    phones {
+      number
+      id
+      phoneType {
+        name
+        id
+      }
+      status
+    }
+    addresses {
+      state
+      street
+      zipCode
+      country
+      city
+      status
+    }
+    creditCards {
+      creditCardType {
+        id
+        name
+      }
+      cvv
+      expMonth
+      expYear
+      id
+      number
+      isMain
+      status
+    }
+  }
+}`

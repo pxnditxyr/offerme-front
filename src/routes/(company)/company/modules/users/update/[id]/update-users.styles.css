@@ -1,0 +1,10 @@
+.update__id__container {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}

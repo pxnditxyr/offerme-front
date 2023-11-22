@@ -16,4 +16,5 @@ export interface IAuthState {
   user: IUser | null
   token: string | null
   status: TAuthStatus
+  companyId?: string | null
 }

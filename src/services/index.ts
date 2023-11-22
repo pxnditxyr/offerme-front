@@ -20,6 +20,7 @@ export { ManagementProductImagesService } from './admin/products/management-prod
 export { ManagementProductCategoriesService } from './admin/products/management-product-categories.service'
 
 export { ManagementPromotionsService } from './admin/promotions/management-promotions.service'
+export { ManagementCodePromotionDiscountProductsService } from './admin/promotions/management-promotion-target-products.service'
 
 export { ManagementPromotionRequestsService } from './admin/promotion-requests/management-promotion-requests.service'
 export { ManagementPromotionImagesService } from './admin/promotion-requests/management-promotion-images.service'
