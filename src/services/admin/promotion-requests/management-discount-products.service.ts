@@ -1,7 +1,15 @@
-import { graphqlClient, managementDiscountProductQuery, managementDiscountProductsCreateMutation, managementDiscountProductsToggleStatusMutation, managementDiscountProductsUpdateMutation } from '~/graphql'
+import { graphqlClient, managementDiscountProductQuery, managementDiscountProductsCreateMutation, managementDiscountProductsQuery, managementDiscountProductsToggleStatusMutation, managementDiscountProductsUpdateMutation } from '~/graphql'
 import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
 
 import { ICreateDiscountProductInput, IGQLErrorResponse, IManagementDiscountProduct, IUpdateDiscountProductInput } from '~/interfaces'
+
+interface IFindAllParams {
+  search?: string
+  offset?: number
+  limit?:  number
+  status?: boolean
+  jwt:     string
+}
 
 interface IPromotionByIdParams {
   discountProductId: string
@@ -24,6 +32,18 @@ interface IToggleStatusDiscountProductsParams {
 }
 
 export class ManagementDiscountProductsService {
+
+  static findAll = async ( { jwt, search, offset, limit, status } : IFindAllParams ) : Promise<IManagementDiscountProduct[] | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.query({ document: managementDiscountProductsQuery, variables: { search, offset, limit, status }, requestHeaders: getBearerAuthHeader( jwt ) })
+      return response.discountProducts
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
   static findOne = async ( { discountProductId, jwt } : IPromotionByIdParams ) : Promise<IManagementDiscountProduct | IGQLErrorResponse> => {
     try {
       const response = await graphqlClient.query({ document: managementDiscountProductQuery, variables: { discountProductId }, requestHeaders: getBearerAuthHeader( jwt ) })

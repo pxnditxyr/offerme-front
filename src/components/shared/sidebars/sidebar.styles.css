@@ -17,6 +17,14 @@
   padding: 20px;
 }
 
+#sidebar.theme-seller {
+  background: #F85F73!important;
+}
+
+#sidebar.theme-company-representative {
+  background: #FF6F3C!important;
+}
+
 #sidebar__nav {
   padding: 1rem;
   display: flex;
@@ -165,6 +173,14 @@
     transition: all .35s;
     background: var( --background-color );
     border-radius: 0px 0px 10px 10px;
+  }
+
+  #sidebar__toggle.theme-seller {
+    background: #F85F73!important;
+  }
+
+  #sidebar__toggle.theme-company-representative {
+    background: #FF6F3C !important;
   }
 
   #btn__toggle {

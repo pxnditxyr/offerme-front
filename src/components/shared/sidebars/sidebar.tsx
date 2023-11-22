@@ -12,10 +12,11 @@ import { IMenuData } from '~/interfaces'
 interface ISidebarProps {
   isOpenSidebarInitialValue?: boolean
   data?: IMenuData[]
+  theme?: 'admin' | 'seller' | 'company-representative'
 }
 
 
-export const Sidebar = component$( ( { isOpenSidebarInitialValue = true, data = adminMenuData }: ISidebarProps ) => {
+export const Sidebar = component$( ( { isOpenSidebarInitialValue = true, data = adminMenuData, theme = 'admin' }: ISidebarProps ) => {
   useStyles$( styles )
 
   const {
@@ -25,7 +26,7 @@ export const Sidebar = component$( ( { isOpenSidebarInitialValue = true, data = 
 
   return (
     <>
-      <aside id="sidebar" class={ isOpenSidebar.value ? '' : 'collapsed' }>
+      <aside id="sidebar" class={ `${ isOpenSidebar.value ? '' : 'collapsed' } theme-${ theme }` }>
         <AdminSidebarUserCard />
         <nav id="sidebar__nav">
           <ul id="sidebar__menu">

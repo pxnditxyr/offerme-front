@@ -23,6 +23,7 @@ export interface IManagementCodePromotionDiscountProductDiscountProduct {
   discountPrice: number
   title:         string
   description:   string
+  promotionRequestId: string
 }
 
 export interface ICreateCodePromotionDiscountProductInput {

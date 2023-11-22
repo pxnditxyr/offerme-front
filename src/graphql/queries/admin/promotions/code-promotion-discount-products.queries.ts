@@ -18,6 +18,7 @@ const managementCodePromotionDiscountProductsData = `
     discountPrice
     title
     description
+    promotionRequestId
   }
   used {
     id
@@ -73,3 +74,23 @@ mutation ToggleStatusCodePromotionDiscountProduct($toggleStatusCodePromotionDisc
   }
 }
 `
+export const redeemCouponMutation = `
+mutation RedeemDiscountCoupon($redeemDiscountCouponId: ID!) {
+  redeemDiscountCoupon(id: $redeemDiscountCouponId) {
+    ${ managementCodePromotionDiscountProductsData }
+  }
+}`
+
+export const getCouponMutation = `
+mutation GetDiscountCoupon($getDiscountCouponId: ID!) {
+  getDiscountCoupon(id: $getDiscountCouponId) {
+    ${ managementCodePromotionDiscountProductsData }
+  }
+}`
+
+export const forgetCouponMutation = `
+mutation ForgetDiscountCoupon($forgetDiscountCouponId: ID!) {
+  forgetDiscountCoupon(id: $forgetDiscountCouponId) {
+    ${ managementCodePromotionDiscountProductsData }
+  }
+}`

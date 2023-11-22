@@ -11,9 +11,11 @@ interface ITableProps {
   onToggleStatus: ( id : string ) => void
   tableType?:     'default' | 'update'
   idToRedirect?:  string
+  canEdit?:       boolean
+  canToggle?:     boolean
 }
 
-export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus, tableType = 'default', idToRedirect } : ITableProps ) => {
+export const Table = component$( ( { header, keys, body, onEditClick, onViewClick, onToggleStatus, tableType = 'default', idToRedirect, canEdit = true, canToggle = true } : ITableProps ) => {
   
   useStyles$( styles )
 
@@ -34,7 +36,11 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
               ( tableType === 'default' ) && (
                 <>
                   <th>Actions</th>
-                  <th>Status</th>
+                  {
+                    ( canToggle ) && (
+                      <th>Status</th>
+                    )
+                  }
                 </>
               )
             }
@@ -65,17 +71,25 @@ export const Table = component$( ( { header, keys, body, onEditClick, onViewClic
                           class="button view__button"
                           onClick$={ () => onViewClick( item[ idToRedirect || 'id' ] ) }
                         >View</button>
-                        <button
-                          class="button edit__button"
-                          onClick$={ () => onEditClick( item[ idToRedirect || 'id' ] ) }
-                        >Edit</button>
+                        {
+                          ( canEdit ) && (
+                            <button
+                              class="button edit__button"
+                              onClick$={ () => onEditClick( item[ idToRedirect || 'id' ] ) }
+                            >Edit</button>
+                          )
+                        }
                       </td>
-                      <td>
-                        <button
-                          class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
-                          onClick$={ () => onToggleStatus( item.id ) }
-                        ></button>
-                      </td>
+                      {
+                        ( canToggle ) && (
+                          <td>
+                            <button
+                              class={ `toggle-radius ${ ( item.status ) ? 'is-activate' : 'is-deactivate' }` }
+                              onClick$={ () => onToggleStatus( item.id ) }
+                            ></button>
+                          </td>
+                        )
+                      }
                     </> )
                 }
               </tr>

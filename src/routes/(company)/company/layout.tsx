@@ -35,6 +35,7 @@ export default component$( ()  => {
       <Sidebar
         isOpenSidebarInitialValue={ true }
         data={ companyRepresentativeMenuData }
+        theme="company-representative"
       >
         <Form q:slot="signout" action={ signoutAction }>
           <button class="btn__signout">

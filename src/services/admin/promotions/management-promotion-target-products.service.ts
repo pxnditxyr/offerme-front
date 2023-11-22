@@ -1,4 +1,4 @@
-import { graphqlClient, managementCodePromotionDiscountProductCreateMutation, managementCodePromotionDiscountProductQuery, managementCodePromotionDiscountProductsQuery, managementCodePromotionDiscountProductToggleStatusMutation } from '~/graphql'
+import { forgetCouponMutation, graphqlClient, managementCodePromotionDiscountProductCreateMutation, managementCodePromotionDiscountProductQuery, managementCodePromotionDiscountProductsQuery, managementCodePromotionDiscountProductToggleStatusMutation, redeemCouponMutation } from '~/graphql'
 import { getBearerAuthHeader, graphqlExceptionsHandler } from '~/utils'
 
 import { ICreateCodePromotionDiscountProductInput, IGQLErrorResponse, IManagementCodePromotionDiscountProduct } from '~/interfaces'
@@ -23,6 +23,21 @@ interface ICreateParams {
 
 interface IToggleStatusParams {
   toggleStatusCodePromotionDiscountProductId: string
+  jwt: string
+}
+
+interface IRedeemCouponParams {
+  redeemDiscountCouponId: string
+  jwt: string
+}
+
+interface IGetCouponParams {
+  getDiscountCouponId: string
+  jwt: string
+}
+
+interface IForgetCouponParams {
+  IForgetCouponParams: string
   jwt: string
 }
 
@@ -64,6 +79,39 @@ export class ManagementCodePromotionDiscountProductsService {
     try {
       const response = await graphqlClient.mutation({ document: managementCodePromotionDiscountProductToggleStatusMutation, variables: { toggleStatusCodePromotionDiscountProductId }, requestHeaders: getBearerAuthHeader( jwt ) })
       return response.toggleStatusCodePromotionDiscountProduct
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
+  static redeemCoupon = async ( { redeemDiscountCouponId, jwt } : IRedeemCouponParams ) : Promise<IManagementCodePromotionDiscountProduct | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.mutation({ document: redeemCouponMutation, variables: { redeemDiscountCouponId:  redeemDiscountCouponId }, requestHeaders: getBearerAuthHeader( jwt ) })
+      return response.redeemDiscountCoupon
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
+  static getCoupon = async ( { getDiscountCouponId, jwt } : IGetCouponParams ) : Promise<IManagementCodePromotionDiscountProduct | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.query({ document: managementCodePromotionDiscountProductQuery, variables: { codePromotionDiscountProductId: getDiscountCouponId }, requestHeaders: getBearerAuthHeader( jwt ) })
+      return response.getDiscountCoupon
+    } catch ( error : any ) {
+      return {
+        errors: graphqlExceptionsHandler( error )
+      }
+    }
+  }
+
+  static forgetCoupon = async ( { forgetDiscountCouponId, jwt } : IForgetCouponParams ) : Promise<IManagementCodePromotionDiscountProduct | IGQLErrorResponse> => {
+    try {
+      const response = await graphqlClient.mutation({ document: forgetCouponMutation, variables: { forgetDiscountCouponId }, requestHeaders: getBearerAuthHeader( jwt ) })
+      return response.forgetDiscountCoupon
     } catch ( error : any ) {
       return {
         errors: graphqlExceptionsHandler( error )
