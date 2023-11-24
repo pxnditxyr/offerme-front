@@ -24,3 +24,5 @@ export * from './admin/promotion-requests/promotion-payments.queries'
 export * from './admin/promotion-requests/promotion-target-products.queries'
 export * from './admin/promotion-requests/discount-products.queries'
 export * from './admin/promotion-status/promotions-status.queries'
+
+export * from './public/code-promotion-discount-products.queries'
