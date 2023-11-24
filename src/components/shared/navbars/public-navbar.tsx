@@ -1,41 +1,44 @@
-import { component$ } from '@builder.io/qwik'
+import { component$, useStyles$ } from '@builder.io/qwik'
 import { Link } from '@builder.io/qwik-city'
 
-import styles from './public-navbar.module.css'
+import styles from './public-navbar.styles.css?inline'
 
 export const PublicNavbar = component$( () => {
+
+  useStyles$( styles )
+
   return (
     <>
-      <header class={ styles.header }>
-        <nav class={ styles.nav }>
-          <ul class={ [ styles.navbar, styles.navbar__left ] }>
+      <header class="header">
+        <nav class="nav">
+          <ul class="navbar navbar__left">
             <li>
               <Link
-                class={ styles.link__brand }
+                class="link__brand"
                 href="/"
               > Offer Me </Link>
             </li>
           </ul>
-          <ul class={[ styles.navbar, styles.navbar__center ]}>
+          <ul class="navbar navbar__center">
             <li>
               <Link
-                class={ styles.link }
+                class="link"
                 href="/offers"
               > Offers </Link>
             </li>
             <li>
               <Link
-                class={ styles.link }
+                class="link"
                 href="/sectors"
               > Sectors </Link>
             </li>
             <li>
               <Link
-                class={[ styles.link, styles.link__logo ]}
+                class="link"
                 href="/"
               >
                 <img
-                  class={ styles.logo }
+                  class="logo"
                   src="/offer-me-icon.svg"
                   alt="Offer Me"
                 />
@@ -43,21 +46,21 @@ export const PublicNavbar = component$( () => {
             </li>
             <li>
               <Link
-                class={ styles.link }
+                class="link"
                 href="#about"
               > About </Link>
             </li>
             <li>
               <Link
-                class={ styles.link }
+                class="link"
                 href="#join"
               > Join Us </Link>
             </li>
           </ul>
-          <ul class={ [ styles.navbar, styles.navbar__right ] }>
+          <ul class="navbar navbar__right">
             <li>
               <Link
-                class={ styles.link }
+                class="link"
                 href="/signin"
               > Sign In </Link>
             </li>

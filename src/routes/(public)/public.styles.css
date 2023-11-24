@@ -1,5 +1,77 @@
-.public__container {
-    width: 100%;
-    height: 100vh;
-    padding-top: 5rem;
+/* .public__container { */
+/*     width: 100%; */
+/*     height: 100vh; */
+/*     padding-top: 5rem; */
+/* } */
+
+h1, h2, h3 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 64px;
+	line-height: 1.328125;
+	font-weight: 900;
+}
+
+body {
+	font-family: Georgia, serif;
+	font-size: 21px;
+	line-height: 1.57142857;
+}
+
+section {
+  height: 100vh;
+  width: 100%;
+  background: #222;
+  background-position: center;
+}
+section.over {
+  position: relative;
+  z-index: 10;
+}
+section .over-inner {
+  position: relative;
+}
+section .under-inner {
+  color: white;
+  height: 100vh;
+  position: relative;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+section .one {
+  background-image: url(https://unsplash.it/1200/750?image=999);
+}
+section .two {
+  background-image: url(https://unsplash.it/1200/750?image=835);
+}
+section .three {
+  background-image: url(https://unsplash.it/1200/750?image=1074);
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  padding: 0 10%;
+  transform: translateY(-50%);
+}
+
+.fixed {
+  position: absolute;
+  /* top: -100%; */
+  /* left: -100%; */
+  top: 50%;
+  opacity: 1;
+  transition: opacity 100ms linear;
+  margin-top: 0;
+}
+
+.locked {
+  position: fixed;
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1;
+  transition: opacity 100ms linear;
 }
