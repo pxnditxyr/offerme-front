@@ -4,14 +4,17 @@ import styles from './back-button.styles.css?inline'
 
 interface IBackButtonProps {
   href?: string
+  theme?: 'green' | 'dark'
 }
 
-export const BackButton = component$( ( { href } : IBackButtonProps ) => {
+export const BackButton = component$( ( { href, theme = 'green' } : IBackButtonProps ) => {
 
   useStyles$( styles )
 
   return (
-    <button class="back-button" onClick$={ () => window.history.back() }>
+    <button
+      class={ `back-button ${ theme }` }
+      onClick$={ () => window.history.back() }>
       <svg viewBox="0 0 24 24">
         <path d="M0 0h24v24H0z" fill="none"/>
         <path

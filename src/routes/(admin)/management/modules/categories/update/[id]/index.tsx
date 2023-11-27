@@ -95,14 +95,14 @@ export default component$( () => {
             ...getCategories.map( ({ id, name }) => ( { id, name } ) )
           ] }
           />
-        <button> Create </button>
+        <button> Update </button>
       </Form>
       {
         ( modalStatus.value ) && (
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>
             {
               ( action.value?.success ) && (
-                <span> Category { action.value.category?.name } created successfully </span>
+                <span> Category { action.value.category?.name } updated successfully </span>
               )
             }
             {

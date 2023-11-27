@@ -7,6 +7,9 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  background-color: #fff;
+  width: 100%;
+  min-height: 100vh;
 }
 .error-title {
   max-width: 529px; 

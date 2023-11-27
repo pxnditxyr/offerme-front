@@ -85,22 +85,32 @@ export default component$( () => {
       <div class="create__container">
         <BackButton href="/management/modules/promotions" />
         <h1 class="create__title"> Create new Promotion </h1>
-        <span> No promotion request found </span>
-        <h2> Please select a promotion request </h2>
-        <form class="form" onSubmit$={ ( event : QwikSubmitEvent<HTMLFormElement> ) => {
-          const { target } = event as any
-          nav( `?promotionRequestId=${ target.promotionRequestId.value }` )
-        } }>
-          <FormField
-            label="Promotion Request"
-            name="promotionRequestId"
-            type="select"
-            options={ promotionRequest.map( ( promotionRequest ) =>
-              ( { id: promotionRequest.id, name: promotionRequest.title } )
-            ) }
-            />
-            <button> Create </button>
-        </form>
+        {
+          ( promotionRequest.length === 0 ) ? (
+            <>
+              <h2> No promotion request found </h2>
+              <h3> Please create or Approve a promotion request </h3>
+            </>
+          ) : (
+            <>
+              <h3> Please select a promotion request </h3>
+              <form class="form" onSubmit$={ ( event : QwikSubmitEvent<HTMLFormElement> ) => {
+                const { target } = event as any
+                nav( `?promotionRequestId=${ target.promotionRequestId.value }` )
+              } }>
+                <FormField
+                  label="Promotion Request"
+                  name="promotionRequestId"
+                  type="select"
+                  options={ promotionRequest.map( ( promotionRequest ) =>
+                    ( { id: promotionRequest.id, name: promotionRequest.title } )
+                  ) }
+                />
+                <button> Create </button>
+              </form>
+            </>
+          )
+        }
       </div>
     )
   }
@@ -118,67 +128,76 @@ export default component$( () => {
     <div class="create__container">
       <BackButton href="/management/modules/promotions" />
       <h1 class="create__title"> Create new Promotion </h1>
-      <Form class="form" action={ action }>
-        <FormField
-          label="Title"
-          name="title"
-          placeholder="Title"
-          value={ promotionRequest.title }
-          error={ action.value?.fieldErrors?.title?.join( ', ' ) }
-          />
-        <FormField
-          label="Description"
-          name="description"
-          placeholder="Description"
-          value={ promotionRequest.description }
-          error={ action.value?.fieldErrors?.description?.join( ', ' ) }
-          />
-        <FormField
-          label="Code"
-          name="code"
-          placeholder="Code"
-          value={ promotionRequest.code }
-          error={ action.value?.fieldErrors?.code?.join( ', ' ) }
-          />
-        <FormField
-          label="Reason"
-          name="reason"
-          placeholder="Reason"
-          value={ promotionRequest.reason }
-          error={ action.value?.fieldErrors?.reason?.join( ', ' ) }
-          />
-        <FormField
-          label="Comment"
-          name="comment"
-          placeholder="Comment"
-          value={ promotionRequest.comment }
-          error={ action.value?.fieldErrors?.comment?.join( ', ' ) }
-          />
-        <FormField
-          label="Promotion Start At"
-          name="promotionStartAt"
-          type="date"
-          value={ promotionRequest.promotionStartAt }
-          error={ action.value?.fieldErrors?.promotionStartAt?.join( ', ' ) }
-          />
-        <FormField
-          label="Promotion End At"
-          name="promotionEndAt"
-          type="date"
-          value={ promotionRequest.promotionEndAt }
-          error={ action.value?.fieldErrors?.promotionEndAt?.join( ', ' ) }
-          />
-        <FormField
-          label="Promotion Payment"
-          name="promotionPaymentId"
-          type="select"
-          options={ promotionRequest.promotionPayments.map( ( promotionPayment ) =>
-            ( { id: promotionPayment.id, name: String( promotionPayment.amount ) } )
-          ) }
-          error={ action.value?.fieldErrors?.promotionPaymentId?.join( ', ' ) }
-          />
-        <button> Create </button>
-      </Form>
+      {
+        ( promotionRequest.promotionPayments.length === 0 ) ? (
+          <>
+            <h2> No promotion payment found </h2>
+            <h3> Please create a promotion payment </h3>
+          </>
+        ) : (
+          <Form class="form" action={ action }>
+            <FormField
+              label="Title"
+              name="title"
+              placeholder="Title"
+              value={ promotionRequest.title }
+              error={ action.value?.fieldErrors?.title?.join( ', ' ) }
+            />
+            <FormField
+              label="Description"
+              name="description"
+              placeholder="Description"
+              value={ promotionRequest.description }
+              error={ action.value?.fieldErrors?.description?.join( ', ' ) }
+            />
+            <FormField
+              label="Code"
+              name="code"
+              placeholder="Code"
+              value={ promotionRequest.code }
+              error={ action.value?.fieldErrors?.code?.join( ', ' ) }
+            />
+            <FormField
+              label="Reason"
+              name="reason"
+              placeholder="Reason"
+              value={ promotionRequest.reason }
+              error={ action.value?.fieldErrors?.reason?.join( ', ' ) }
+            />
+            <FormField
+              label="Comment"
+              name="comment"
+              placeholder="Comment"
+              value={ promotionRequest.comment }
+              error={ action.value?.fieldErrors?.comment?.join( ', ' ) }
+            />
+            <FormField
+              label="Promotion Start At"
+              name="promotionStartAt"
+              type="date"
+              value={ promotionRequest.promotionStartAt }
+              error={ action.value?.fieldErrors?.promotionStartAt?.join( ', ' ) }
+            />
+            <FormField
+              label="Promotion End At"
+              name="promotionEndAt"
+              type="date"
+              value={ promotionRequest.promotionEndAt }
+              error={ action.value?.fieldErrors?.promotionEndAt?.join( ', ' ) }
+            />
+            <FormField
+              label="Promotion Payment"
+              name="promotionPaymentId"
+              type="select"
+              options={ promotionRequest.promotionPayments.map( ( promotionPayment ) =>
+                ( { id: promotionPayment.id, name: String( promotionPayment.amount ) } )
+              ) }
+              error={ action.value?.fieldErrors?.promotionPaymentId?.join( ', ' ) }
+            />
+            <button> Create </button>
+          </Form>
+        )
+      }
       {
         ( modalStatus.value ) && (
           <Modal isOpen={ modalStatus.value } onClose={ onCloseModal }>

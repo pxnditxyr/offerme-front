@@ -58,6 +58,12 @@ query Products($offset: Int, $limit: Int, $search: String, $status: Boolean) {
       alt
       status
     }
+    categories {
+      id
+      productId
+      categoryId
+      status
+    }
   }
 }
 `

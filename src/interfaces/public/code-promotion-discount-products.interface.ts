@@ -1,3 +1,4 @@
+import { IManagementProductCategory } from "../admin/management-products.interface"
 import { IGQLErrorResponse } from "../graphql/graphql-error-response.interface"
 
 export interface IPublicCodePromotionDiscountProductsService {
@@ -57,6 +58,7 @@ export interface IPublicProducts {
     alt: string
     status: boolean
   }[]
+  categories: IManagementProductCategory[]
 }
 
 export interface IPublicPromotions {

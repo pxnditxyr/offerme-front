@@ -8,6 +8,7 @@ interface IGetCatgoriesParams {
   offset?: number
   limit?:  number
   status?: boolean
+  order?:  string
   jwt:     string
 }
 
@@ -32,9 +33,9 @@ interface IToggleStatusCategoryParams {
 }
 
 export class ManagementCategoriesService {
-  static categories = async ( { search = '', offset, limit, status, jwt } : IGetCatgoriesParams  ) : Promise<IManagementCategory[] | IGQLErrorResponse> => {
+  static categories = async ( { search = '', offset, limit, status, order, jwt } : IGetCatgoriesParams  ) : Promise<IManagementCategory[] | IGQLErrorResponse> => {
     try {
-      const response = await graphqlClient.query({ document: getManagementCategoriesQuery, variables: { search, status, offset, limit }, requestHeaders: getBearerAuthHeader( jwt ) })
+      const response = await graphqlClient.query({ document: getManagementCategoriesQuery, variables: { search, status, offset, limit, order }, requestHeaders: getBearerAuthHeader( jwt ) })
       return response.categories
     } catch ( error : any ) {
       return {

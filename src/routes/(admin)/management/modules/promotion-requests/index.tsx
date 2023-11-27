@@ -11,9 +11,15 @@ import { ManagementPromotionRequestsService } from '~/services'
 
 import styles from './module.styles.css?inline'
 
-export const useGetSearch = routeLoader$<string>( async ({ query }) => {
+interface IUseGetSearch {
+  search: string
+  state: string
+}
+
+export const useGetSearch = routeLoader$<IUseGetSearch>( async ({ query }) => {
   const search = query.get( 'search' ) || ''
-  return search
+  const state = query.get( 'state' ) || ''
+  return { search, state }
 } )
 
 export const useGetManagementPromotionRequests = routeLoader$<IManagementPromotionRequest[] | IGQLErrorResponse>( async ({ cookie, redirect, query }) => {
@@ -26,17 +32,26 @@ export const useGetManagementPromotionRequests = routeLoader$<IManagementPromoti
   const promotionRequests = await ManagementPromotionRequestsService.promotionRequests({ search, jwt: jwt.value })
   if ( 'errors' in promotionRequests ) return promotionRequests
   if ( state === 'approved' ) {
-    const approvedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => promotionRequest.promotionStatus[ 0 ].adminApprovedStatus )
+    const approvedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => {
+      if ( promotionRequest.promotionStatus.length === 0 ) return false
+      return promotionRequest.promotionStatus[ 0 ].adminApprovedStatus
+    } )
     return approvedPromotionRequests 
   }
 
   if ( state === 'rejected' ) {
-    const rejectedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => promotionRequest.promotionStatus[ 0 ].adminRejectedStatus )
+    const rejectedPromotionRequests = promotionRequests.filter( ( promotionRequest ) => {
+      if ( promotionRequest.promotionStatus.length === 0 ) return false
+      return promotionRequest.promotionStatus[ 0 ].adminRejectedStatus
+    } )
     return rejectedPromotionRequests 
   }
 
   if ( state === 'pending' ) {
-    const pendingPromotionRequests = promotionRequests.filter( ( promotionRequest ) => !( promotionRequest.promotionStatus[ 0 ].adminApprovedStatus || promotionRequest.promotionStatus[ 0 ].adminRejectedStatus ) )
+    const pendingPromotionRequests = promotionRequests.filter( ( promotionRequest ) => {
+      if ( promotionRequest.promotionStatus.length === 0 ) return false
+      return !( promotionRequest.promotionStatus[ 0 ].adminApprovedStatus || promotionRequest.promotionStatus[ 0 ].adminRejectedStatus )
+    } )
     return pendingPromotionRequests 
   }
 
@@ -49,7 +64,7 @@ export default component$( () => {
   const promotionRequests = useGetManagementPromotionRequests().value
 
   if ( 'errors' in promotionRequests ) return ( <UnexpectedErrorPage /> )
-  const searchValue = useGetSearch().value
+  const { state, search } = useGetSearch().value
 
   const { token, status } = useAuthStore()
   if ( status === 'loading' ) return ( <LoadingPage /> )
@@ -105,11 +120,12 @@ export default component$( () => {
   return (
     <div class="module__container">
       <h1 class="module__title"> Promotion Requests </h1>
-      <SearchBar value={ searchValue } onSearchSubmit={ onSearchSubmit } />
+      <SearchBar value={ search } onSearchSubmit={ onSearchSubmit } />
       <form class="form__state__selector" onSubmit$={ onSearchState }>
         <FormField
           name="state"
           type="select"
+          value={ state }
           options={ [
             { id: '', name: 'All' },
             { id: 'pending', name: 'Pending' },

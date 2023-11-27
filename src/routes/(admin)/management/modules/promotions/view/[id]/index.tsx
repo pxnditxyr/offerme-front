@@ -52,13 +52,13 @@ export const useGetPromotionById = routeLoader$<IGetDataResponse>( async ({ para
     ( product.company.id === promotionRequest.company.id )
   )
 
-  const productsIsInTargetProducts = companyProducts.filter( ( product ) =>
-    ( promotionRequest.targetProducts.find( ( targetProduct ) => targetProduct.productId === product.id ) )
+  const productsIsInDiscountProducts = companyProducts.filter( ( product ) =>
+    ( promotionRequest.discountProducts.find( ( discountProduct ) => discountProduct.productId === product.id ) )
   )
 
   return {
     promotion,
-    products: productsIsInTargetProducts,
+    products: productsIsInDiscountProducts,
     promotionRequest,
   }
 } )
@@ -144,7 +144,7 @@ export default component$( () => {
 
         <section class="view__container__card__actions">
           <button class="edit__button" onClick$={ () => onEditClick( promotion.id ) }> Edit </button>
-          <button class={ `toggle-radius ${ promotionRequest.status ? 'is-activate' : 'is-deactivate' }` } onClick$={ () => onToggleStatus( promotionRequest.id ) }></button>
+          <button class={ `toggle-radius ${ promotion.status ? 'is-activate' : 'is-deactivate' }` } onClick$={ () => onToggleStatus( promotion.id ) }></button>
         </section>
 
         <section class="view__container__card__footer">
@@ -197,7 +197,7 @@ export default component$( () => {
                     {
                       promotionRequest.discountProducts.map( ( discountProduct ) => {
                         const product = products.find( ( product ) => product.id === discountProduct.productId )
-                        if ( !product ) return ( <></> )
+                        if ( !product ) return ( <>entro</> )
                         return (
                           <MiniCard
                             header={ [ 'Title', 'Description', 'Name', 'Price', 'New Price', 'Stock', 'Status',  ] }

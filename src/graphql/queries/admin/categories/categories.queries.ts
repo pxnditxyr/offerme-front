@@ -1,6 +1,6 @@
 export const getManagementCategoriesQuery = `
-query Categories($offset: Int, $limit: Int, $search: String, $status: Boolean) {
-  categories(offset: $offset, limit: $limit, search: $search, status: $status) {
+query Categories($offset: Int, $limit: Int, $search: String, $status: Boolean, $order: String) {
+  categories(offset: $offset, limit: $limit, search: $search, status: $status, order: $order) {
     id
     name
     description

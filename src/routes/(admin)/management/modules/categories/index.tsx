@@ -22,6 +22,7 @@ export const useGetManagementCategories = routeLoader$<IManagementCategory[] | I
   if ( !jwt ) throw redirect( 302, '/signin' )
   
   const categories = await ManagementCategoriesService.categories({ search, jwt: jwt.value })
+  console.log( categories )
   return categories
 } )
 

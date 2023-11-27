@@ -37,3 +37,4 @@ export * from './types/valid-modules.type'
 
 export * from './parametrics/subparameters.interface'
 
+export * from './clicks/click-per-period.interface'

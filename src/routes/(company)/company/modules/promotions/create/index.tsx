@@ -85,22 +85,32 @@ export default component$( () => {
       <div class="create__container">
         <BackButton href="/management/modules/promotions" />
         <h1 class="create__title"> Create new Promotion </h1>
-        <span> No promotion request found </span>
-        <h2> Please select a promotion request </h2>
-        <form class="form" onSubmit$={ ( event : QwikSubmitEvent<HTMLFormElement> ) => {
-          const { target } = event as any
-          nav( `?promotionRequestId=${ target.promotionRequestId.value }` )
-        } }>
-          <FormField
-            label="Promotion Request"
-            name="promotionRequestId"
-            type="select"
-            options={ promotionRequest.map( ( promotionRequest ) =>
-              ( { id: promotionRequest.id, name: promotionRequest.title } )
-            ) }
-            />
-            <button> Create </button>
-        </form>
+        {
+          ( promotionRequest.length > 0 ) ? (
+            <>
+              <h2> No promotion request found </h2>
+              <h3> Please create or Approve a promotion request </h3>
+            </>
+          ) : (
+            <>
+              <h3> Please select a promotion request </h3>
+              <form class="form" onSubmit$={ ( event : QwikSubmitEvent<HTMLFormElement> ) => {
+                const { target } = event as any
+                nav( `?promotionRequestId=${ target.promotionRequestId.value }` )
+              } }>
+                <FormField
+                  label="Promotion Request"
+                  name="promotionRequestId"
+                  type="select"
+                  options={ promotionRequest.map( ( promotionRequest ) =>
+                    ( { id: promotionRequest.id, name: promotionRequest.title } )
+                  ) }
+                />
+                <button> Create </button>
+              </form>
+            </>
+          )
+        }
       </div>
     )
   }

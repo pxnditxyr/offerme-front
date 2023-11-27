@@ -32,3 +32,11 @@
 .back-button svg path:first-child {
   fill: none;
 }
+
+.back-button.dark {
+  border-color: #fff;
+  color: #fff;
+  background-color: #333;
+  top: 100px;
+  left: 50px;
+}

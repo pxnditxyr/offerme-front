@@ -35,8 +35,10 @@ export const useGetPromotionRequestById = routeLoader$<IGetDataResponse>( async 
 
   if ( 'errors' in products || 'errors' in promotionRequest ) return { promotionRequest, products, promotionStatus: { errors: 'Invalid Promotion Request ID' } }
 
+  if ( promotionRequest.promotionStatus.length === 0 ) return { promotionRequest, products, promotionStatus: { errors: 'Invalid Promotion Request ID' } }
   const promotionStatus = await ManagementPromotionStatusService.findOne({ promotionStatesId: promotionRequest.promotionStatus[ 0 ].id, jwt: jwt.value })
   if ( 'errors' in promotionStatus ) return { promotionRequest, products, promotionStatus }
+
 
   const companyProducts  = products.filter( ( product ) => 
     ( product.company.id === promotionRequest.company.id )

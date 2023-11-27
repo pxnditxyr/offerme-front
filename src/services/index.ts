@@ -31,3 +31,7 @@ export { ManagementPromotionStatusService } from './admin/promotion-requests/man
 
 
 export { SubparametersService } from './parametrics/subparameters.service'
+
+export { PublicPromotionDiscountProductsService } from './public/code-promotion-discount-products.service'
+export { PublicCategoriesService } from './public/categories.service'
+

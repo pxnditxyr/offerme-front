@@ -1,5 +1,4 @@
 import { component$, useStyles$ } from '@builder.io/qwik'
-import { Link } from '@builder.io/qwik-city'
 
 import styles from './public-navbar.styles.css?inline'
 
@@ -13,27 +12,27 @@ export const PublicNavbar = component$( () => {
         <nav class="nav">
           <ul class="navbar navbar__left">
             <li>
-              <Link
+              <a
                 class="link__brand"
                 href="/"
-              > Offer Me </Link>
+              > Offer Me </a>
             </li>
           </ul>
           <ul class="navbar navbar__center">
             <li>
-              <Link
+              <a
                 class="link"
                 href="/offers"
-              > Offers </Link>
+              > Offers </a>
             </li>
             <li>
-              <Link
+              <a
                 class="link"
-                href="/sectors"
-              > Sectors </Link>
+                href="/categories"
+              > Sectors </a>
             </li>
             <li>
-              <Link
+              <a
                 class="link"
                 href="/"
               >
@@ -42,27 +41,24 @@ export const PublicNavbar = component$( () => {
                   src="/offer-me-icon.svg"
                   alt="Offer Me"
                 />
-              </Link>
+              </a>
             </li>
             <li>
-              <Link
+              <a
                 class="link"
-                href="#about"
-              > About </Link>
+                href="/#about"
+              > About </a>
             </li>
             <li>
-              <Link
+              <a
                 class="link"
-                href="#join"
-              > Join Us </Link>
+                href="/#join"
+              > Join Us </a>
             </li>
           </ul>
           <ul class="navbar navbar__right">
             <li>
-              <Link
-                class="link"
-                href="/signin"
-              > Sign In </Link>
+              <a class="link" href="/signin"> Sign In </a>
             </li>
           </ul>
         </nav>
